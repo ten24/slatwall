@@ -20,44 +20,39 @@ class SWDeleteSkuPriceModalLauncherController{
         private observerService
     ){
         this.uniqueName = this.baseName + this.utilityService.createID(16); 
-    }    
-
-    public delete = () => {
-        var priceGroupID = undefined;
-        if(this.skuPrice.data.priceGroup){
-            priceGroupID = this.skuPrice.data.priceGroup.data.priceGroupID;
+        this.observerService.attach(this.init, "DELETE_SKUPRICE");
+        //hack for listing hardcodeing id
+        this.listingID = 'pricingListing';
+    }  
+    
+    public init = (pageRecord:any) =>{
+        this.pageRecord = pageRecord;
+        
+        var skuPriceData = {
+            skuPriceID : pageRecord.skuPriceID,
+            minQuantity : pageRecord.minQuantity,
+            maxQuantity : pageRecord.maxQuantity,
+            currencyCode : pageRecord.currencyCode, 
+            price : pageRecord.price
         }
-        var skuPricesToDelete = this.skuPriceService.getSkuPricesForQuantityRange(this.skuId, this.skuPrice.data.minQuantity, this.skuPrice.data.maxQuantity,undefined, priceGroupID);
-        var deletePromises = [];
-        skuPricesToDelete.then(
-            (skuPrices)=>{  
-                for(var i = 0; i < skuPrices.length; i++){
-                    if(skuPrices[i].data.skuPriceID.length){
-                        deletePromises.push(skuPrices[i].$$delete());
-                    }
-                }
+        
+        this.skuPrice = this.$hibachi.populateEntity('SkuPrice', skuPriceData);
+    }
+
+    public deleteSkuPrice = () => {
+        var deletePromise = this.skuPrice.$$delete();
+        
+        deletePromise.then(
+            (resolve)=>{
+                //hack, for whatever reason is not responding to getCollection event
+                this.observerService.notifyById('swPaginationAction', this.listingID, { type: 'setCurrentPage', payload: 1 });
             },
             (reason)=>{
-                //error
+                console.log("Could not delete Sku Price Because: ", reason);
             }
-        ).finally(()=>{
-            this.$q.all(deletePromises).then(
-                (response)=>{
-                    if(angular.isDefined(this.listingID)){
-                        var pageRecords = this.listingService.getListingPageRecords(this.listingID);
-                        for(var i = 0; i < pageRecords.length; i++){
-                            if( angular.isDefined(pageRecords[i].skuPriceID) &&
-                                this.skuPrice.data.skuPriceID == pageRecords[i].skuPriceID
-                            ){
-                                pageRecords.splice(i,1);
-                                break; 
-                            }
-                        }
-                    }
-                }
-            );
-        });
-        return this.$q.all(deletePromises); 
+        );
+        
+        return deletePromise;
     }
 }
 
@@ -104,35 +99,10 @@ class SWDeleteSkuPriceModalLauncher implements ng.IDirective{
     public compile = (element: JQuery, attrs: angular.IAttributes) => {
         return {
             pre: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
-                //have to do our setup here because there is no direct way to pass the pageRecord into this transcluded directive
-                var currentScope = this.scopeService.getRootParentScope($scope, "pageRecord");
-                if(angular.isDefined(currentScope.pageRecord)){ 
-                    $scope.swDeleteSkuPriceModalLauncher.pageRecord = currentScope.pageRecord; 
-                    if(angular.isDefined(currentScope.pageRecord.sku_skuID)){
-                         $scope.swDeleteSkuPriceModalLauncher.skuId = currentScope.pageRecord.sku_skuID;
-                    }
-                    if(angular.isDefined(currentScope.pageRecord.skuPriceID) && currentScope.pageRecord.skuPriceID.length){    
-                        var skuPriceData = {
-                            skuPriceID:currentScope.pageRecord.skuPriceID,
-                            minQuantity:currentScope.pageRecord.minQuantity,
-                            maxQuantity:currentScope.pageRecord.maxQuantity,
-                            currencyCode:currentScope.pageRecord.currencyCode, 
-                            price:currentScope.pageRecord.price
-                        }
-                        $scope.swDeleteSkuPriceModalLauncher.skuPrice = this.$hibachi.populateEntity('SkuPrice',skuPriceData);
-                        var priceGroup = this.$hibachi.populateEntity('PriceGroup',{priceGroupID:currentScope.pageRecord.priceGroup_priceGroupID});
-                        $scope.swDeleteSkuPriceModalLauncher.skuPrice.$$setPriceGroup(priceGroup);
-                    }
-                } else{ 
-                    throw("swDeleteSkuPriceModalLauncher was unable to find the pageRecord that it needs!");
-                } 
-                var listingScope = this.scopeService.getRootParentScope($scope, "swListingDisplay");
-                if(angular.isDefined(listingScope.swListingDisplay)){ 
-                    $scope.swDeleteSkuPriceModalLauncher.listingID = listingScope.swListingDisplay.tableID;
-                }
+                
             },
             post: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
-
+                
             }
         };
     }

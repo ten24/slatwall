@@ -18,6 +18,7 @@ class SWRelatedProductsController {
     ){
         this.collectionConfig = collectionConfigService.newCollectionConfig("Product");
         this.collectionConfig.addDisplayProperty("productID,productName,productCode,calculatedSalePrice,activeFlag,publishedFlag,productType.productTypeNamePath,productType.productTypeName,defaultSku.price");
+        
         this.alreadySelectedProductsCollectionConfig = collectionConfigService.newCollectionConfig("ProductRelationship");
         this.alreadySelectedProductsCollectionConfig.addDisplayProperty("productRelationshipID,sortOrder,relatedProduct.productID,relatedProduct.productName,relatedProduct.productCode,relatedProduct.calculatedSalePrice,relatedProduct.activeFlag,relatedProduct.publishedFlag");
         this.alreadySelectedProductsCollectionConfig.addFilter("product.productID", this.productId, "=");

@@ -1,5 +1,5 @@
 {
-	"properties":{
-		"subscriptionBenefitID":			[{"contexts":"save","required":true}]
+	"properties": {
+		"subscriptionBenefitID": [{ "contexts": "save", "required": true }]
 	}
 }

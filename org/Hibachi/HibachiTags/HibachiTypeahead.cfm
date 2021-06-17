@@ -2,15 +2,15 @@
 <cfif thisTag.executionMode is "start">
 	<cfparam name="attributes.hibachiScope" type="any" default="#request.context.fw.getHibachiScope()#" />
 	<cfparam name="attributes.collectionlist"/>
-	
+
 	<cfset scopeVariableID = '#attributes.collectionlist.getCollectionObject()##rereplace(createUUID(),'-','','all')#'/>
 	<cfset JSON = serializeJson(attributes.collectionList.getCollectionConfigStruct())/>
-	
+
 	<!---escape apostraphe boi--->
 	<cfset JSON = rereplace(JSON,"'","\'",'all')/>
 	<!---convert double quotes to single--->
 	<cfset JSON = rereplace(JSON,'"',"'",'all')/>
-	
+
 	<cfparam name="attributes.entityName" type="string" default="#attributes.collectionlist.getCollectionObject()#"/>
 	<cfparam name="attributes.labelText" type="string" default="#attributes.hibachiScope.rbkey('entity.#attributes.entityName#_plural')#"/>					
 	<cfparam name="attributes.propertyName" type="string" default="#attributes.hibachiScope.getService('hibachiService').getPrimaryIDPropertyNameByEntityName(attributes.entityName)#"/>
@@ -26,7 +26,7 @@
 	<cfparam name="attributes.propertyToLoad" type="string" default="#attributes.propertyToSave#,#attributes.propertyToShow#"/>
 	<cfparam name="attributes.fieldName" type="string" default="#attributes.propertyName#"/>
 	<cfparam name="attributes.initialEntityID" type="string" default=""/>
-	
+
 	<cfoutput>
 	<!--- Generic  Typeahead --->
 		<!---<cfif !isNull(attributes.property)><!--- Only show if we have a default --->
@@ -54,7 +54,7 @@
 			        data-show-add-button="true"
 			        data-show-view-button="true"
 			        data-placeholder-rb-key="#attributes.rbKey#"
-			        data-placeholder-text="Search #attributes.placeholder#"
+			        data-placeholder-text="#attributes.placeholder#"
 			        data-multiselect-mode="false"
 			        data-filter-flag="true"
 			        data-selected-format-string="#attributes.selectedFormatString#"

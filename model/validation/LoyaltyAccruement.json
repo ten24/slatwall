@@ -1,17 +1,22 @@
 {
-	"conditions":{
-	    "needsEndAfterStart":{
-	        "startDateTime":{"required":true},
-	        "endDateTime":{"required":true}
-	    },
-	    "accruementTypeEnroll":{
-	        "accruementType":{"eq":"enrollment"}
-	    }
+	"conditions": {
+		"needsEndAfterStart": {
+			"startDateTime": { "required": true },
+			"endDateTime": { "required": true }
+		},
+		"accruementTypeEnroll": {
+			"accruementEvent": { "eq": "enrollment" }
+		}
 	},
-	"properties":{
-		"pointQuantity":			[{"contexts":"save","required":true,"dataType":"numeric"}],
-		"startDateTime":			[{"contexts":"save","dataType":"date"}],
-		"endDateTime":				[{"contexts":"save","dataType":"date"},{"contexts":"save","conditions":"needsEndAfterStart","gtDateTimeProperty":"startDateTime"}],
-		"pointType":				[{"contexts":"save","conditions":"accruementTypeEnroll","inList":"fixed"}]
+	"properties": {
+		"pointQuantity": [{ "contexts": "save", "dataType": "numeric" }],
+		"accruementEvent": [{ "contexts": "save", "required": true }],
+		"accruementType": [{ "contexts": "save", "required": true }],
+		"startDateTime": [{ "contexts": "save", "dataType": "date" }],
+		"endDateTime": [
+			{ "contexts": "save", "dataType": "date" },
+			{ "contexts": "save", "conditions": "needsEndAfterStart", "gtDateTimeProperty": "startDateTime" }
+		],
+		"pointType": [{ "contexts": "save", "conditions": "accruementTypeEnroll", "inList": "fixed" }]
 	}
 }

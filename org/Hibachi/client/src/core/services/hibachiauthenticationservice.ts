@@ -10,22 +10,37 @@ class HibachiAuthenticationService{
        public appConfig,
        public $injector,
        public utilityService,
-       public token
+       //public token
     ){
         
     }
     
-    public getJWTDataFromToken =(str)=>{
-    	// Going backwards: from bytestream, to percent-encoding, to original string.
-	    str = str.split('.')[1];
-	    var decodedString = decodeURIComponent(this.$window.atob(str).split('').map((c)=> {
-	        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-	    }).join(''));
-	    
-	    var jwtData = angular.fromJson(decodedString);
-		var now = +new Date();
-		var nowString = now.toString().substr(0,jwtData.exp.toString().length);
-		now = +nowString;
+     public getJWTDataFromToken =(str)=>{
+     	
+    	if(str !== "invalidToken"){
+	    	// Going backwards: from bytestream, to percent-encoding, to original string.
+		    str = str.split('.')[1];
+		    var decodedString = decodeURIComponent(this.$window.atob(str).split('').map((c)=> {
+		        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+		    }).join(''));
+		    
+		    var jwtData = angular.fromJson(decodedString);
+			var now = +new Date();
+			var nowString = now.toString().substr(0,jwtData.exp.toString().length);
+			now = +nowString;
+    	}else{
+    		
+    		var jwtData:any ={
+    			role:'public'
+    		};
+    		if(!this.$rootScope.slatwall.account){
+		    	this.$rootScope.slatwall.account = {};
+		    }
+		    if(!this.$rootScope.slatwall.role){
+		    	this.$rootScope.slatwall.role=jwtData.role;
+	    		this.getRoleBasedData(jwtData);
+		    }
+    	}
 		if(jwtData.issuer && jwtData.issuer == this.$window.location.hostname && jwtData.exp > now){
 		    if(!this.$rootScope.slatwall.account){
 		    	this.$rootScope.slatwall.account = {};
@@ -44,13 +59,13 @@ class HibachiAuthenticationService{
     }
     
     public isSuperUser=()=>{
+    	if(!this.$rootScope.slatwall.authInfo){
+    		//this.getJWTDataFromToken(this.token);
+    	}
         return this.$rootScope.slatwall.role == 'superUser';
     }
     
     public authenticateActionByAccount=(action:string,processContext:string)=>{
-    	if(!this.$rootScope.slatwall.authInfo){
-    		this.getJWTDataFromToken(this.token);
-    	}
         var authDetails:any = this.getActionAuthenticationDetailsByAccount(action,processContext);
         return authDetails.authorizedFlag;
     }
@@ -262,6 +277,26 @@ class HibachiAuthenticationService{
 		return false;
     }
     
+    public authenticateEntityPropertyCrudByAccount=(crudType:string, entityName:string, propertyName:string)=> {
+		// Check if the user is a super admin, if true no need to worry about security
+		if( this.isSuperUser() ) {
+			return true;
+		}
+		
+		// Loop over each permission group for this account, and ckeck if it has access
+		var accountPermissionGroups = this.$rootScope.slatwall.authInfo.permissionGroups;
+		
+		for(var i in accountPermissionGroups){
+			var pgOK = this.authenticateEntityPropertyByPermissionGroup(crudType, entityName, propertyName, accountPermissionGroups[i]);
+			if(pgOK) {
+				return true;
+			}
+		}
+		
+		// If for some reason not of the above were meet then just return false
+		return false;
+	}
+    
     public authenticateEntityCrudByAccount=(crudType:string,entityName:string):boolean=>{
         crudType = this.utilityService.toCamelCase(crudType);
         entityName = entityName.toLowerCase();
@@ -323,7 +358,8 @@ class HibachiAuthenticationService{
 		
 		// Check for entity specific values
 		if(
-		    permissions.entity.entities[entityName] 
+			permissions.entity.entities
+		    && permissions.entity.entities[entityName] 
 		    && permissions.entity.entities[entityName]["permission"] 
 		    && permissions.entity.entities[entityName].permission["allow"+crudType+"Flag"]
 		) {
@@ -356,18 +392,59 @@ class HibachiAuthenticationService{
 		return false;
     }
     
+    public authenticateEntityPropertyByPermissionGroup=(crudType:string, entityName:string, propertyName:string, permissionGroup:any)=> {
+		// Pull the permissions detail struct out of the permission group
+		var permissions = permissionGroup;
+		entityName=entityName.toLowerCase();
+		propertyName=propertyName.toLowerCase();
+		if( 
+			permissions.entity.entities
+			&& permissions.entity.entities[entityName]  
+			&& propertyName == entityName+'ID'
+		){
+			return true;
+		}
+		
+		// Check first to see if this entity was defined
+		if(
+			permissions.entity.entities
+			&& permissions.entity.entities[entityName] 
+			&& permissions.entity.entities[entityName].properties[propertyName] 
+			&& permissions.entity.entities[ entityName ].properties[ propertyName ]['allow'+crudType+'Flag']
+		) {
+			if( 
+				permissions.entity.entities
+				&& permissions.entity.entities[ entityName ].properties[ propertyName ]['allow'+crudType+'Flag'] 
+			) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+		
+		// If there was an entity defined, and special property values have been defined then we need to return false
+		if (
+			permissions.entity.entities
+			&& permissions.entity.entities[entityName]
+			&& Object.keys(permissions.entity.entities[entityName].properties).length
+		) {
+			return false;
+		}
+		return this.authenticateEntityByPermissionGroup(crudType, entityName, permissionGroup);
+	}
+	
     public authenticateSubsystemSectionItemActionByPermissionGroup=(subsystem:string,section:string,item:string,permissionGroup:any):boolean=>{
         // Pull the permissions detail struct out of the permission group
 		var permissions = permissionGroup;
+		var actionSubsystem = permissions.action.subsystems[subsystem];
 		
-		if(
-		    permissions.action.subsystems[subsystem]
-		    && permissions.action.subsystems[subsystem].sections[section] 
-		    && permissions.action.subsystems[subsystem].sections[section].items[item] 
+		if( actionSubsystem
+		    
+		    && actionSubsystem.sections[section] 
+		    && actionSubsystem.sections[section].items[item] 
 		) {
-			return
-			    permissions.action.subsystems[subsystem].sections[section].items[item].allowActionFlag 
-			    && permissions.action.subsystems[subsystem].sections[section].items[item].allowActionFlag
+			return actionSubsystem.sections[section].items[item].allowActionFlag 
+			    && actionSubsystem.sections[section].items[item].allowActionFlag
 			;
 		}
 		

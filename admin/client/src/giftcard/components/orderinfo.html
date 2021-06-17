@@ -29,7 +29,7 @@
 			<li>
 				<div class="row s-line-item">
 					<div class="col-xs-5 s-title">Order Date:</div>
-					<div class="col-xs-7 s-value" ng-bind="swGiftCardOrderInfo.order.orderOpenDateTime"></div>
+					<div class="col-xs-7 s-value" ng-bind="(swGiftCardOrderInfo.order.orderOpenDateTime | date:'medium' )"></div>
 				</div>
 			</li>
 

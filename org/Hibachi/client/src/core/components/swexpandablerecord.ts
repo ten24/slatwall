@@ -67,7 +67,6 @@ class SWExpandableRecordController{
         angular.forEach(this.collectionConfig.joins,(join)=>{
             this.childCollectionConfig.addJoin(join);
         });
-        this.childCollectionConfig.orderBy = this.collectionConfig.orderBy;
         this.childCollectionConfig.groupBys = this.collectionConfig.groupBys;
     }
 
@@ -76,22 +75,14 @@ class SWExpandableRecordController{
             this.collectionData = data;
             this.collectionData.pageRecords = this.collectionData.pageRecords || this.collectionData.records
             if(this.collectionData.pageRecords.length){
-                
-                angular.forEach(
-                    // reversing here so the child records are in order
-                    this.collectionData.pageRecords.slice().reverse(),  (pageRecord) => {
-                    
+                angular.forEach(this.collectionData.pageRecords,(pageRecord)=>{
                     this.expandableService.addRecord(pageRecord[this.parentIDName],true);
                     pageRecord.dataparentID = this.recordID;
                     pageRecord.depth = this.recordDepth || 0;
                     pageRecord.depth++;
-                    
                     //push the children into the listing display
                     this.children.push(pageRecord);
-                    
-                    // adding all of the childrens JUST-NEXT to the parent ont bu one
                     this.records.splice(this.recordIndex+1,0,pageRecord);
-                    
                 });
             }
             this.childrenLoaded = true;
@@ -143,6 +134,9 @@ class SWExpandableRecordController{
 
 class SWExpandableRecord implements ng.IDirective{
     public restrict:string = 'EA';
+    
+    public templateString = require("./expandablerecord.html");
+    
     public scope={};
     public bindToController={
         recordValue:"=",
@@ -151,7 +145,7 @@ class SWExpandableRecord implements ng.IDirective{
         parentId:"=",
         entity:"=",
         collectionConfig:"=?",
-        childCollectionConfig:"=?",
+        childCollectionConfig:"<?",
         refreshChildrenEvent:"=?",
         listingId:"@?",
         records:"=",
@@ -164,63 +158,35 @@ class SWExpandableRecord implements ng.IDirective{
         expandableRules:"="
     };
 
-    public static Factory(){
-        var directive:ng.IDirectiveFactory=(
-            $compile:ng.ICompileService,
-            $templateRequest:ng.ITemplateRequestService,
-            $timeout:ng.ITimeoutService,
-            corePartialsPath,
-            utilityService,
-            expandableService,
-			hibachiPathBuilder
-        ) => new SWExpandableRecord(
-            $compile,
-            $templateRequest,
-            $timeout,
-            corePartialsPath,
-            utilityService,
-            expandableService,
-			hibachiPathBuilder
-        );
-        directive.$inject = [
-            '$compile',
-            '$templateRequest',
-            '$timeout',
-            'corePartialsPath',
-            'utilityService',
-            'expandableService',
-			'hibachiPathBuilder'
-        ];
-        return directive;
-    }
-
     public controller=SWExpandableRecordController;
     public controllerAs="swExpandableRecord";
+    
+	public static Factory(){
+		return /** @ngInject; */ ($compile, $timeout, utilityService, expandableService) => {
+		    return new this($compile, $timeout, utilityService, expandableService);
+		}
+	}
+	
     //@ngInject
     constructor(
-        public $compile:ng.ICompileService,
-        public $templateRequest:ng.ITemplateRequestService,
-        public $timeout:ng.ITimeoutService,
-        public corePartialsPath,
+        public $compile:    ng.ICompileService,
+        public $timeout:    ng.ITimeoutService,
         public utilityService,
-        public expandableService,
-		public hibachiPathBuilder
-     ){
-        this.$compile = $compile;
-        this.$templateRequest = $templateRequest;
-        this.corePartialsPath = corePartialsPath;
-        this.$timeout = $timeout;
-        this.utilityService = utilityService;
-        this.expandableService = expandableService;
-        this.hibachiPathBuilder = hibachiPathBuilder;
-    }
+        public expandableService
+     ){}
 
     public link:ng.IDirectiveLinkFn = (scope:any, element:any, attrs:any) =>{
+        
         if(scope.swExpandableRecord.expandable && scope.swExpandableRecord.childCount){
+            
             if(scope.swExpandableRecord.recordValue){
+                
                 var id = scope.swExpandableRecord.records[scope.swExpandableRecord.recordIndex][scope.swExpandableRecord.entity.$$getIDName()];
+                
                 if(scope.swExpandableRecord.multiselectIdPaths && scope.swExpandableRecord.multiselectIdPaths.length){
+                    
                     var multiselectIdPathsArray = scope.swExpandableRecord.multiselectIdPaths.split(',');
+                    
                     if(!scope.swExpandableRecord.childrenLoaded){
                         angular.forEach(multiselectIdPathsArray,(multiselectIdPath)=>{
                             var position = this.utilityService.listFind(multiselectIdPath,id,'/');
@@ -235,23 +201,18 @@ class SWExpandableRecord implements ng.IDirective{
                 }
             }
 
+            var template = angular.element(this.templateString);
 
-            this.$templateRequest(this.hibachiPathBuilder.buildPartialsPath(this.corePartialsPath)+"expandablerecord.html").then((html)=>{
-                var template = angular.element(html);
-
-                //get autoopen reference to ensure only the root is autoopenable
-                var autoOpen = angular.copy(scope.swExpandableRecord.autoOpen);
-                scope.swExpandableRecord.autoOpen = false;
-                template = this.$compile(template)(scope);
-                element.html(template);
-                element.on('click',scope.swExpandableRecord.toggleChild);
-                if(autoOpen){
-                    scope.swExpandableRecord.toggleChild();
-                }
-            });
+            //get autoopen reference to ensure only the root is autoopenable
+            var autoOpen = angular.copy(scope.swExpandableRecord.autoOpen);
+            scope.swExpandableRecord.autoOpen = false;
+            template = this.$compile(template)(scope);
+            element.html(template);
+            element.on('click',scope.swExpandableRecord.toggleChild);
+            if(autoOpen){
+                scope.swExpandableRecord.toggleChild();
+            }
         }
-
-
     }
 }
 export{

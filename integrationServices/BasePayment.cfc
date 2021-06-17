@@ -46,7 +46,7 @@
 Notes:
 
 */
-component extends="Slatwall.org.Hibachi.HibachiObject" {
+component extends="Slatwall.integrationServices.BaseIntegrationType" {
 
 	public any function init() {
 		return this;
@@ -92,30 +92,6 @@ component extends="Slatwall.org.Hibachi.HibachiObject" {
 		return "credit";
 	}
 	
-	// @hint helper function to return a Setting
-	public any function setting(required string settingName, array filterEntities=[], formatValue=false, any requestBean) {
-		// Allows settings to be requested in the context of the site where the order was created
-		if (!isNull(arguments.requestBean) && !isNull(arguments.requestBean.getOrder()) && !isNull(arguments.requestBean.getOrder().getOrderCreatedSite()) && !arguments.requestBean.getOrder().getOrderCreatedSite().getNewFlag()) {
-			arguments.filterEntities = [arguments.requestBean.getOrder().getOrderCreatedSite()];
-		} else if (!isNull(arguments.requestBean) && !isNull(arguments.requestBean.getAccount()) && !isNull(arguments.requestBean.getAccount().getAccountCreatedSite())) {
-			arguments.filterEntities = [arguments.requestBean.getAccount().getAccountCreatedSite()];
-		}
-
-		if(structKeyExists(getIntegration().getSettings(), arguments.settingName)) {
-			return getService("settingService").getSettingValue(settingName="integration#getPackageName()##arguments.settingName#", object=this, filterEntities=arguments.filterEntities, formatValue=arguments.formatValue);	
-		}
-		return getService("settingService").getSettingValue(settingName=arguments.settingName, object=this, filterEntities=arguments.filterEntities, formatValue=arguments.formatValue);
-	}
-	
-	// @hint helper function to return the integration entity that this belongs to
-	public any function getIntegration() {
-		return getService("integrationService").getIntegrationByIntegrationPackage(getPackageName());
-	}
-	
-	// @hint helper function to return the packagename of this integration
-	public any function getPackageName() {
-		return lcase(listGetAt(getClassFullname(), listLen(getClassFullname(), '.') - 1, '.'));
-	}
 	
 	// DEPRECATED
 	public string function getExternalPaymentCheckoutViewPath() {

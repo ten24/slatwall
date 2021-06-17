@@ -1,11 +1,31 @@
 {
-	"properties":{
-		"eventStartDateTime": [{"required":true,"dataType":"date","gtNow":true}],
-		"eventEndDateTime": [{"required":true,"dataType":"date","gtDateTimeProperty":"eventStartDateTime","gtNow":true}],
-		"locationConfigurations":[{"required":true}],
-		"schedulingType": [{"required":true}],
-		"price": [{"required":false}],
-		"eventCapacity": [{"required":true}]
-		
+	"conditions": {
+		"recurringSchedule": {
+			"schedulingType": { "eq": "recurring" }
+		}
+	},
+	"properties": {
+		"eventStartDateTime": [{ "required": true, "dataType": "date", "gtNow": true }],
+		"eventEndDateTime": [
+			{
+				"required": true,
+				"dataType": "date",
+				"gtDateTimeProperty": "eventStartDateTime",
+				"gtNow": true
+			}
+		],
+		"locationConfigurations": [{ "required": true }],
+		"scheduleEndDate" : [
+			{
+				"required": true,
+				"conditions": "recurringSchedule",
+				"gtDateTimeProperty": "eventEndDateTime",
+				"dataType" : "date",
+				"gtNow": true
+			}
+		],
+		"schedulingType": [{ "required": true }],
+		"price": [{ "required": false }],
+		"eventCapacity": [{ "required": true }]
 	}
 }

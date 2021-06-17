@@ -57,7 +57,9 @@ Notes:
 <cfoutput>
 	<hb:HibachiEntityDetailForm enctype="application/x-www-form-urlencoded" object="#rc.permissionGroup#" edit="#rc.edit#">
 		<hb:HibachiEntityActionBar type="detail" object="#rc.permissionGroup#" edit="#rc.edit#">
+		    <cfif !rc.permissionGroup.getNewFlag()>
                 <hb:HibachiProcessCaller entity="#rc.permissionGroup#" action="admin:entity.preprocesspermissiongroup" processContext="clonepermission" type="list" modal="true" />
+		    </cfif>
 		</hb:HibachiEntityActionBar>
 
 		<hb:HibachiEntityDetailGroup object="#rc.permissionGroup#">
@@ -67,7 +69,7 @@ Notes:
             <cfif len(rc.editEntityName)>
                 <hb:HibachiEntityDetailItem tabid="processpermissions" lazyLoad="true" view="admin:entity/permissiongrouptabs/processpermissions">
             </cfif>
-            <hb:HibachiEntityDetailItem view="admin:entity/permissiongrouptabs/accounts">
+            <hb:HibachiEntityDetailItem view="admin:entity/permissiongrouptabs/accounts" count=#rc.permissionGroup.getAccountsCount()#>
             
             <hb:HibachiEntityDetailItem view="admin:entity/permissiongrouptabs/recordrestrictions">
 		</hb:HibachiEntityDetailGroup>

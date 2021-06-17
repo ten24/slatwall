@@ -18,6 +18,7 @@
 				<hb:HibachiPropertyDisplay object="#rc.attribute#" property="displayOnOrderDetailFlag" edit="#rc.edit#">
 			</cfif>
 			<hb:HibachiPropertyDisplay object="#rc.attribute#" property="attributeInputType" valueDefault="text" edit="#rc.edit and rc.attribute.isNew()#">
+			<hb:HibachiPropertyDisplay object="#rc.attribute#" property="attributeInputDisplayType" edit="#rc.edit#">
 			<hb:HibachiDisplayToggle selector="select[name='attributeInputType']" showValues="relatedObjectSelect,relatedObjectMultiselect" loadVisable="#(!isNull(rc.attribute.getAttributeInputType()) && listFindNoCase('relatedObjectSelect,relatedObjectMultiselect', rc.attribute.getAttributeInputType()))#">
 				<hb:HibachiPropertyDisplay object="#rc.attribute#" property="relatedObject" edit="#rc.edit#" fieldAttributes="#rc.attribute.getNewFlag() ? '':'disabled'#">
 			</hb:HibachiDisplayToggle>
@@ -37,6 +38,9 @@
  			<cfif listFindNoCase('checkboxGroup,multiselect,radioGroup,select',rc.attribute.getAttributeInputType() ) && (!isNull(rc.attribute.getAttributeOptionSource()) || rc.attribute.getAttributeOptionsCount() eq 0)>
  				<hb:HibachiPropertyDisplay object="#rc.attribute#" property="attributeOptionSource" edit="#rc.edit#">
  			</cfif>
+ 			
+ 			<hb:HibachiPropertyDisplay object="#rc.attribute#" property="publicPropertyFlag" edit="#rc.edit#">
+ 				
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
 </cfoutput>

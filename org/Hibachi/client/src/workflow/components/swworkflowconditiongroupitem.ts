@@ -1,35 +1,11 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 class SWWorkflowConditionGroupItem{
+    public template = require("./workflowconditiongroupitem.html");
+    public restrict = 'E';
+
 	public static Factory(){
-		var directive = (
-
-			workflowPartialsPath,
-			hibachiPathBuilder
-		)=> new SWWorkflowConditionGroupItem(
-
-			workflowPartialsPath,
-			hibachiPathBuilder
-		);
-		directive.$inject = [
-
-			'workflowPartialsPath',
-			'hibachiPathBuilder'
-		];
-		return directive;
-	}
-	constructor(
-
-		workflowPartialsPath,
-			hibachiPathBuilder
-	){
-		return {
-			restrict: 'E',
-
-			templateUrl:hibachiPathBuilder.buildPartialsPath(workflowPartialsPath)+"workflowconditiongroupitem.html",
-			link: function(scope:any, element,attrs){
-			}
-		};
+		return /** @ngInject */ ()=> new this();
 	}
 }
 export{

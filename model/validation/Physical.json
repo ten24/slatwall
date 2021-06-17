@@ -1,10 +1,10 @@
 {
-	"properties":{
-		"locations":							[{"contexts":"save","minCollection":1}],
-		"skus":									[{"contexts":"cycleCountBatchPhysicalCount","minCollection":1}],
-		"physicalName":							[{"contexts":"save,cycleCountBatchPhysicalCount","required":true}],
-		"physicalStatusTypeSystemCode":			[{"contexts":"delete,addPhysicalCount,commit,edit","inList":"pstOpen"}]
+	"properties": {
+		"locations": [{ "contexts": "save", "minCollection": 1 }],
+		"skus": [{ "contexts": "cycleCountBatchPhysicalCount", "minCollection": 1 }],
+		"physicalName": [{ "contexts": "save,cycleCountBatchPhysicalCount", "required": true }],
+		"physicalStatusTypeSystemCode": [
+			{ "contexts": "delete,addPhysicalCount,commit,edit", "inList": "pstOpen" }
+		]
 	}
 }
-
-

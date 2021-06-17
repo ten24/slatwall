@@ -58,9 +58,13 @@
             if (options.closeOnSelect === 'false') {
                 div.attr('close-on-select', 'false');
             }
+            
+            if (options.elementScope) {
+                div.attr('element-scope', 'elementScope');
+            }
 
             var triggerEl = options.triggerEl;
-            options.scope = options.scope || angular.element(triggerEl).scope();
+            options.scope = options.elementScope || angular.element(triggerEl).scope();
             datetimePickerEl = $compile(div)(options.scope)[0];
             datetimePickerEl.triggerEl = options.triggerEl;
 
@@ -208,11 +212,13 @@
                 element[0].querySelector('.adp-month').style.display = 'none';
                 element[0].querySelector('.adp-days').style.display = 'none';
             }
+            
+            var elementScope = scope.elementScope || scope.$parent.elementScope || ctrl.triggerEl.scope();
 
             scope.$applyAsync( function() {
                 ctrl.triggerEl = angular.element(element[0].triggerEl);
                 if (attrs.ngModel) { // need to parse date string
-                    var dateStr = ''+ctrl.triggerEl.scope().$eval(attrs.ngModel);
+                    var dateStr = ''+elementScope.$eval(attrs.ngModel);
                     if (dateStr) {
                         if (!dateStr.match(/[0-9]{2}:/)) {  // if no time is given, add 00:00:00 at the end
                             dateStr += " 00:00:00";
@@ -278,7 +284,10 @@
                 );
                 scope.selectedDay = scope.selectedDate.getDate();
                 if (attrs.ngModel) {
-                    var elScope = ctrl.triggerEl.scope(), dateValue;
+                    
+                    var elScope = scope.elementScope || scope.$parent.elementScope || ctrl.triggerEl.scope();
+                    var dateValue;
+                    
                     if (elScope.$eval(attrs.ngModel) && elScope.$eval(attrs.ngModel).constructor.name === 'Date') {
                         dateValue = new Date(dateFilter(scope.selectedDate, dateFormat));
                     } else {
@@ -304,7 +313,8 @@
                 minute: '=',
                 dateOnly: '=',
                 timeOnly: '=',
-                closeOnSelect: '='
+                closeOnSelect: '=',
+                elementScope: '='
             },
             link: linkFunc
         };
@@ -316,6 +326,9 @@
         return {
             // An ngModel is required to get the controller argument
             require: 'ngModel',
+            scope: {
+                elementScope: '='
+            },
             link: function(scope, element, attrs, ctrl) {
                 // Attach validation watcher
                 scope.$watch(attrs.ngModel, function(value) {
@@ -336,6 +349,7 @@
                         triggerEl: element[0],
                         dateFormat: attrs.dateFormat,
                         ngModel: attrs.ngModel,
+                        elementScope: scope.elementScope,
                         year: attrs.year,
                         month: attrs.month,
                         day: attrs.day,

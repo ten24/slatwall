@@ -3,10 +3,11 @@
 <cfparam name="rc.productID" default=""/>
 <cfparam name="rc.minDate" default="#CreateDate(Year(now()),1,1)#"/>
 <cfparam name="rc.maxDate" default="#CreateDate(Year(now()),Month(now()),Day(now()))#"/>
+<cfparam name="rc.reportName" default="Cancelled Subscriptions"/>
 <cfparam name="showProducts" default="true"/>
 <cfoutput>
     
-    <cfset slatAction = 'report.earnedRevenueReport'/>
+    <cfset slatAction = 'report.cancelledOrdersReport'/>
     <!---<cfset earningSubscriptionsCollectionList = $.slatwall.getService('HibachiService').getSubscriptionUsageCollectionList()/>
     <cfset earningSubscriptionsCollectionList.setReportFlag(1)/>
     <cfset earningSubscriptionsCollectionList.setPeriodInterval('Month')/>
@@ -81,7 +82,7 @@
         </thead>
         <tbody>
             <tr>
-                <td>New Subscriptions</td>
+                <td>Cancelled Subscriptions</td>
                 <cfset totalsubscriptionUsageIDCount=0/>
                 <cfloop array="#subscriptionUsageIDCount#" index="subscriptionUsageIDCountRecord">
                     <td>#subscriptionUsageIDCountRecord#</td>

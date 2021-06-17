@@ -1,56 +1,87 @@
 {
-	"conditions":{
-	    "nonIntegrationAuthenticatedAccount":{
-	        "nonIntegrationAuthenticationExistsFlag":{"eq":true}
-	    },
-		"isOrganizationAccount":{
-			"organizationFlag":{"eq":true}
+	"conditions": {
+		"nonIntegrationAuthenticatedAccount": {
+			"nonIntegrationAuthenticationExistsFlag": { "eq": true }
 		},
-		"isNotOrganizationAccount":{
-			"organizationFlag":{"neq":true}
+		"isOrganizationAccount": {
+			"organizationFlag": { "eq": true }
+		},
+		"isNotOrganizationAccount": {
+			"organizationFlag": { "neq": true }
+		},
+		"doesNotHasRemoteID": {
+			"remoteID": {"eq" : "NULL" }
 		}
 	},
-	"properties":{
-		"firstName":							[{"conditions":"isNotOrganizationAccount","contexts":"save","required":true}],
-		"lastName":								[{"conditions":"isNotOrganizationAccount","contexts":"save","required":true}],
-		"company":								[{"conditions":"isOrganizationAccount","contexts":"save","required":true}], 
-		"accountCode":	    [
+	"properties": {
+		"firstName": [{ "conditions": "isNotOrganizationAccount", "contexts": "save", "required": true, "regex": "^[a-zA-Z\s,.'-]+$"}],
+		"lastName": [{ "conditions": "isNotOrganizationAccount", "contexts": "save", "required": true, "regex": "^[a-zA-Z\s,.'-]+$"}],
+		"company": [{ "conditions": "isOrganizationAccount", "contexts": "save", "required": true }],
+		"accountCode": [
 			{
-				"conditions":"isOrganizationAccount",
-				"contexts":"save",
-				"unique":true,
-				"required":true
+				"conditions": "isOrganizationAccount",
+				"contexts": "save",
+				"unique": true,
+				"required": true
 			},
 			{
-				"conditions":"isNotOrganizationAccount",
-				"contexts":"save",
-				"uniqueOrNull":true
+				"conditions": "isNotOrganizationAccount",
+				"contexts": "save",
+				"uniqueOrNull": true
 			},
 			{
-				"contexts":"save",
-				"regex":"^[a-zA-Z0-9-_.|:~^]+$"
+				"contexts": "save",
+				"regex": "^[a-zA-Z0-9_-]+$",
+				"maxLength": 35,
+				"minLength": 3
+			},
+			{
+				"contexts": "save",
+				"method": "isRestrictedKeyword"
 			}
 		],
-		"superUserFlag":						[{"contexts":"generateAPIAccessKey","eq":false}],
-		"emailAddress":							[
+		"superUserFlag": [{ "contexts": "generateAPIAccessKey", "eq": false }],
+		"phoneNumber" : [{ "contexts" : "save", "regex" : "^[()+\s0-9a-zA-Z-]+$"}],
+		"emailAddress": [
 			{
-				"contexts":"save","dataType":"email"
+				"contexts": "save,updateAccount",
+				"conditions": "doesNotHasRemoteID",
+				"dataType": "email",
+				"method": "getPrimaryEmailAddressesNotInUseFlag"
 			},
 			{
-				"contexts":"createPassword","required":true
+				"contexts": "createPassword",
+				"conditions": "doesNotHasRemoteID",
+				"required": true
 			}
 		],
-		"orders":								[{"contexts":"delete","maxCollection":0}],
-		"productReviews":						[{"contexts":"delete","maxCollection":0}],
-		"cmsAccountID":							[{"contexts":"save","uniqueOrNull":true}],
-		"nonIntegrationAuthenticationExistsFlag":		[
-			{"contexts":"createPassword","eq":false},
-			{"contexts":"changePassword","eq":true}
+		"orders": [{ "contexts": "delete", "maxPersistedCollection": 0 }],
+		"productReviews": [{ "contexts": "delete", "maxPersistedCollection": 0 }],
+		"cmsAccountID": [{ "contexts": "save", "uniqueOrNull": true }],
+		"nonIntegrationAuthenticationExistsFlag": [
+			{ "contexts": "createPassword", "eq": false },
+			{ "contexts": "changePassword", "eq": true }
 		],
-		"accountEmailAddressesNotInUseFlag":	[{"contexts":"createPassword","eq":true}],
-		"primaryEmailAddress":					[{"contexts":"save","conditions":"nonIntegrationAuthenticatedAccount","method":"getPrimaryEmailAddressesNotInUseFlag"}],
-		"unenrolledAccountLoyaltyOptions":		[{"contexts":"addAccountLoyalty","minCollection":1}],
-		"ownerAccount":							[{"contexts":"delete","method":"canDeleteByOwner"}],
-		"childAccountRelationships":			[{"contexts":"delete","maxCollection":0}]
+		"accountEmailAddressesNotInUseFlag": [{ "contexts": "createPassword", "eq": true }],
+		"primaryEmailAddress": [
+			{
+				"contexts": "save",
+				"conditions": "nonIntegrationAuthenticatedAccount,doesNotHasRemoteID",
+				"method": "getPrimaryEmailAddressesNotInUseFlag"
+			}
+		],
+		"primaryPaymentMethod": [
+			{
+				"contexts": "updatePrimaryPaymentMethod",
+				"method": "isPrimaryMethodExpired"
+			}
+		],
+		"unenrolledAccountLoyaltyOptions": [{ "contexts": "addAccountLoyalty", "minPersistedCollection": 1 }],
+		"ownerAccount": [{ "contexts": "delete", "method": "canDeleteByOwner" }],
+		"childAccountRelationships": [{ "contexts": "delete", "maxPersistedCollection": 0 }],
+		"username": [
+			{ "contexts": "save", "method": "getUsernameNotInUseFlag" },
+			{ "contexts": "save", "conditions": "nonIntegrationAuthenticatedAccount" }
+		]
 	}
 }
