@@ -57,10 +57,24 @@ component output="false" accessors="true" extends="HibachiProcess" {
 				"value" : "ProductCode"
 			},
 			{
-				"name"  : "Product Name",
-				"value" : "ProductName"
+				"name"  : "Product URL Title",
+				"value" : "urlTitle"
+			},
+			{
+				"name"  : "SKU Code",
+				"value" : "skuCode"
 			}
 		];
 		
+	}
+	
+	public boolean function isValidPropertyName(){
+
+	    if( ! listFind("ProductCode,urlTitle,skuCode", this.getImageNameProductProperty() ) ){
+	        return false;
+	    }else{
+	        return true;
+	    }
+
 	}
 }
