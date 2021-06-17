@@ -1,8 +1,10 @@
 {
-  "name": "swreact",
+  "name": "stoneandberg",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@sentry/react": "^6.7.1",
+    "@sentry/tracing": "^6.7.1",
     "@slatwall/slatwall-sdk": "^1.0.5-alpha",
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.5",
