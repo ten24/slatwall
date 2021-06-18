@@ -24,6 +24,7 @@
 }
 
 
+
 // Carousel controls (prev/next buttons)
 
 .cz-carousel {
@@ -233,15 +234,29 @@
 .hero {
   background-position: top;
   background-size: cover;
+  height: 50vh;
+  @include media-breakpoint-down(sm) {
+    height: 100%;
+  }
   .main-banner {
     .h2 {
       color: $white;
     }
     .repeater {
-      margin: 3rem 3rem 1rem;
+      margin: 0rem 3rem 1rem;
+      transform: translateY(50%);
     }
   }
 }
+
+.slick-slide {
+    height: auto !important;
+     @include media-breakpoint-down(sm) {
+    height: 100%;
+  }
+}
+
+
 
 .featured-products {
   border-radius: 0 0 7px 7px;
@@ -325,7 +340,7 @@
   padding-left: 2px;
 }
 .slick-next {
-  right: -35px;
+  right: 0;
 }
 
 .slick-prev:before {
@@ -333,7 +348,7 @@
   padding-right: 2px;
 }
 .slick-prev {
-  left: -35px;
+  left: 0;
 }
 
 .slider-dark .slick-prev:before, 

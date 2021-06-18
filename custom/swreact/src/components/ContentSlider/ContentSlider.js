@@ -2,13 +2,18 @@ import Slider from 'react-slick'
 import { useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 
-const BannerSlide = ({ customBody, title, linkUrl, linkLabel, slideKey }) => {
+const { host } = useSelector(state => state.configuration.theme)
+const BannerSlide = ({ customBody, title, associatedImage, linkUrl, linkLabel, slideKey }) => {
   let history = useHistory()
 
   return (
-    <div index={slideKey} className="repeater">
-      <h2 className="h2">{title}</h2>
-      <p
+    
+    <div className="hero text-white text-center pb-4" style={{ backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6),rgba(0, 0, 0, 0.6)), url(${ host }/custom/assets/files/associatedimage/${associatedImage}`}}>
+     <div className="container">
+      <div style={{ height: 'fit-content' }} className="main-banner">
+       <div index={slideKey} className="repeater">
+        <h2 className="h2">{title}</h2>
+         <p
         onClick={event => {
           event.preventDefault()
           if (event.target.getAttribute('href')) {
@@ -16,13 +21,16 @@ const BannerSlide = ({ customBody, title, linkUrl, linkLabel, slideKey }) => {
           }
         }}
         dangerouslySetInnerHTML={{ __html: customBody }}
-      />
-      {linkUrl && linkUrl.length > 0 && (
+          />
+        {linkUrl && linkUrl.length > 0 && 
         <a href={linkUrl} className="btn btn-light btn-long">
           {linkLabel}
         </a>
-      )}
+        }
+      </div>
+     </div>
     </div>
+   </div>
   )
 }
 /*
@@ -34,7 +42,6 @@ only use how is image url is not FQDN
 
 const ContentSlider = () => {
   const contentStore = useSelector(state => state.content)
-  const { host } = useSelector(state => state.configuration.theme)
   let homeMainBanner = []
   Object.keys(contentStore).forEach(key => {
     if (key.includes('main-banner-slider/')) {
@@ -56,18 +63,13 @@ const ContentSlider = () => {
     ],
   }
   return (
-    <div className="hero" style={{ backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6),rgba(0, 0, 0, 0.6)), url(${host}/custom/assets/files/associatedimage/${contentStore['home/main-banner-slider'] && contentStore['home/main-banner-slider'].associatedImage}` }}>
-      <div className="container">
-        <div style={{ height: 'fit-content' }} className="main-banner text-white text-center mx-md-5 pb-4">
+
           <Slider className="slider-dark" {...settings}>
             {homeMainBanner.length > 0 &&
               homeMainBanner.map((slideData, index) => {
                 return <BannerSlide {...slideData} key={index} slideKey={index} />
               })}
           </Slider>
-        </div>
-      </div>
-    </div>
   )
 }
 
