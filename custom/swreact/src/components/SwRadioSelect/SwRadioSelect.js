@@ -34,4 +34,4 @@ const SwRadioSelect = ({ label, onChange, options = [], selectedValue }) => {
   )
 }
 
-export default SwRadioSelect
+export { SwRadioSelect }

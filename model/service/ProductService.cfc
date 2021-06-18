@@ -1178,7 +1178,7 @@ component extends="HibachiService" accessors="true" {
 		}else if(arguments.processObject.getBaseProductType() == 'gift-card'){
 			arguments.product = createGiftCardProduct(arguments.product,arguments.processObject);
 			
-		// GENERATE - FEE fi fo fum SKUS smell the blood of an englishman
+		// GENERATE - FEE
 		} else if (arguments.processObject.getGenerateSkusFlag() && arguments.processObject.getBaseProductType() == "miscFee") {
 			arguments.product = createSingleSku(arguments.product, arguments.processObject);
 		}

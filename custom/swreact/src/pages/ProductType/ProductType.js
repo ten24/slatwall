@@ -1,6 +1,5 @@
 import { Redirect, useHistory, useParams } from 'react-router-dom'
-import { Layout, PageHeader, ProductTypeList } from '../../components'
-import ListingPage from '../../components/Listing/Listing'
+import { Layout, PageHeader, ProductTypeList, Listing } from '../../components'
 import { Helmet } from 'react-helmet'
 import { useGetEntity } from '../../hooks/useAPI'
 import { useSelector } from 'react-redux'
@@ -69,11 +68,11 @@ const ProductType = () => {
         />
       )}
       {productTypeData?.childProductTypes?.length === 0 && (
-        <ListingPage preFilter={{ productType_slug: id }} hide={['productType']}>
+        <Listing preFilter={{ productType_slug: id }} hide={['productType']}>
           <div className="container d-lg-flex justify-content-between py-2 py-lg-3">
             <h5 className="h4 text-dark mb-0 font-accent">{productTypeRequest.data.title}</h5>
           </div>
-        </ListingPage>
+        </Listing>
       )}
     </Layout>
   )

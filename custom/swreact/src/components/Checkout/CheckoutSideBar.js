@@ -1,10 +1,9 @@
-import { CartPromoBox, OrderNotes, OrderSummary, PromotionalMessaging } from '../../components'
+import { CartPromoBox, OrderNotes, OrderSummary, PromotionalMessaging, REVIEW, getCurrentStep } from '../../components'
 import { useDispatch, useSelector } from 'react-redux'
 import { useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
-import { REVIEW, getCurrentStep } from './steps'
-import { placeOrder } from '../../actions/cartActions'
+import { placeOrder } from '../../actions/'
 // https://www.digitalocean.com/community/tutorials/how-to-create-multistep-forms-with-react-and-semantic-ui
 // https://github.com/srdjan/react-multistep/blob/master/react-multistep.js
 // https://www.geeksforgeeks.org/how-to-create-multi-step-progress-bar-using-bootstrap/

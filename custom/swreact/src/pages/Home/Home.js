@@ -20,7 +20,6 @@ const Home = () => {
           <Link to={`/specials`}>{t('frontend.home.featured.cta')}</Link>
         </p>
       </ProductSlider>
-
       <ContentColumns page={'home'} />
       <BrandSlider />
     </Layout>

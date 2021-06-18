@@ -4,7 +4,7 @@ export const getAllOrderFulfillments = state => state.cart.orderFulfillments
 export const getAllAccountAddresses = state => state.userReducer.accountAddresses
 export const getAllAccountPaymentMethods = state => state.userReducer.accountPaymentMethods
 export const getAllPickupLocations = state => state.cart.pickupLocations
-export const getAllOrderPayments = state => state.cart.orderPayments
+export const getAllOrderPayments = state => state.cart.orderPayments?.filter(({ creditCardType }) => creditCardType !== 'Invalid')
 export const getAllEligiblePaymentMethodDetails = state => state.cart.eligiblePaymentMethodDetails
 export const getAllOrderItems = state => state.cart.orderItems
 export const isFetching = state => state.cart.isFetching

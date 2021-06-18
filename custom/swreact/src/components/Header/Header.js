@@ -1,8 +1,7 @@
-import React, { useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { useHistory } from 'react-router-dom'
-import CartMenuItem from './CartMenuItem'
-import AccountBubble from './AccountBubble'
+import { AccountBubble, CartMenuItem } from '../'
 import { useTranslation } from 'react-i18next'
 import queryString from 'query-string'
 import { useSelector } from 'react-redux'
@@ -91,10 +90,14 @@ function Header({ logo, mobileLogo }) {
   const mobileTextInput = useRef(null)
   const toggleMenuButton = useRef(null)
 
-  history.listen(_ => {
-    // listen to path , and toggleNav on path change
-    toggleNav()
-  })
+  useEffect(() => {
+    const unload = history.listen(location => {
+      toggleNav()
+    })
+    return () => {
+      unload()
+    }
+  }, [history])
 
   /**
    * Toggle menu , while the sub-menu is clicked
@@ -253,4 +256,4 @@ function Header({ logo, mobileLogo }) {
   )
 }
 
-export default Header
+export { Header }

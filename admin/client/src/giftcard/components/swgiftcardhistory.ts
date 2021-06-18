@@ -62,13 +62,13 @@ class SWGiftCardHistoryController{
                         var tempCurrentBalance = currentBalance - totalDebit; 
                     
                         transaction.balance = tempCurrentBalance;
-                        
+
                         if(i == initialCreditIndex){            
                             
                             var activeCard = {
                                 activated: true, 
                                 debit:false,
-                                activeAt: transaction.orderPayment_order_orderOpenDateTime,
+                                activeAt: new Date(transaction.orderPayment_order_orderOpenDateTime),
                                 balance: initialBalance
                             }
                             
@@ -104,6 +104,7 @@ class SWGiftCardHistoryController{
     
         orderConfig.getEntity().then((response)=>{
             this.order = response.records[0];
+			this.order.orderOpenDateTime = new Date(this.order.orderOpenDateTime);
         }); 
     }
 }

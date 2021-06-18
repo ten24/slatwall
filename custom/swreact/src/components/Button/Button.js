@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 /**
  * Primary UI component for user interaction
  */
-export const Button = ({ disabled, classList = 'btn btn-primary btn-block', isLoading = false, children, label, onClick }) => {
+const Button = ({ disabled, classList = 'btn btn-primary btn-block', isLoading = false, children, label, onClick }) => {
   const { t } = useTranslation()
   return (
     <button type="button" className={classList} onClick={onClick}>
@@ -18,3 +18,4 @@ export const Button = ({ disabled, classList = 'btn btn-primary btn-block', isLo
     </button>
   )
 }
+export { Button }

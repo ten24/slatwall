@@ -25,6 +25,12 @@ const BannerSlide = ({ customBody, title, linkUrl, linkLabel, slideKey }) => {
     </div>
   )
 }
+/*
+TODO: we shoud match contentful
+
+only use how is image url is not FQDN
+
+*/
 
 const ContentSlider = () => {
   const contentStore = useSelector(state => state.content)

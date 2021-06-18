@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux'
-import { addShippingMethod } from '../../../actions/cartActions'
-import { SwRadioSelect } from '../../../components'
-import { fulfillmentSelector, shippingMethodSelector } from '../../../selectors/orderSelectors'
+import { addShippingMethod } from '../../../actions/'
+import { SwRadioSelect } from '../../'
+import { fulfillmentSelector, shippingMethodSelector } from '../../../selectors/'
 import { useTranslation } from 'react-i18next'
 
 const ShippingMethodPicker = () => {

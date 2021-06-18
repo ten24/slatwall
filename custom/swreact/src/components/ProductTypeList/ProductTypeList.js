@@ -1,4 +1,4 @@
-import { SWImage } from '../../components'
+import { SWImage } from '../'
 
 const ProductTypeList = ({ data, onSelect }) => {
   return (

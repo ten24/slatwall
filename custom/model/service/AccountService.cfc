@@ -79,4 +79,19 @@ component extends="Slatwall.model.service.AccountService" {
 		};
 	}
 	
+	
+    public any function processAccount_importErpOneAccountChanges(required any account, struct data={}) {
+
+        if( isNull(arguments.data.dateTimeSince) ){
+            arguments.data.dateTimeSince = DateTimeFormat( 
+	            DateAdd('h', -2, now() ), // since 2 hours ago  ---  https://cfdocs.org/dateadd
+	            'medium' // mmm d, yyyy h:nn:ss tt
+	        ); 
+        }
+        
+	    this.getService('erpOneService').importErpOneAccountChanges( arguments.data.dateTimeSince );
+	    
+		return arguments.account;
+	}
+	
 }

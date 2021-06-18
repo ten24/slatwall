@@ -149,6 +149,27 @@ export const getPickupLocations = () => {
   }
 }
 
+export const clearOrderFulfillment = orderFulfillmentID => {
+  return async dispatch => {
+    dispatch(requestCart())
+
+    const response = await axios({
+      method: 'POST',
+      withCredentials: true,
+      url: `${sdkURL}api/scope/clearOrderFulfillment`,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      data: { orderFulfillmentID, returnJSONObjects: 'cart' },
+    })
+    if (response.status === 200 && response.data) {
+      dispatch(receiveCart(response.data.cart))
+    } else {
+      dispatch(receiveCart())
+    }
+  }
+}
+
 export const addPickupLocation = params => {
   return async dispatch => {
     dispatch(requestCart())
@@ -395,6 +416,9 @@ export const addPayment = (params = {}) => {
       dispatch(receiveUser(req.success().account))
       console.log('req.success().errors', req.success().errors)
       if (req.success().errors && Object.keys(req.success().errors).length) toast.error(getErrorMessage(req.success().errors))
+    } else {
+      dispatch(receiveCart({}))
+      toast.error('Network Error')
     }
   }
 }

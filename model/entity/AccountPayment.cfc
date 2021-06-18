@@ -63,6 +63,7 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 	property name="giftCardNumberEncrypted" ormType="string";
 	property name="nameOnCreditCard" ormType="string";
 	property name="providerToken" ormType="string";
+	property name="activeFlag" ormType="boolean";
 	
 	// Related Object Properties (many-to-one)
 	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID" hb_optionsNullRBKey="define.select";

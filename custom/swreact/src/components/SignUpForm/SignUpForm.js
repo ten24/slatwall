@@ -72,4 +72,4 @@ const SignUpForm = ({ url }) => {
     />
   )
 }
-export default SignUpForm
+export { SignUpForm }

@@ -1,6 +1,4 @@
-import { Layout, PageHeader, ProductTypeList } from '../../components'
-import BrandBanner from './BrandBanner'
-import ListingPage from '../../components/Listing/Listing'
+import { Layout, PageHeader, ProductTypeList, Listing, BrandBanner } from '../../components'
 import { Redirect, useHistory, useLocation } from 'react-router'
 import { useGetEntity } from '../../hooks/useAPI'
 import { useSelector } from 'react-redux'
@@ -79,7 +77,7 @@ const Brand = props => {
           }}
         />
       )}
-      {productTypeData?.childProductTypes?.length === 0 && <ListingPage preFilter={{ brand: brandResponse.data[0].brandName, productType_slug: productTypeData.urlTitle }} hide={['productType', 'brands']}></ListingPage>}
+      {productTypeData?.childProductTypes?.length === 0 && <Listing preFilter={{ brand: brandResponse.data[0].brandName, productType_slug: productTypeData.urlTitle }} hide={['productType', 'brands']} />}
     </Layout>
   )
 }

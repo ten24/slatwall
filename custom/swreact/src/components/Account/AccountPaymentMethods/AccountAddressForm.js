@@ -1,4 +1,4 @@
-import SwSelect from '../../SwSelect/SwSelect'
+import { SwSelect } from '../../'
 import { useTranslation } from 'react-i18next'
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -24,7 +24,7 @@ const AccountAddressForm = ({ formik }) => {
       <div className="col-12">
         <h5 className="mt-4 mb-2">Billing Address</h5>
       </div>
-    
+
       <div className="col-md-6">
         <div className="form-group">
           <label htmlFor="billingAddress.countryCode">{t('frontend.account.countryCode')}</label>
@@ -110,4 +110,4 @@ const AccountAddressForm = ({ formik }) => {
   )
 }
 
-export default AccountAddressForm
+export { AccountAddressForm }

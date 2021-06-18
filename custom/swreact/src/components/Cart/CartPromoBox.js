@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { applyPromoCode, removePromoCode } from '../../actions/cartActions'
+import { applyPromoCode, removePromoCode } from '../../actions/'
 import { useState } from 'react'
 import { disableInteractionSelector } from '../../selectors'
 
@@ -64,4 +64,4 @@ const CartPromoBox = () => {
     </div>
   )
 }
-export default CartPromoBox
+export { CartPromoBox }

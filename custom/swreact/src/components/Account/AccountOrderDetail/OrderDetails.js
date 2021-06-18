@@ -1,10 +1,8 @@
-import useFormatCurrency from '../../../hooks/useFormatCurrency'
-import { useFormatDateTime } from '../../../hooks/useFormatDate'
+import { useFormatDateTime, useFormatCurrency } from '../../../hooks/'
 import { useSelector } from 'react-redux'
-import { ShippingAddressDetails, BillingAddressDetails, TermPaymentDetails, GiftCardDetails, CCDetails, PickupLocationDetails } from '../../index'
-import { orderPayment } from '../../../selectors/orderSelectors'
+import { ShippingAddressDetails, BillingAddressDetails, TermPaymentDetails, GiftCardDetails, CCDetails, PickupLocationDetails } from '../../'
+import { orderPayment } from '../../../selectors/'
 import { useTranslation } from 'react-i18next'
-
 
 const OrderDetails = ({ orderInfo, orderFulfillments, orderPayments }) => {
   const { orderOpenDateTime } = orderInfo
@@ -66,4 +64,4 @@ const OrderDetails = ({ orderInfo, orderFulfillments, orderPayments }) => {
   )
 }
 
-export default OrderDetails
+export { OrderDetails }

@@ -167,7 +167,7 @@ class SWReturnOrderItemsController{
         }else{
             this.orderItems = this.refundOrderItems.map(item=>{
                 item.calculatedExtendedPriceAfterDiscount = this.orderTotal;
-                item.calculatedExtendedUnitPriceAfterDiscount = this.orderTotal;
+                item.calculatedExtendedUnitPriceAfterDiscount = null;
                 return new ReturnOrderItem( item, orderDiscountRatio, this.orderType)
             });
         }

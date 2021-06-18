@@ -84,7 +84,7 @@ class SWChartWidgetController {
                 let metrics = []
 
                 data["records"].forEach(element => {
-                    var value = this.$filter('swdatereporting')(element[this.periodIntervalKey], this.period);
+                    var value = this.$filter('swdatereporting')(element[this.periodIntervalKey], this.period, false);
 
                     this.dates.push(value);
                 });

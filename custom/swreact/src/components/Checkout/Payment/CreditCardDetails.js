@@ -1,12 +1,11 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { useFormik } from 'formik'
-import { SwSelect } from '../..'
+import { SwSelect, Button, PaymentAddressSelector } from '../..'
 import { useTranslation } from 'react-i18next'
-import { addPayment } from '../../../actions/cartActions'
+import { addPayment } from '../../../actions/'
 import { axios, sdkURL, SlatwalApiService } from '../../../services'
 import { toast } from 'react-toastify'
-import { PaymentAddressSelector } from './PaymentAddressSelector'
-import { Button } from '../../Button/Button'
+import { fulfillmentSelector } from '../../../selectors'
 
 export const CREDIT_CARD = '444df303dedc6dab69dd7ebcc9b8036a'
 export const GIFT_CARD = '50d8cd61009931554764385482347f3a'
@@ -36,6 +35,7 @@ const CreditCardDetails = ({ onSubmit }) => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const billingAccountAddress = useSelector(state => state.cart.billingAccountAddress)
+  const { fulfillmentMethod } = useSelector(fulfillmentSelector)
 
   const formik = useFormik({
     enableReinitialize: false,
@@ -125,19 +125,22 @@ const CreditCardDetails = ({ onSubmit }) => {
             <div className="col-sm-12">
               <div className="row">
                 <div className="col-sm-6">
-                  <div className="custom-control custom-checkbox">
-                    <input className="custom-control-input" type="checkbox" id="saveShippingAsBilling" checked={formik.values.saveShippingAsBilling} onChange={formik.handleChange} />
-                    <label className="custom-control-label" htmlFor="saveShippingAsBilling">
-                      {t('frontend.checkout.shipping_address_clone')}
-                    </label>
-                  </div>
+                  {fulfillmentMethod.fulfillmentMethodType === 'shipping' && (
+                    <div className="custom-control custom-checkbox">
+                      <input className="custom-control-input" type="checkbox" id="saveShippingAsBilling" checked={formik.values.saveShippingAsBilling} onChange={formik.handleChange} />
+                      <label className="custom-control-label" htmlFor="saveShippingAsBilling">
+                        {t('frontend.checkout.shipping_address_clone')}
+                      </label>
+                    </div>
+                  )}
                   {/* do we have a shipping address ?*/}
+
                   {/* <div className="custom-control custom-checkbox">
-                    <input className="custom-control-input" type="checkbox" id="savePaymentMethodToAccount" checked={formik.values.savePaymentMethodToAccount} onChange={formik.handleChange} />
-                    <label className="custom-control-label" htmlFor="savePaymentMethodToAccount">
-                    {t('frontend.checkout.payment.save_to_account')}
-                    </label>
-                  </div> */}
+                      <input className="custom-control-input" type="checkbox" id="savePaymentMethodToAccount" checked={formik.values.savePaymentMethodToAccount} onChange={formik.handleChange} />
+                      <label className="custom-control-label" htmlFor="savePaymentMethodToAccount">
+                        {t('frontend.checkout.payment.save_to_account')}
+                      </label>
+                    </div> */}
                 </div>
                 <div className="col-sm-6">
                   {formik.values.saveShippingAsBilling && validCreditCard && (
@@ -151,7 +154,6 @@ const CreditCardDetails = ({ onSubmit }) => {
                           // Payment with Account  CC
                         } else {
                           // Payment with Single use CC and address cloned from billing
-                          //  TODO: broken
                           dispatch(
                             addPayment({
                               newOrderPayment: {

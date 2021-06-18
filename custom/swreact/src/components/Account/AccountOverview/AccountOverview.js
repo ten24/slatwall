@@ -1,10 +1,7 @@
-import { AccountLayout } from '../AccountLayout/AccountLayout'
-import AccountContent from '../AccountContent/AccountContent'
-import { useGetAllOrders } from '../../../hooks/useAPI'
+import { AccountLayout, AccountContent } from '../../'
 import { useEffect } from 'react'
-import useFormatCurrency from '../../../hooks/useFormatCurrency'
 import { Link } from 'react-router-dom'
-import { useFormatDateTime } from '../../../hooks/useFormatDate'
+import { useFormatDateTime, useFormatCurrency, useGetAllOrders } from '../../../hooks/'
 
 const AccountRecentOrders = () => {
   let [orders, setRequest] = useGetAllOrders()
@@ -63,4 +60,4 @@ const AccountOverview = ({ customBody, crumbs, title, contentTitle }) => {
   )
 }
 
-export default AccountOverview
+export { AccountOverview }

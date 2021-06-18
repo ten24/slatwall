@@ -25,8 +25,7 @@
         "isVerifiedShippingAddress": {
             "propertyIdentifier": "verifiedShippingAddressFlag",
             "validations": {
-                "dataType": "boolean", 
-                "default" : false
+                "dataType": "boolean"
             }
         },
         "handlingFee": {
@@ -55,6 +54,12 @@
             "__hint"             : "this defaultValue for FulfillmentMethod is `Shipping`.",
             "lookupKey"          : "remoteID",
             "propertyIdentifier" : "fulfillmentMethod"
+        },
+        {
+            "key"                : "remoteOrderID",
+            "entityName"         : "Order",
+            "lookupKey"          : "remoteID",
+            "propertyIdentifier" : "order"
         },
         {
             "key"                : "pickupLocationRemoteID",
