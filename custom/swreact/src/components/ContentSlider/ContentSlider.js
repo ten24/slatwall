@@ -2,8 +2,9 @@ import Slider from 'react-slick'
 import { useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 
-const { host } = useSelector(state => state.configuration.theme)
+
 const BannerSlide = ({ customBody, title, associatedImage, linkUrl, linkLabel, slideKey }) => {
+  const { host } = useSelector(state => state.configuration.theme)
   let history = useHistory()
 
   return (
