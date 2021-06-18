@@ -1789,9 +1789,17 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 	
 	function updateMultiselectTableUI( multiselectField ) {
 		var inputValue = jQuery('input[name=' + multiselectField + ']').val().trim();
-	
+	    var finalValues = []
+
+        inputValue.split(",").forEach(value=>{
+        	if(!finalValues.includes(value) && value.length > 0){
+        		finalValues.push(value)
+        	}
+        })    
+
+  
 		if(inputValue !== undefined && inputValue.length > 0) {
-			jQuery.each(inputValue.split(','), function(vi, vv) {
+			jQuery.each(finalValues, function(vi, vv) {
 				jQuery(jQuery('table[data-multiselectfield="' + multiselectField  + '"]').find('tr[id=' + vv + '] .hibachi-ui-checkbox').addClass('hibachi-ui-checkbox-checked')).removeClass('hibachi-ui-checkbox');
 			});
 		}
@@ -1802,10 +1810,15 @@ if(typeof jQuery !== "undefined" && typeof document !== "undefined"){
 		var field = jQuery( 'input[name="' + jQuery(toggleLink).closest('table').data('multiselectfield') + '"]' );
 		var currentValues = jQuery(field).val().split(',');
 	
-		var blankIndex = currentValues.indexOf('');
-		if(blankIndex > -1) {
-			currentValues.splice(blankIndex, 1);
-		}
+		var finalValues = []
+
+        currentValues.forEach(value=>{
+        	if(!finalValues.includes(value) && value.length > 0){
+        		finalValues.push(value)
+        	}
+        })    
+        currentValues = finalValues;
+        
 	
 		if( jQuery(toggleLink).children('.hibachi-ui-checkbox-checked').length ) {
 	
