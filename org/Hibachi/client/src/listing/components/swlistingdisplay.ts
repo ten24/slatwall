@@ -77,7 +77,7 @@ class SWListingDisplayController{
     public orderByStates = {};
     public orderByIndices = {};
     public paginator:any;
-    public pageRecordsWithManualSortOrder = '{}';
+    public pageRecordsWithManualSortOrder = '{}'; // backend is expecting object string , setting it to string for initial value.
     public parentPropertyName:string;
     public processObjectProperties;
     public hasRecordAddAction:boolean=false;
