@@ -742,6 +742,26 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					for(var childOrderItemData in arguments.processObject.getChildOrderItems()) {
 						var childOrderItem = this.newOrderItem();
 						populateChildOrderItems(newOrderItem,childOrderItem,childOrderItemData,arguments.order,orderFulfillment);
+						childOrderItem.validate(context='save');
+
+						if(childOrderItem.hasErrors()) {
+							//String replace the max order qty to give user feedback (with 0 as the minimum)
+							var messageReplaceKeys = {
+								quantityAvailable =  childOrderItem.getMaximumOrderQuantity(),
+								maxQuantity = childOrderItem.getSku().setting('skuOrderMaximumQuantity')
+							};
+							
+							for (var error in childOrderItem.getErrors()){
+								for (var errorMessage in childOrderItem.getErrors()[error]){
+									var message = getHibachiUtilityService().replaceStringTemplate( errorMessage , messageReplaceKeys);
+									message = childOrderItem.stringReplace(message);
+									
+									childOrderItem.addError('addOrderItem', message, true);
+									arguments.order.addError('addOrderItem', message, true);
+								}
+							}
+							return arguments.order;
+						}
 					}
 				}
 
@@ -1914,25 +1934,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	public any function processOrderTemplate_createWishList(required any orderTemplate, required any processObject, required struct data={}) {
-
 		
-		var account = getHibachiScope().getAccount();
-		
-		if(arguments.processObject.getNewAccountFlag()) {
-			account = getAccountService().processAccount(getAccountService().newAccount(), arguments.data, "create");
-		} 
-		
-		if(!isNull(arguments.processObject.getAccountID())){
-			account = getAccountService().getAccount(arguments.processObject.getAccountID());
-		}
-
-		if(account.hasErrors()) {
-			arguments.orderTemplate.addError('create', account.getErrors());
-			return arguments.orderTemplate;
-			
-		}
-		
-		arguments.orderTemplate.setAccount(account);
+		arguments.orderTemplate.setAccount(arguments.processObject.getAccount());
 		
 		arguments.orderTemplate.setCurrencyCode(arguments.processObject.getCurrencyCode());
 		
@@ -1942,14 +1945,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		arguments.orderTemplate.setOrderTemplateType(getTypeService().getType(arguments.processObject.getOrderTemplateTypeID()));
 		
-		var orderTemplateName = arguments.processObject.getOrderTemplateName();
-		
-		if(!isNull(orderTemplateName)){
-			arguments.orderTemplate.setOrderTemplateName(orderTemplateName);
-		}
-		
-		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate, arguments.data); 
-		
+		arguments.orderTemplate.setOrderTemplateName(arguments.processObject.getOrderTemplateName());
+
+		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate); 
+
 		return arguments.orderTemplate;
 	}
 
@@ -2547,12 +2546,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		var account = arguments.orderTemplate.getAccount(); 
 
-		if(!isNull(processObject.getNewAccountAddress())){
+		if(!isNull(arguments.processObject.getNewAccountAddress())){
 			var accountAddress = getAccountService().newAccountAddress();
-			accountAddress.populate(processObject.getNewAccountAddress());
+			accountAddress.populate(arguments.processObject.getNewAccountAddress());
 			
 			var address = getAddressService().newAddress();
-			address.populate(processObject.getNewAccountAddress().address);
+			address.populate(arguments.processObject.getNewAccountAddress().address);
 		
 			accountAddress.setAddress(address); 
 			accountAddress.setAccount(account); 
@@ -2561,19 +2560,24 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 
 			arguments.orderTemplate.setBillingAccountAddress(accountAddress);
-		} else if (!isNull(processObject.getBillingAccountAddress())) {  
-			arguments.orderTemplate.setBillingAccountAddress(getAccountService().getAccountAddress(processObject.getBillingAccountAddress().value));	
+		} else if (!isNull(arguments.processObject.getBillingAccountAddress())) {  
+			arguments.orderTemplate.setBillingAccountAddress(getAccountService().getAccountAddress(arguments.processObject.getBillingAccountAddress().value));	
 		} 	
 
-		if(!isNull(processObject.getNewAccountPaymentMethod())){
+		if(!isNull(arguments.processObject.getNewAccountPaymentMethod())){
 			var accountPaymentMethod = getAccountService().newAccountPaymentMethod();
-			accountPaymentMethod.populate(processObject.getNewAccountPaymentMethod());
+			accountPaymentMethod.populate(arguments.processObject.getNewAccountPaymentMethod());
 
 			accountPaymentMethod.setAccount(account);
-			accountPaymentMethod.setBillingAccountAddress(orderTemplate.getBillingAccountAddress());
+			accountPaymentMethod.setBillingAccountAddress(arguments.orderTemplate.getBillingAccountAddress());
 
-			//set payment method as credit card
-			accountPaymentMethod.setPaymentMethod(getPaymentService().getPaymentMethod(arguments.orderTemplate.getSite().setting('siteDefaultAccountPaymentMethod'))); 
+			//set payment method as site's default payment method if it exists
+			if(!isNull(arguments.orderTemplate.getSite())){
+				accountPaymentMethod.setPaymentMethod(getPaymentService().getPaymentMethod(arguments.orderTemplate.getSite().setting('siteDefaultAccountPaymentMethod'))); 
+			} else {
+				// set global site default payment method
+				accountPaymentMethod.setPaymentMethod(getPaymentService().getPaymentMethod(getService("settingService").getSettingValue("siteDefaultAccountPaymentMethod")))
+			}
 			
 			accountPaymentMethod = getAccountService().saveAccountPaymentMethod(accountPaymentMethod);
 			
@@ -2586,7 +2590,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 
 		} else if (!isNull(processObject.getAccountPaymentMethod())) { 
-			arguments.orderTemplate.setAccountPaymentMethod(getAccountService().getAccountPaymentMethod(processObject.getAccountPaymentMethod().value));	
+			arguments.orderTemplate.setAccountPaymentMethod(getAccountService().getAccountPaymentMethod(arguments.processObject.getAccountPaymentMethod().value));	
 		} 
 		
 		arguments.orderTemplate = this.saveOrderTemplate(arguments.orderTemplate); 

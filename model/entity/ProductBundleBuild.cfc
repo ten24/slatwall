@@ -76,6 +76,8 @@ component entityname="SlatwallProductBundleBuild" table="SwProductBundleBuild" p
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Non-Persistent Properties
+	property name="maxQuantity" persistent="false";
+	property name="minQuantity" persistent="false";
 	
 	// Deprecated Properties
 
@@ -85,6 +87,22 @@ component entityname="SlatwallProductBundleBuild" table="SwProductBundleBuild" p
 	// ====================  END: Logical Methods ==========================
 	
 	// ============ START: Non-Persistent Property Methods =================
+
+	public numeric function getMaxQuantity(){
+		if(!structKeyExists(variables, "maxQuantity") && this.hasProductBundleBuildItem()){
+			variables.maxQuantity = this.getProductBundleBuildItems()[1].getProductBundleGroup().getMaximumQuantity();
+		}
+
+		return variables.maxQuantity;
+	}
+	
+	public numeric function getMinQuantity(){
+		if(!structKeyExists(variables, "minQuantity") && this.hasProductBundleBuildItem()){
+			variables.minQuantity = this.getProductBundleBuildItems()[1].getProductBundleGroup().getMinimumQuantity();
+		}
+
+		return variables.minQuantity;
+	}
 	
 	// ============  END:  Non-Persistent Property Methods =================
 		
@@ -93,6 +111,42 @@ component entityname="SlatwallProductBundleBuild" table="SwProductBundleBuild" p
 	// =============  END:  Bidirectional Helper Methods ===================
 
 	// =============== START: Custom Validation Methods ====================
+
+	public boolean function hasQuantityWithinMaxOrderQuantity(){
+		if(this.hasProductBundleBuildItem()){
+			var maxQuantity = this.getMaxQuantity();
+			var totalQuantity = 0;
+
+			var items = this.getProductBundleBuildItems();
+
+			for (var item in items) {
+				var quantity = item.getQuantity();
+				totalQuantity += quantity;
+			}
+
+			return totalQuantity <= maxQuantity;
+		}
+
+		return true;
+    }
+    
+    public boolean function hasQuantityWithinMinOrderQuantity() {
+    	if(this.hasProductBundleBuildItem()){
+			var minQuantity = this.getMinQuantity();
+			var totalQuantity = 0;
+
+			var items = this.getProductBundleBuildItems();
+
+			for (var item in items) {
+				var quantity = item.getQuantity();
+				totalQuantity += quantity;
+			}
+
+			return totalQuantity >= minQuantity;
+		}
+
+		return true;
+    }
 	
 	// ===============  END: Custom Validation Methods =====================
 	

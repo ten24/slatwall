@@ -56,16 +56,18 @@ Notes:
 
 <cfoutput>
 <hb:HibachiEntityProcessForm entity="#rc.orderTemplate#" edit="#rc.edit#" sRedirectAction="admin:entity.detailwishlist">
-	<hb:HibachiEntityActionBar type="preprocess" object="#rc.orderTemplate#">
+	<hb:HibachiEntityActionBar type="preprocess" backAction="admin:entity.listwishlist" object="#rc.orderTemplate#">
 	</hb:HibachiEntityActionBar>
-
+	
 	<hb:HibachiPropertyRow>
 		<hb:HibachiPropertyList>
 		    <cfif isNull(rc.accountID)>
     			<swa:SlatwallAccountTypeahead /> 
     			<hr>
     		<cfelse>
+    		    <swa:SlatwallAccountTypeahead /> 
     		    <input type="hidden" name="accountID" value="#rc.accountID#" />	
+    		    <hr>
 			</cfif>
 			<!--- Always use schedule order template type for wishlist ---> 
 			<input type="hidden" name="orderTemplateTypeID" value="2c9280846b712d47016b75464e800014" />	
