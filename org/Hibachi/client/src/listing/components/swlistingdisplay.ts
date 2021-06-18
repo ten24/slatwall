@@ -77,7 +77,7 @@ class SWListingDisplayController{
     public orderByStates = {};
     public orderByIndices = {};
     public paginator:any;
-    public pageRecordsWithManualSortOrder = {};
+    public pageRecordsWithManualSortOrder = '{}';
     public parentPropertyName:string;
     public processObjectProperties;
     public hasRecordAddAction:boolean=false;
