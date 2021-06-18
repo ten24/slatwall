@@ -16,8 +16,7 @@
 			</b> 
 				<!--b. Default view-->
 				<span ng-if="swPaginationBar.paginator.limitCountTotal > 0"> 
-					<span ng-if="swPaginationBar.paginator.pageEnd < swPaginationBar.paginator.selectedPageShowOption.display" ng-bind="swPaginationBar.paginator.pageStart + swPaginationBar.paginator.recordsCount - 1"></span> 
-					<span ng-if="swPaginationBar.paginator.pageEnd >= swPaginationBar.paginator.selectedPageShowOption.display" ng-bind="swPaginationBar.paginator.pageEnd"></span> 
+					<span ng-bind="swPaginationBar.paginator.selectedPageShowOption.display"></span> 
 				of
 					<!-- Display only 10 records by default and single left/right paging. -->
 					<!-- For ex: Show exact number (ex: Showing 1 to 3 of 3 entries) if less than grid view count rows -->

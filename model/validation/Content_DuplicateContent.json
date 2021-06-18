@@ -3,7 +3,7 @@
 		"urlTitle": [
 			{
 				"contexts": "duplicateContent",
-				"required": true
+				"required": false
 			},
 			{
 				"contexts": "duplicateContent",
