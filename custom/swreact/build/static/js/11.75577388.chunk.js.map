@@ -1,1 +1,0 @@
-{"version":3,"sources":["pages/Address/Address.js"],"names":["Address"],"mappings":"qGAAA,0BAUeA,UARC,WACd,OACE,cAAC,IAAD,UACE","file":"static/js/11.75577388.chunk.js","sourcesContent":["import { Layout } from '../../components'\n\nconst Address = () => {\n  return (\n    <Layout>\n      <h1>Address Page</h1>\n    </Layout>\n  )\n}\n\nexport default Address\n"],"sourceRoot":""}
