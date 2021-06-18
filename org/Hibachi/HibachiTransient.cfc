@@ -402,11 +402,14 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 			throw("The Many-To-Many relationship for '#currentPropertyName#' could not be populated because it wasn't setup as an empty array on init.");
 		}
 
+		
+		var removeEntityRelationshipList = [];
 		// Loop over the existing related entities and check if the primaryID exists in the list of data that was passed in.
 		for(var relatedEntity in existingRelatedEntities ){
 
 			// Get the primary ID of this existing relationship
 			var thisPrimrayID = relatedEntity.invokeMethod( "get"&primaryIDPropertyName );
+
 			// Find out if hat ID is in the list
 			var listIndex = listFind( arguments.manyToManyIDList, thisPrimrayID );
 
@@ -414,10 +417,18 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 			    // If the relationship already exist, then remove that id from the list
 				arguments.manyToManyIDList = listDeleteAt(arguments.manyToManyIDList, listIndex);
 			} else {
-			    // If the relationship no longer exists in the list, then remove the entity relationship
-				this.invokeMethod("remove"&currentPropertySingularname, { 1=relatedEntity } );
+				// append ID that needs to be removed from database
+				ArrayAppend(removeEntityRelationshipList, relatedEntity,"true")
 			}
+
 		}
+
+		// remove entity if not present in request data
+		for(var relatedEntity in removeEntityRelationshipList ){
+				// If the relationship no longer exists in the list, then remove the entity relationship
+				this.invokeMethod("remove"&currentPropertySingularname, { 1=relatedEntity } );
+		}
+
 
 		// Loop over all of the primaryID's that are still in the list, and add the relationship
 		for(var relatedEntityID in arguments.manyToManyIDList ){
