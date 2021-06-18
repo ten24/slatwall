@@ -10,29 +10,28 @@ const BannerSlide = ({ customBody, title, associatedImage, linkUrl, linkLabel, s
 
   return (
         
-        <div className="hero text-white text-center pb-4" style={{ backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6),rgba(0, 0, 0, 0.6)), url(https://stoneandberg.slatwallcommerce-dev.io/custom/assets/files/associatedimage/${associatedImage}`}}>
-      <div className="container">
-        <div style={{ height: 'fit-content' }} className="main-banner">
-    <div index={slideKey} className="repeater">
-      <h2 className="h2">{title}</h2>
-      <p
-        onClick={event => {
-          event.preventDefault()
-          if (event.target.getAttribute('href')) {
+  <div className="hero text-white text-center pb-4" style={{ backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6),rgba(0, 0, 0, 0.6)), url(https://stoneandberg.slatwallcommerce-dev.io/custom/assets/files/associatedimage/${associatedImage}`}}>
+    <div className="container">
+      <div style={{ height: 'fit-content' }} className="main-banner">
+        <div index={slideKey} className="repeater">
+          <h2 className="h2">{title}</h2>
+          <p onClick={event => {
+              event.preventDefault()
+            if (event.target.getAttribute('href')) {
             history.push(event.target.getAttribute('href'))
-          }
-        }}
-        dangerouslySetInnerHTML={{ __html: customBody }}
-      />
-      {linkUrl && linkUrl.length > 0 && 
+            }
+          }}
+          dangerouslySetInnerHTML={{ __html: customBody }}
+          />
+         {linkUrl && linkUrl.length > 0 && 
         <a href={linkUrl} className="btn btn-light btn-long">
           {linkLabel}
         </a>
-      }
-    </div>
+          }
+        </div>
       </div>
-      </div>
     </div>
+  </div>
   )
 }
 
