@@ -1429,6 +1429,7 @@ component extends="HibachiService" accessors="true" {
 	// ====================== START: Save Overrides ===========================
 
 	public any function saveProduct(required any product, struct data={}){
+		
 		var previousActiveFlag = arguments.product.getActiveFlag();
 
 		if( (isNull(arguments.product.getURLTitle()) || !len(arguments.product.getURLTitle())) && (!structKeyExists(arguments.data, "urlTitle") || !len(arguments.data.urlTitle)) ) {
@@ -1491,7 +1492,7 @@ component extends="HibachiService" accessors="true" {
 			}
 		}
 
-		if(structKeyExists(data, "relatedProductSortOrder")){
+		if(structKeyExists(arguments.data, "relatedProductSortOrder")){
 			var relatedProductSortOrderStruct = deserializeJSON(data.relatedProductSortOrder);
 			for(var key in relatedProductSortOrderStruct){
 				var productRelationship = this.getProductRelationship(key);
@@ -1504,6 +1505,11 @@ component extends="HibachiService" accessors="true" {
 		//clear delivery Schedule Dates before adding again, ideally this should be checking which items are in the db that are not in the array and removing thoses specifically	
 		if(structKeyExists(data,'deliveryScheduleDates')){
 			arrayClear(arguments.product.getDeliveryScheduleDates());
+		}
+
+		// remove all existing categories
+		if(structKeyExists(arguments.data,'categories')){
+			arguments.data.categories = listRemoveDuplicates(arguments.data.categories) // remove duplicates from the categories sent in request
 		}
 
 		arguments.product = super.save(arguments.product, arguments.data);
