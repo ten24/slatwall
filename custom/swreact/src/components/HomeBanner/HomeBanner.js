@@ -5,12 +5,13 @@ import { useHistory } from 'react-router-dom'
 import ProductSlider from '../ProductSlider/ProductSlider'
 import { useGetEntity } from '../../hooks/useAPI'
 
+const { host } = useSelector(state => state.configuration.theme)
 const BannerSlide = ({ customBody, title, associatedImage, linkUrl, linkLabel, slideKey }) => {
   let history = useHistory()
 
   return (
         
-  <div className="hero text-white text-center pb-4" style={{ backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6),rgba(0, 0, 0, 0.6)), url(https://stoneandberg.slatwallcommerce-dev.io/custom/assets/files/associatedimage/${associatedImage}`}}>
+  <div className="hero text-white text-center pb-4" style={{ backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6),rgba(0, 0, 0, 0.6)), url(${host}/custom/assets/files/associatedimage/${associatedImage}`}}>
     <div className="container">
       <div style={{ height: 'fit-content' }} className="main-banner">
         <div index={slideKey} className="repeater">
