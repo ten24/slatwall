@@ -62,7 +62,7 @@ const ListingSidebar = ({ isFetching, qs, hide, option, brand, attribute, catego
         <div className="widget widget-categories mb-3">
           <div className="row">
             <h3 className="widget-title col">{t('frontend.core.filters')}</h3>
-            <span className="text-right col">{`${recordsCount} ${t('frontend.core.results')}`}</span>
+            {recordsCount && <span className="text-right col">{`${recordsCount} ${t('frontend.core.results')}`}</span>}
           </div>
           <div className="input-group-overlay input-group-sm mb-2">
             <input

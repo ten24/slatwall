@@ -70,6 +70,8 @@ export { Listing } from './Listing/Listing'
 export { ListingFilter } from './Listing/ListingFilter'
 export { ListingGrid } from './Listing/ListingGrid'
 export { ListingPagination } from './Listing/ListingPagination'
+export { ListingPaginationModern } from './Listing/ListingPaginationModern'
+
 export { ListingSidebar } from './Listing/ListingSidebar'
 export { ListingToolBar } from './Listing/ListingToolBar'
 
