@@ -28,10 +28,10 @@ const ProductTypeList = ({ data, onSelect }) => {
                     >
                       <SWImage className="d-block w-100" customPath={customImagePath} src={imageFileName} alt={productTypeName} type="productType" />
                     </div>
-                    <div className="card-body">
+                    <div className="card-body text-center">
                       <h2 className="h5">
                         <button
-                          className="link-button text-left"
+                          className="link-button "
                           onClick={e => {
                             e.preventDefault()
                             onSelect(urlTitle)
