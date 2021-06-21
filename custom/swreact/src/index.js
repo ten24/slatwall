@@ -20,7 +20,7 @@ if (process.env.NODE_ENV === 'production') {
     gtmId: devData.analytics.tagManager.gtmId,
   })
   Sentry.init({
-    dsn: 'https://4e0cbc76bd6f4c38ae1c595180de6eb5@o47339.ingest.sentry.io/5821545',
+    dsn: process.env.REACT_APP_SENTRY_DSN,
     release: process.env.REACT_APP_NAME + '@' + process.env.REACT_APP_VERSION,
     integrations: [
       new Integrations.BrowserTracing({
