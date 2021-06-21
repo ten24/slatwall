@@ -10,6 +10,7 @@ const ProductCard = props => {
   const brand = useSelector(getBrandRoute)
   const product = useSelector(getProductRoute)
   let productLink = `/${product}/${urlTitle}` + (skuID.length ? `?skuid=${skuID}` : '')
+
   return (
     <div className="card product-card pb-2 pt-3">
       {productClearance === true && <span className="badge badge-primary">{t('frontend.core.special')}</span>}

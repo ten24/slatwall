@@ -17,7 +17,8 @@ const CartLineItem = ({ orderItemID, isDisabled = false }) => {
     return orderItem.orderItemID === orderItemID
   })
   const { price, quantity, sku, extendedPriceAfterDiscount } = orderItem[0]
-  const { skuID, listPrice, skuCode, product, imageFile } = sku
+  const { skuID, skuCode, product, imageFile, skuPrices = [] } = sku
+  const listPrice = skuPrices.map(price => price.listPrice).sort((a, b) => a - b)[0] || 0
   const { productName, urlTitle, brand, productSeries } = product
   const { brandName } = brand
 
