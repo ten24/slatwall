@@ -17,9 +17,8 @@
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" 
 										property="imageNameProductProperty" 
 										fieldName="imageNameProductProperty" 
-										fieldType="radioGroup" 
-										edit="#rc.edit#" 
-										enableOtherInputForRadioGroupShowHide="false" />
+										fieldType="select" 
+										edit="#rc.edit#"/>
 
 			</hb:HibachiPropertyList>
 		</hb:HibachiPropertyRow>

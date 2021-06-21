@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useHistory, useLocation } from 'react-router-dom'
-import { ListingGrid, ListingPagination } from '../../components'
+import { ListingGrid } from '../../components'
 import { useGetProducts } from '../../hooks/useAPI'
 import queryString from 'query-string'
 
@@ -13,17 +13,12 @@ const BasicPage = () => {
   const { title, customBody } = content || {}
   const [path, setPath] = useState(loc.search)
   let [request, setRequest] = useGetProducts(params)
-  const setPage = pageNumber => {
-    params['currentPage'] = pageNumber
-    request.data.currentPage = pageNumber
-    setRequest({ ...request, params: { currentPage: pageNumber, content_id: content.contentID, includePotentialFilters: false }, makeRequest: true, isFetching: true, isLoaded: false })
-  }
 
   useEffect(() => {
     let didCancel = false
     if (!didCancel && ((!request.isFetching && !request.isLoaded) || loc.search !== path) && content.productListingPageFlag) {
       setPath(loc.search)
-      setRequest({ ...request, params: { ...params, content_id: content.contentID, includePotentialFilters: false }, makeRequest: true, isFetching: true, isLoaded: false })
+      setRequest({ ...request, params: { ...params, pageSize: 100, content_id: content.contentID, includePotentialFilters: false }, makeRequest: true, isFetching: true, isLoaded: false })
     }
     return () => {
       didCancel = true
@@ -59,7 +54,6 @@ const BasicPage = () => {
         {content.productListingPageFlag && (
           <div className="col">
             <ListingGrid isFetching={request.isFetching} pageRecords={request.data.pageRecords} />
-            <ListingPagination recordsCount={request.data.recordsCount} currentPage={request.data.currentPage} totalPages={request.data.totalPages} setPage={setPage} />
           </div>
         )}
       </div>
