@@ -57,8 +57,12 @@ component output="false" accessors="true" extends="HibachiProcess" {
 				"value" : "ProductCode"
 			},
 			{
-				"name"  : "Product Name",
-				"value" : "ProductName"
+				"name"  : "Product URL Title",
+				"value" : "urlTitle"
+			},
+			{
+				"name"  : "SKU Code",
+				"value" : "skuCode"
 			}
 		];
 		
@@ -66,11 +70,11 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	
 	public boolean function isValidPropertyName(){
 
-	    if( ! listFind("ProductCode,ProductName", this.getImageNameProductProperty() ) ){
+	    if( ! listFind("ProductCode,urlTitle,skuCode", this.getImageNameProductProperty() ) ){
 	        return false;
 	    }else{
 	        return true;
 	    }
-    
+
 	}
 }
