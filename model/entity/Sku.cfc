@@ -464,7 +464,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		var optionString = "";
 		for(var option in getOptions()){
 			if(option.getOptionGroup().getImageGroupFlag()){
-				optionString &= getProduct().setting('productImageOptionCodeDelimiter') & reReplaceNoCase(option.getOptionCode(), "[^a-z0-9\-\_]","","all");
+				optionString &= reReplaceNoCase(option.getOptionCode(), "[^a-z0-9\-\_]","","all");
 			}
 		}
 		return optionString;
@@ -479,7 +479,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	public string function generateImageFileName() {
 
 		var imageNameString = getService("HibachiUtilityService").replaceStringTemplate(template=setting("skuDefaultImageNamingConvention"), object=this);
-		var name = getService("HibachiUtilityService").createSEOString(imageNameString, getProduct().setting('productImageOptionCodeDelimiter'));
+		var name = getService("HibachiUtilityService").createSEOString(imageNameString);
 		var ext = ".#getProduct().setting('productImageDefaultExtension')#";
 
 		return name & ext;
