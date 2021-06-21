@@ -267,7 +267,7 @@ component  accessors="true" output="false"
 	 * ?orderBy=someKey|direction,someOtherKey|direction ...
 	 * 
 	 */
-    public void function getProducts(required struct data, struct urlScope=url ){
+    public void function productSearch(required struct data, struct urlScope=url ){
         var hibachiScope = this.getHibachiScope();
         
         // we're not using RequestContext here, but the URL-scope
@@ -514,8 +514,8 @@ component  accessors="true" output="false"
         }
 
         //Check & update bundle items
-        var skuList = ListToArray( arguments.data.skuID );
-        var quantities = ListToArray( arguments.data.quantity );
+        var skuList = ListToArray( arguments.data.skuIDList );
+        var quantities = ListToArray( arguments.data.quantities );
 
         var index = 1;
         for( var skuID in skuList ) {
@@ -3886,7 +3886,7 @@ component  accessors="true" output="false"
             return;
         }
         
-        orderTemplate = this.this.getOrderService().processOrderTemplate( orderTemplate, arguments.data, 'addPromotionCode');
+        orderTemplate = this.getOrderService().processOrderTemplate( orderTemplate, arguments.data, 'addPromotionCode');
         var processObject = orderTemplate.getProcessObject("addPromotionCode");
         if( processObject.hasErrors() ){
             orderTemplate.addErrors( processObject.getErrors() );
@@ -3973,7 +3973,7 @@ component  accessors="true" output="false"
             arguments.data.orderTemplatePromotionSkuCollectionConfig = promotionsCollectionConfig;
         }
 
-        var promotionsCollectionList = this.this.getSkuService().getSkuCollectionList();
+        var promotionsCollectionList = this.getSkuService().getSkuCollectionList();
         promotionsCollectionList.setCollectionConfigStruct( arguments.data.orderTemplatePromotionSkuCollectionConfig );
         promotionsCollectionList.setPageRecordsShow( arguments.data.pageRecordsShow );
         promotionsCollectionList.setDisplayProperties('
