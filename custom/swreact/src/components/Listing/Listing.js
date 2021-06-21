@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
 
-import { ListingSidebar, ListingPagination, ListingToolBar, ListingGrid } from '..'
+import { ListingSidebar, ListingPaginationModern, ListingToolBar, ListingGrid } from '..'
 import queryString from 'query-string'
 import { useGetProducts } from '../../hooks/'
 
@@ -89,7 +89,7 @@ const Listing = ({ preFilter, hide = [] }) => {
           <div className="col-lg-8">
             <ListingToolBar hide={hide} {...request.filtering} removeFilter={updateAttribute} setSort={setSort} />
             <ListingGrid isFetching={request.isFetching} pageRecords={request.data.pageRecords} />
-            <ListingPagination recordsCount={request.data.recordsCount} currentPage={request.data.currentPage} totalPages={request.data.totalPages} setPage={setPage} />
+            <ListingPaginationModern currentPage={params['currentPage']} setPage={setPage} />
           </div>
         </div>
       </div>

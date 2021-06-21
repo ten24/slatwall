@@ -76,7 +76,7 @@ export const getPageContent = (content = {}, slug = '') => {
     const response = await axios({
       method: 'GET',
       withCredentials: true,
-      url: `${sdkURL}api/public/content?${queryString.stringify({ 'p:show': 250, ...content }, { arrayFormat: 'comma' })}`,
+      url: `${sdkURL}api/public/content?${queryString.stringify({ 'f:activeFlag': true, 'p:show': 250, ...content }, { arrayFormat: 'comma' })}`,
       headers: {
         'Content-Type': 'application/json',
       },

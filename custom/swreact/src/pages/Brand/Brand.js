@@ -42,14 +42,12 @@ const Brand = props => {
   }
 
   const productTypeData = augmentProductType(productTypeUrl, productTypeRequest.data)
-  const isNonBasePTAndListing = productTypeData?.childProductTypes?.length !== 0 && productTypeUrl !== productTypeBase
 
   return (
     <Layout classNameList="page-overlap-none">
       {brandResponse.isLoaded && brandResponse.data.length > 0 && <Helmet title={brandResponse.data[0].settings.brandHTMLTitleString} />}
       {brandResponse.isLoaded && productTypeRequest.isLoaded && (
         <PageHeader
-          title={isNonBasePTAndListing && productTypeData?.productTypeName}
           includeHome={true}
           brand={params['key'] && [{ title: brandResponse.data[0].brandName, urlTitle: `/${brandRoute}/${brandResponse.data[0].urlTitle}` }]}
           crumbs={productTypeRequest.data
