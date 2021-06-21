@@ -267,7 +267,7 @@ component  accessors="true" output="false"
 	 * ?orderBy=someKey|direction,someOtherKey|direction ...
 	 * 
 	 */
-    public void function getProducts(required struct data, struct urlScope=url ){
+    public void function productSearch(required struct data, struct urlScope=url ){
         var hibachiScope = this.getHibachiScope();
         
         // we're not using RequestContext here, but the URL-scope
