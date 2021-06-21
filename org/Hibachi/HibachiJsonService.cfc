@@ -137,7 +137,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
     
     public void function createJson(){
 		
-		writeLog(file=getApplicationKey(), text="org.hibachi.HibachiJsonService::createJson start");
 	    
 	    createConfigJson();
 	    createRBJson();
@@ -153,7 +152,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
     	    }
     	}
     	
-		writeLog(file=getApplicationKey(), text="org.hibachi.HibachiJsonService::createJson finished");
     }
     
     //permission types are entity and action
