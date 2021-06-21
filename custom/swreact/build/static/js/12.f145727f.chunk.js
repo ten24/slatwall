@@ -1,2 +1,0 @@
-(this.webpackJsonpstoneandberg=this.webpackJsonpstoneandberg||[]).push([[12],{534:function(e,t,r){"use strict";r.r(t);var n=r(31),s=r(0);t.default=function(e){var t={category:e.location.pathname.split("/").reverse()[0]};return Object(s.jsx)(n.Q,{children:Object(s.jsx)(n.R,{preFilter:t,hide:"category"})})}}}]);
-//# sourceMappingURL=12.f145727f.chunk.js.map
