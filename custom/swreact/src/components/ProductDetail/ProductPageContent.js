@@ -3,6 +3,8 @@ import { addToCart } from '../../actions/'
 import { useDispatch, useSelector } from 'react-redux'
 import { ProductDetailGallery, ProductPagePanels, SkuOptions, Button, HeartButton, ProductPrice } from '..'
 import { useTranslation } from 'react-i18next'
+import { isAuthenticated } from '../../utils'
+import { Link } from 'react-router-dom'
 
 const ProductPageContent = ({ product, attributeSets, skuID, sku, productOptions = [], availableSkuOptions = '', isFetching = false }) => {
   const dispatch = useDispatch()
@@ -69,6 +71,11 @@ const ProductPageContent = ({ product, attributeSets, skuID, sku, productOptions
                     {t('frontend.product.add_to_cart')}
                   </Button>
                 </div>
+                {!isAuthenticated() && (
+                  <div className="alert alert-warning d-flex flex-column" role="alert">
+                    {t('frontend.pdp.loginToView')} <Link to={`/my-account`}>{t('frontend.account.login')}</Link>
+                  </div>
+                )}
               </form>
               {/* <!-- Product panels--> */}
               <ProductPagePanels product={product} attributeSets={attributeSets} />
