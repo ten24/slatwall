@@ -267,7 +267,7 @@ component  accessors="true" output="false"
 	 * ?orderBy=someKey|direction,someOtherKey|direction ...
 	 * 
 	 */
-    public void function getProducts(required struct data, struct urlScope=url ){
+    public void function productSearch(required struct data, struct urlScope=url ){
         var hibachiScope = this.getHibachiScope();
         
         // we're not using RequestContext here, but the URL-scope
@@ -309,6 +309,7 @@ component  accessors="true" output="false"
         param name="arguments.parsedQuery.includeSKUCount" default=true;
         param name="arguments.parsedQuery.applySiteFilter" default=false;
         param name="arguments.parsedQuery.priceRangesCount" default=5;
+        param name="arguments.parsedQuery.includePagination" default=false;
         param name="arguments.parsedQuery.propertyIdentifierList" default='';
 	    param name="arguments.parsedQuery.includePotentialFilters" default=true;
 	    
@@ -340,11 +341,20 @@ component  accessors="true" output="false"
 
 	    var integrationPackage = this.getSettingService().getSettingValue('siteProductSearchIntegration', hibachiScope.getCurrentRequestSite());
 	    var integrationEntity = this.getIntegrationService().getIntegrationByIntegrationPackage(integrationPackage);
-        var integrationCFC = integrationEntity.getIntegrationCFC("Search");
-        
-        arguments.data.ajaxResponse = {
-            'data' : integrationCFC.getProducts( argumentCollection=arguments.parsedQuery )
-        };
+	    
+	    if( !isNull(integrationEntity) && integrationEntity.getActiveFlag() ){
+            
+            var integrationCFC = integrationEntity.getIntegrationCFC("Search");
+            
+            arguments.data.ajaxResponse = {
+                'data' : integrationCFC.getProducts( argumentCollection=arguments.parsedQuery )
+            };
+            
+	    } else {
+	        // if integration is not active fallback to getEntity colelction API;
+	        arguments.data['entityName'] = 'Product';
+	        this.getEntity(arguments.data);
+	    }
     }
 
 
@@ -514,8 +524,8 @@ component  accessors="true" output="false"
         }
 
         //Check & update bundle items
-        var skuList = ListToArray( arguments.data.skuID );
-        var quantities = ListToArray( arguments.data.quantity );
+        var skuList = ListToArray( arguments.data.skuIDList );
+        var quantities = ListToArray( arguments.data.quantities );
 
         var index = 1;
         for( var skuID in skuList ) {
@@ -3886,7 +3896,7 @@ component  accessors="true" output="false"
             return;
         }
         
-        orderTemplate = this.this.getOrderService().processOrderTemplate( orderTemplate, arguments.data, 'addPromotionCode');
+        orderTemplate = this.getOrderService().processOrderTemplate( orderTemplate, arguments.data, 'addPromotionCode');
         var processObject = orderTemplate.getProcessObject("addPromotionCode");
         if( processObject.hasErrors() ){
             orderTemplate.addErrors( processObject.getErrors() );
@@ -3973,7 +3983,7 @@ component  accessors="true" output="false"
             arguments.data.orderTemplatePromotionSkuCollectionConfig = promotionsCollectionConfig;
         }
 
-        var promotionsCollectionList = this.this.getSkuService().getSkuCollectionList();
+        var promotionsCollectionList = this.getSkuService().getSkuCollectionList();
         promotionsCollectionList.setCollectionConfigStruct( arguments.data.orderTemplatePromotionSkuCollectionConfig );
         promotionsCollectionList.setPageRecordsShow( arguments.data.pageRecordsShow );
         promotionsCollectionList.setDisplayProperties('

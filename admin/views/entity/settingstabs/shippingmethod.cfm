@@ -52,6 +52,7 @@ Notes:
 <cfoutput>
 	<swa:SlatwallSettingTable showInheritance="false">
 		<swa:SlatwallSetting settingName="shippingMethodQualifiedRateSelection" />
+		<swa:SlatwallSetting settingName="shippingMethodIncludePriceFlag" />
 	</swa:SlatwallSettingTable>
 </cfoutput>
 

@@ -144,15 +144,15 @@ return getService('HibachiUtilityService').precisionCalculate(getTotalCharge() -
 	// ================== START: Overridden Methods ========================
 
 	public any function getSimpleRepresentation() {
-
 		var shippingMethodName = nullReplace(getShippingMethodRate().getShippingMethod().getShippingMethodName(), "");
 		if(structKeyExists(arguments,'forAudit') && arguments.forAudit == true){
 				return shippingMethodName;
 		}
-		
-		var totalChargeAfterDiscount = nullReplace(getFormattedValue("totalChargeAfterDiscount"),"");
-
-		return '#shippingMethodName# - #totalChargeAfterDiscount#';
+		if(getService("SettingService").getSettingValue("shippingMethodIncludePriceFlag")){
+			var totalChargeAfterDiscount = nullReplace(getFormattedValue("totalChargeAfterDiscount"),"");
+			return '#shippingMethodName# - #totalChargeAfterDiscount#';
+		}
+		return shippingMethodName;
 	}
 
 	// ==================  END:  Overridden Methods ========================

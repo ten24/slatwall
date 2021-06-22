@@ -110,6 +110,7 @@ component extends="framework.one" {
 	variables.framework.hibachi.lineBreakStyle = SERVER.OS.NAME;
 	variables.framework.hibachi.disableFullUpdateOnServerStartup = false;
 	variables.framework.hibachi.skipMigrateAttributeValuesOnServerStartup = true;
+	variables.framework.hibachi.skipCreateRBKeysForAttributeCustomProperties = true;
 	variables.framework.hibachi.skipCreateJsonOnServerStartup = false;	
 	variables.framework.hibachi.skipDbData = false;
 	variables.framework.hibachi.useServerInstanceCacheControl=true;
@@ -882,7 +883,6 @@ component extends="framework.one" {
 					
 
 					//===================== END: EVENT HANDLER SETUP =========================
-
 					// ============================ FULL UPDATE =============================== (this is only run when updating, or explicitly calling it by passing update=true as a url key)
 					var updated = false;
 					var runFullUpdate = !variables.framework.hibachi.disableFullUpdateOnServerStartup
@@ -904,22 +904,35 @@ component extends="framework.one" {
 						//Update custom properties
 
 						var success = getHibachiScope().getService('updateService').updateEntitiesWithCustomProperties();
+
 						getHibachiScope().getService("hibachiEventService").announceEvent(eventName="afterUpdateEntitiesWithCustomProperties");
 						if (success){
 							writeLog(file="Slatwall", text="General Log - Attempting to update entities with custom properties.");
 						}else{
 							writeLog(file="Slatwall", text="General Log - Error updating entities with custom properties");
 						}
+						
+                        // Flag to clear Entity-metadata cache	
+						variables.clearEntityMetadataCache = true;
+
+
 						// Reload ORM
 						writeLog(file="#variables.framework.applicationKey#", text="General Log - ORMReload() started");
-						getHibachiScope().clearApplicationValueByPrefix('class');
 						ormReload();
 						writeLog(file="#variables.framework.applicationKey#", text="General Log - ORMReload() was successful");
 						
 						// we have to migrate attribute data to custom properties now, if we have some that haven't been migrated yet
 					
 						if(!variables.framework.hibachi.skipMigrateAttributeValuesOnServerStartup){	
+    						writeLog(file="#variables.framework.applicationKey#", text="General Log - Migtate attributes to custom properties - START ");
 							getHibachiScope().getService('updateService').migrateAttributeValuesToCustomProperties();
+							writeLog(file="#variables.framework.applicationKey#", text="General Log - Migtate attributes to custom properties - END ");
+						}
+						
+						if(!variables.framework.hibachi.skipCreateRBKeysForAttributeCustomProperties){	
+    						writeLog(file="#variables.framework.applicationKey#", text="General Log - Create RB-keys for attributes custom properties - START ");
+							getHibachiScope().getService('updateService').createRBKeysForAttributeCustomProperties();
+							writeLog(file="#variables.framework.applicationKey#", text="General Log - Create RB-keys for attributes custom properties - END ");
 						}
 
 						onUpdateRequest();
@@ -927,7 +940,7 @@ component extends="framework.one" {
 						if(structKeyExists(server,'Lucee')){
 							SystemCacheClear('component');
 						}
-
+						
 						// Write File
 						fileWrite(expandPath('/#variables.framework.applicationKey#') & '/custom/system/lastFullUpdate.txt.cfm', now());
 						updated = true;
@@ -935,7 +948,6 @@ component extends="framework.one" {
 						getHibachiScope().getService("hibachiEventService").announceEvent("onApplicationFullUpdate");
 					}
 					// ========================== END: FULL UPDATE ==============================
-
 					// Call the onFirstRequestPostUpdate() Method for the parent Application.cfc
 					onFirstRequestPostUpdate();
 					//verify that any property changes to audit and auditarchive mirror each other
@@ -944,7 +956,10 @@ component extends="framework.one" {
 					//==================== START: JSON BUILD SETUP ========================
 
 					if(!variables.framework.hibachi.skipCreateJsonOnServerStartup){
-						getBeanFactory().getBean('HibachiJsonService').createJson();
+                        if(!isNull(variables.clearEntityMetadataCache)){
+                			this.getHibachiScope().getService('hibachiCacheService').resetCachedKeyByPrefix('class', true);
+                		} 						
+                		getBeanFactory().getBean('HibachiJsonService').createJson();
 					}
 
 					//===================== END: JSON BUILD SETUP =========================
@@ -1188,7 +1203,10 @@ component extends="framework.one" {
 			}
 			
 			getHibachiScope().getService("hibachiEntityQueueService").processEntityQueueArray(entityQueueArray, true);	
-			
+		}
+		
+		if(!isNull(variables.clearEntityMetadataCache)){
+			this.getHibachiScope().getService('hibachiCacheService').resetCachedKeyByPrefix('class', true);
 		}
 		
 	}

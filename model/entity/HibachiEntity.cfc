@@ -463,7 +463,9 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 	}
 	
 	public array function getAuditableProperties() {
-		if( !getHibachiScope().hasApplicationValue("classAuditablePropertyCache_#getClassFullname()#") ) {
+		var hibachiCacheService = this.getService('hibachiCacheService');
+		var cacheKey = "classAuditablePropertyCache_#getClassFullname()#";
+		if( !hibachiCacheService.hasCachedValue(cacheKey) ) {
 			var auditableProperties = super.getAuditableProperties();
 			
 			var attributes = getAssignedAttributes(includeCustomProperties=true);
@@ -473,13 +475,11 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 				if (!listFindNoCase(propertyExclusionList, attribute['attributeCode'])) {
 					arrayAppend(auditableProperties, {name=attribute['attributeCode'], attributeFlag=true});
 				}
-				
 			}
-
-			setApplicationValue("classAuditablePropertyCache_#getClassFullname()#", auditableProperties);
+			hibachiCacheService.setCachedValue(cacheKey, auditableProperties);
 		}
 
-		return getApplicationValue("classAuditablePropertyCache_#getClassFullname()#");
+		return hibachiCacheService.getCachedValue(cacheKey);
 	}
 
 	public any function getPropertyCountCollectionList(required string propertyName, string propertyCountName){
