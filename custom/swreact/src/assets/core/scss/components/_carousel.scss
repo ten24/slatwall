@@ -234,17 +234,12 @@
 .hero {
   background-position: top;
   background-size: cover;
-  height: 50vh;
-  @include media-breakpoint-down(sm) {
-    height: 100%;
-  }
   .main-banner {
     .h2 {
       color: $white;
     }
     .repeater {
-      margin: 0rem 3rem 1rem;
-      transform: translateY(50%);
+      padding: 4rem 3rem;
     }
   }
 }
@@ -255,7 +250,6 @@
     height: 100%;
   }
 }
-
 
 
 .featured-products {
@@ -340,7 +334,7 @@
   padding-left: 2px;
 }
 .slick-next {
-  right: 0;
+  right: 25px;
 }
 
 .slick-prev:before {
@@ -348,7 +342,7 @@
   padding-right: 2px;
 }
 .slick-prev {
-  left: 0;
+  left: 25px;
 }
 
 .slider-dark .slick-prev:before, 
