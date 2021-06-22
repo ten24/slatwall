@@ -930,7 +930,10 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	}
 
 	public array function getAuditableProperties() {
-		if( !getHibachiScope().hasApplicationValue("classAuditablePropertyCache_#getClassFullname()#") ) {
+		var hibachiCacheService = this.getService('hibachiCacheService');
+		var cacheKey = "classAuditablePropertyCache_#getClassFullname()#";
+		
+		if( !hibachiCacheService.hasCachedValue(cacheKey) ) {
 			var properties = getProperties();
 			var auditableProperties = [];
 			for (var property in properties) {
@@ -942,24 +945,26 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 				}
 			}
 
-			setApplicationValue("classAuditablePropertyCache_#getClassFullname()#", auditableProperties);
+			hibachiCacheService.setCachedValue(cacheKey, auditableProperties);
 		}
 
-		return getApplicationValue("classAuditablePropertyCache_#getClassFullname()#");
+		return hibachiCacheService.getCachedValue(cacheKey);
 	}
 
 	public struct function getAuditablePropertiesStruct() {
-		if( !getHibachiScope().hasApplicationValue("classAuditablePropertyStructCache_#getClassFullname()#") ) {
+		var hibachiCacheService = this.getService('hibachiCacheService');
+		var cacheKey = "classAuditablePropertyStructCache_#getClassFullname()#";
+		
+		if( !hibachiCacheService.hasCachedValue(cacheKey) ) {
 			var auditablePropertiesStruct = {};
 			var auditableProperties = getAuditableProperties();
 
 			for(var i=1; i<=arrayLen(auditableProperties); i++) {
 				auditablePropertiesStruct[ auditableProperties[i].name ] = auditableProperties[ i ];
 			}
-			setApplicationValue("classAuditablePropertyStructCache_#getClassFullname()#", auditablePropertiesStruct);
+			hibachiCacheService.setCachedValue(cacheKey, auditablePropertiesStruct);
 		}
-
-		return getApplicationValue("classAuditablePropertyStructCache_#getClassFullname()#");
+		return hibachiCacheService.getCachedValue(cacheKey);
 	}
 	
 	public boolean function verifyPerformCalculateForProperty(required any property, boolean cascadeCalculateFlag = false) {
