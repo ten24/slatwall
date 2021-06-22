@@ -225,6 +225,9 @@ component extends="HibachiService" accessors="true" output="false" {
 	 * Function to get All Parents on Account
 	 * */
 	public any function getAllParentsOnAccount(required any account) {
+		param name="arguments.data.currentPage" default=1;
+        param name="arguments.data.pageRecordsShow" default= getHibachiScope().setting('GLOBALAPIPAGESHOWLIMIT');
+
 		var parentAccountCollectionList = this.getAccountRelationshipCollectionList();
 		parentAccountCollectionList.setDisplayProperties('accountRelationshipID, 
 												parentAccount.emailAddress, 
@@ -233,13 +236,18 @@ component extends="HibachiService" accessors="true" output="false" {
 												parentAccount.accountID');
 		parentAccountCollectionList.addFilter( 'childAccount.accountID', arguments.account.getAccountID() );
 		parentAccountCollectionList.addFilter( 'activeFlag', 1);
-		return parentAccountCollectionList.getRecords(formatRecord = false);
+		parentAccountCollectionList.setPageRecordsShow(arguments.data.pageRecordsShow);
+		parentAccountCollectionList.setCurrentPageDeclaration(arguments.data.currentPage); 
+
+		return parentAccountCollectionList.getPageRecords(formatRecord = false);
 	}
 	
 	/**
 	 * Function to get All Childs on Account
 	 * */
 	public any function getAllChildsOnAccount(required any account) {
+		param name="arguments.data.currentPage" default=1;
+        param name="arguments.data.pageRecordsShow" default= getHibachiScope().setting('GLOBALAPIPAGESHOWLIMIT');
 		
 		var childAccountCollectionList = this.getAccountRelationshipCollectionList();
 		childAccountCollectionList.setDisplayProperties('accountRelationshipID, 
@@ -249,7 +257,10 @@ component extends="HibachiService" accessors="true" output="false" {
 												childAccount.accountID');
 		childAccountCollectionList.addFilter( 'parentAccount.accountID', arguments.account.getAccountID() );
 		childAccountCollectionList.addFilter( 'activeFlag', 1 );
-		return childAccountCollectionList.getRecords(formatRecord = false);
+		childAccountCollectionList.setPageRecordsShow(arguments.data.pageRecordsShow);
+		childAccountCollectionList.setCurrentPageDeclaration(arguments.data.currentPage); 
+
+		return childAccountCollectionList.getPageRecords(formatRecord = false);
 	}
 	
 	
