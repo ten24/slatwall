@@ -1695,6 +1695,21 @@
 	    return subStruct;
 	}
 	
+	public struct function swapStructKeys(required struct sourceStruct, required struct keysMap ){
+
+		var newStruct = {};
+		for( var sourceKey in arguments.keysMap ){
+			var destinationKey = arguments.keysMap[ sourceKey ];
+			
+			if( structKeyExists(arguments.sourceStruct, sourceKey) ){
+				newStruct[ destinationKey ] = arguments.sourceStruct[ sourceKey ];
+			}
+		}
+	
+		return newStruct;
+	}
+	
+	
 	public struct function flattenStruct( required struct original, string delimiter=".", string prefix="" ){
 	    var flattened = {};
 	    

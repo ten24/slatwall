@@ -68,6 +68,7 @@ component extends="HibachiService" accessors="true" {
 	property name="skuService" type="any";
 	property name="subscriptionService" type="any";
 	property name="typeService" type="any";
+	property name="hibachiUtilityService" type="any";
 
 	// ===================== START: Logical Methods ===========================
 	
@@ -1337,7 +1338,6 @@ component extends="HibachiService" accessors="true" {
 			if(getHibachiUtilityService().isS3Path(uploadDirectory)){
 				uploadDirectory = getHibachiUtilityService().formatS3Path(uploadDirectory);
 			}
-
 			var fullFilePath = "#uploadDirectory#/#arguments.processObject.getImageFile()#";
 
 			// If the directory where this file is going doesn't exists, then create it
@@ -1409,15 +1409,30 @@ component extends="HibachiService" accessors="true" {
 			this.getImageService().clearImageCache(uploadDirectory, fileNameWithExtension);
 			
 			if(arguments.processObject.getimageNameProductProperty() == "ProductCode"){
-				fileMove( filepath, uploadDirectory);
-			}else{
-				var productCode = this.getProductDAO().getProductCodeByUniquePropertyNameAndUniqueValue(propertyName=arguments.processObject.getimageNameProductProperty(),propertyValue=fileName);
-	        	if(len(productCode) > 0){
-	        		var newFileName = productCode&"."&fileExtension;
+				
+				var defaultSkuCode = this.getProductDAO().getDefaultSkuCodeByProductUniquePropertyNameAndUniqueValue(propertyName=arguments.processObject.getimageNameProductProperty(),propertyValue=fileName);
+	        	if(len(defaultSkuCode) > 0){
+	        		var newFileName = defaultSkuCode&"."&fileExtension;
 	 				fileMove(filepath, uploadDirectory&newFileName);
 	 			}else {
 	 				arguments.product.addError('imageFile',getHibachiScope().rbKey('validate.save.File.fileUpload.unknownImageName'));
 	 			}
+				
+				
+			}else if(arguments.processObject.getimageNameProductProperty() == "urlTitle"){
+				
+				var defaultSkuCode = this.getProductDAO().getDefaultSkuCodeByProductUniquePropertyNameAndUniqueValue(propertyName=arguments.processObject.getimageNameProductProperty(),propertyValue=fileName);
+	        	if(len(defaultSkuCode) > 0){
+	        		var newFileName = defaultSkuCode&"."&fileExtension;
+	 				fileMove(filepath, uploadDirectory&newFileName);
+	 			}else {
+	 				arguments.product.addError('imageFile',getHibachiScope().rbKey('validate.save.File.fileUpload.unknownImageName'));
+	 			}
+				
+			}else if(arguments.processObject.getimageNameProductProperty() == "skuCode"){
+				
+				fileMove( filepath, uploadDirectory);
+				
 			}
 		}
 		
@@ -1621,7 +1636,7 @@ component extends="HibachiService" accessors="true" {
                     logicalOperator='OR'
         );
         productTypeCollectionList.addFilter(
-                    propertyIdentifier='products.productCode', 
+                    propertyIdentifier='products.defaultSkuCode', 
                     value='%#arguments.keyword#%', 
                     comparisonOperator='LIKE', 
                     filterGroupAlias='keyword',

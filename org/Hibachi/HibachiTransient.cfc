@@ -1088,7 +1088,10 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 	// ==================== START: APPLICATION CACHED META VALUES ===================================
 
 	public array function getProperties() {
-		if( !getHibachiScope().hasApplicationValue("classPropertyCache_#getClassFullname()#") ) {
+		var hibachiCacheService = this.getService('hibachiCacheService');
+		var cacheKey = "classPropertyCache_#getClassFullname()#";
+		
+		if( !hibachiCacheService.hasCachedValue(cacheKey) ) {
 			var metaData = getMetaData(this);
 
 			var hasExtends = structKeyExists(metaData, "extends");
@@ -1107,10 +1110,10 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 			for(var i=1; i < metaPropertiesArrayCount;i++){
 				metaProperties[i] = convertStructToLowerCase(metaProperties[i]);
 			}
-			setApplicationValue("classPropertyCache_#getClassFullname()#", metaProperties);
+			hibachiCacheService.setCachedValue(cacheKey, metaProperties);
 		}
 
-		return getApplicationValue("classPropertyCache_#getClassFullname()#");
+		return hibachiCacheService.getCachedValue(cacheKey);
 	}
 
 	private struct function convertStructToLowerCase(required struct st){
@@ -1139,17 +1142,19 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 	}
 
 	public struct function getPropertiesStruct() {
-		if( !getHibachiScope().hasApplicationValue("classPropertyStructCache_#getClassFullname()#") ) {
+		var hibachiCacheService = this.getService('hibachiCacheService');
+		var cacheKey = "classPropertyStructCache_#getClassFullname()#";
+		
+		if( !hibachiCacheService.hasCachedValue(cacheKey) ) {
 			var propertiesStruct = {};
 			var properties = getProperties();
 
 			for(var i=1; i<=arrayLen(properties); i++) {
 				propertiesStruct[ properties[i].name ] = properties[ i ];
 			}
-			setApplicationValue("classPropertyStructCache_#getClassFullname()#", propertiesStruct);
+			hibachiCacheService.setCachedValue(cacheKey, propertiesStruct);
 		}
-
-		return getApplicationValue("classPropertyStructCache_#getClassFullname()#");
+		return hibachiCacheService.getCachedValue(cacheKey);
 	}
 
 	// @help private method only used by populate

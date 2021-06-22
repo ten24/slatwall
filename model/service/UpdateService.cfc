@@ -347,17 +347,10 @@ Notes:
 
 	<cfscript>
 	
-	public any function migrateAttributeValuesToCustomProperties(){
+	    public any function migrateAttributeValuesToCustomProperties(){
 			//let's get all attributes flagged to become custom properties
-			var attributeDataQuery = getSlatwallScope().getDAO('attributeDAO').getAttributeDataQueryByCustomPropertyFlag();
-			var rbKeyValuePairStrings = '';
-			var path = expandPath('/#getApplicationKey()#') & '/custom/config/resourceBundles/en.properties';
-			
-			if(fileExists(path)){
-				var rbKeysFileRead = FileRead(path);
-				var rbKeysFileAppend = FileOpen(path,"append");
-			}
-			
+			var attributeDataQuery = this.getDAO('attributeDAO').getAttributeDataQueryByCustomPropertyFlag();
+		
 			for(var attribute in attributeDataQuery){
 				//if we have never done this before...
 				if(len(attribute['isMigratedFlag']) && !attribute['isMigratedFlag']){
@@ -365,21 +358,52 @@ Notes:
 					migrateAttributeToCustomProperty(entityName=attribute['attributeSetObject'],customPropertyName=attribute['attributeCode']);
 					updateAttributeIsMigratedFlagByAttributeID(attribute['attributeID'],true);
 				}
+			}
+		}
+		
+		
+		public any function createRBKeysForAttributeCustomProperties(){
+			//let's get all attributes flagged to become custom properties
+			var attributeDataQuery = this.getDAO('attributeDAO').getAttributeDataQueryByCustomPropertyFlag();
+			var rbKeyValuePairStrings = '';
+			var path = expandPath('/#getApplicationKey()#') & '/custom/resourceBundles/en.properties';
+		
+			writeLog(file=getApplicationKey(), text="Create AttributesRBKeys START, file path: #path#");
+		
+			if( FileExists(path) ){
+				var rbKeysFileContent = FileRead( path );
+			}
+			
+			if( isNull(rbKeysFileContent) ){
+			     writeLog(file=getApplicationKey(), text="Create AttributesRBKeys  couldn't open file in Read mode, ABORTIGN ");
+			     return;
+			}
+			
+			for(var attribute in attributeDataQuery){
 				//if we don't have the rbKey in the file we read
 				var rbKey = 'entity.' & attribute['attributeSetObject'] & '.' & attribute['attributeCode'];
-				if(!isNull(rbKeysFileRead) && !findNoCase(rbKey,rbKeysFileRead)){
-					rbKeyValuePairStrings = rbKeyValuePairStrings & getRbKeyValuePairByAttribute(attribute);
+				if( !findNoCase(rbKey,rbKeysFileContent)){
+					rbKeyValuePairStrings &= this.getRbKeyValuePairByAttribute(attribute);
 				}
 			}
+			
 			//if we have new rbkeys to add
-			if(len(rbKeyValuePairStrings) && !isNull(rbKeysFileAppend)){
-				//write to the .properties file
-				FileWriteLine(rbKeysFileAppend, rbKeyValuePairStrings); 
-				//recreate the JSON file
-				getService("HibachiJSONService").createJson();
-				
-				FileClose(rbKeysFileAppend);
+			if( !len(rbKeyValuePairStrings) ){
+			    writeLog(file=getApplicationKey(), text="Create AttributesRBKeys  rbKeyValuePairStrings is EMPTY");
+			    return;
 			}
+			
+    		var rbKeysFileAppend = FileOpen( path, "append");
+    		
+	        if( isNull(rbKeysFileAppend) ){
+			    writeLog(file=getApplicationKey(), text="Create AttributesRBKeys  couldn't open file in APPEND mode ");
+	        }
+	        
+			//write to the en.properties file
+			FileWriteLine(rbKeysFileAppend, rbKeyValuePairStrings); 
+			FileClose(rbKeysFileAppend);
+			
+			writeLog(file=getApplicationKey(), text="Create AttributesRBKeys END");
 		}
 		
 		public string function getRbKeyValuePairByAttribute(required any attribute){
