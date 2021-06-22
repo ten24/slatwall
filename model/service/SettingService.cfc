@@ -414,7 +414,8 @@ component extends="HibachiService" output="false" accessors="true" {
 			// Shipping Method
 			shippingMethodQualifiedRateSelection = {fieldType="select", defaultValue="lowest"},
 			shippingMethodTrackingURL = {fieldType="text", defaultValue=""},
-			
+			shippingMethodIncludePriceFlag = {fieldType="yesno", defaultValue="true"},
+
 			// Shipping Method Rate
 			shippingMethodRateHandlingFeePercentage = {fieldType="text",formatType="percentage",defaultValue=0,validate={dataType="numeric"}},
 			shippingMethodRateHandlingFeeFlag = {fieldType="yesno",defaultValue=0},

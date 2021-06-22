@@ -204,13 +204,13 @@ class ListingService{
                     }
                 });
                 
-                currentListing.pageRecordsWithManualSortOrder = angular.toJson(pageRecordsWithManualSortOrder);
+                currentListing.pageRecordsWithManualSortOrder = JSON.stringify(pageRecordsWithManualSortOrder);
                 return currentListing.pageRecordsWithManualSortOrders;
                 
             }, 0);
         } 
         else {
-            return angular.toJson({});
+            return JSON.stringify({});
         }
     }
 
