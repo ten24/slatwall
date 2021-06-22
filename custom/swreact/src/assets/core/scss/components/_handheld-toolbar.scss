@@ -1,0 +1,52 @@
+//
+// Toolbar for handheld devices
+// --------------------------------------------------
+
+.cz-handheld-toolbar {
+  display: none;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  transition: $toolbar-transition;
+  border-top: $border-width solid $border-color;
+  background-color: $toolbar-bg;
+  box-shadow: $toolbar-box-shadow;
+  z-index: $zindex-toolbar;
+}
+.cz-handheld-toolbar-item {
+  padding: $spacer / 2;
+  padding-top: .125rem;
+  border-left: $border-width solid $border-color;
+  text-align: center;
+  &:first-child { border-right: 0; }
+  .badge { font-size: .625rem; }
+}
+.cz-handheld-toolbar-icon {
+  display: block;
+  color: $toolbar-icon-color;
+  font-size: $toolbar-icon-size;
+  > i, > .badge {
+    display: inline-block;
+    vertical-align: middle;
+  }
+}
+.cz-handheld-toolbar-label {
+  display: block;
+  color: $toolbar-label-color;
+  font-size: $toolbar-label-font-size;
+}
+@include media-breakpoint-down(md) {
+  .toolbar-enabled { padding-bottom: 3.5rem; }
+  .cz-handheld-toolbar {
+    display: block;
+    & + .btn-scroll-top { bottom: $spacer + 3.5rem; }
+  }
+}
+.offcanvas-open {
+  padding-bottom: 0;
+  .cz-handheld-toolbar {
+    transform: translateY(100%);
+    box-shadow: none;
+  }
+}

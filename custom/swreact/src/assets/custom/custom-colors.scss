@@ -1,0 +1,28 @@
+//== Colors
+//
+// Gray and brand colors to use across the Theme.
+
+// Grayscale
+$white: #fff !default;
+$gray-100: #f6f9fc !default; // lightest
+$gray-200: #f3f5f9 !default;
+$gray-300: #e3e9ef !default;
+$gray-400: #dae1e7 !default;
+$gray-500: #aeb4be !default;
+$gray-600: #7d879c !default;
+$gray-700: #4b566b !default;
+$gray-800: #373f50 !default;
+$gray-900: #2b3445 !default; // darkest
+$black: #000 !default;
+
+// Brand colors
+$brand-primary: #5f1018 !default;
+$primary: #5f1018 !default;
+$accent: $brand-primary !default;
+$secondary: $gray-200 !default;
+$info: #69b3fe !default;
+$success: #42d697 !default;
+$warning: #fea569 !default;
+$danger: #f34770 !default;
+$light: $white !default;
+$dark: $gray-800 !default;
