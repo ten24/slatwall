@@ -163,7 +163,7 @@ component extends="Slatwall.model.service.PublicService" {
 				getService('erpOneService').getLiveListingPrices(
 					data = arguments.data.ajaxResponse.sku,
 					skuCodeKey = "skuCode", 
-					priceKeys = "listPrice" ,  // We can also pass a list of prices ex:"listPrice,skuPrice"
+					priceKeys = "skuPrices_price" ,  // We can also pass a list of prices ex:"listPrice,skuPrice"
 					customerCode = getHibachiScope().getAccount().getRemoteID()
 				);
 			}

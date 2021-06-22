@@ -62,7 +62,7 @@ const ProductSlider = ({ children, params = {}, settings, title, slidesToShow = 
         {children}
         <Slider style={{ margin: '0 4rem', height: 'fit-content' }} className="row mt-4" {...settings}>
           {request.data.map((slide, index) => {
-            return <ProductCard {...slide} imagePath={slide.defaultSku_imagePath} skuID={slide.defaultSku_skuID} listPrice={slide.defaultSku_listPrice} key={index} />
+            return <ProductCard {...slide} imageFile={slide.defaultSku_imageFile} skuID={slide.defaultSku_skuID} calculatedSalePrice={slide.defaultSku_skuPrices_price} listPrice={slide.defaultSku_skuPrices_listPrice} key={index} />
           })}
         </Slider>
       </div>

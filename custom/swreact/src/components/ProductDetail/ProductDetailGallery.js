@@ -44,7 +44,6 @@ const ProductDetailGallery = ({ productID, skuID, imageFile }) => {
     )[0]
   )
   filterImages = filterImages.reverse()
-  console.log('filterImages', filterImages)
   return (
     <div className="col-lg-6 pr-lg-5 pt-0">
       <div className="cz-product-gallery">

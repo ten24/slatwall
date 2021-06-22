@@ -282,7 +282,7 @@ export const useGetProducts = params => {
       axios({
         method: 'GET',
         withCredentials: true, // default
-        url: `${sdkURL}api/scope/getProducts?${queryString.stringify(request.params, { arrayFormat: 'comma' })}`,
+        url: `${sdkURL}api/scope/productSearch?${queryString.stringify(request.params, { arrayFormat: 'comma' })}`,
       }).then(response => {
         if (response.status === 200 && response.data && response.data.data.products) {
           const { currentPage, pageSize, potentialFilters, products, total } = response.data.data

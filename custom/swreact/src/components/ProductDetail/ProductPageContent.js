@@ -37,7 +37,7 @@ const ProductPageContent = ({ product, attributeSets, skuID, sku, productOptions
               />
               <form className="mb-grid-gutter" onSubmit={e => e.preventDefault()}>
                 {productOptions.length > 0 && <SkuOptions productID={product.productID} skuOptionDetails={productOptions} availableSkuOptions={availableSkuOptions} sku={sku} skuID={skuID} />}
-                <div className="mb-3">{sku && <ProductPrice salePrice={sku.price} listPrice={sku.listPrice} />}</div>
+                <div className="mb-3">{sku && <ProductPrice salePrice={sku.skuPrices_price} listPrice={sku.skuPrices_listPrice} />}</div>
                 <div className="form-group d-flex align-items-center">
                   <select
                     value={quantity}

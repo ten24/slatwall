@@ -82,7 +82,7 @@ component extends="HibachiService" accessors="true" {
 	}
 	
 	public array function getProductPublicProperties(){
-		var publicProperties =  ['productID','productName','urlTitle', 'productCode', 'productDescription', 'calculatedSalePrice', 'defaultSku.imagePath','defaultSku.listPrice', 'defaultSku.skuID', 'productType.productTypeID','productType.productTypeIDPath', 'brand.brandID', 'brand.brandName', 'brand.urlTitle'];
+		var publicProperties =  ['productID','productName','urlTitle', 'productCode', 'productDescription', 'defaultSku.imageFile','defaultSku.skuPrices.listPrice','defaultSku.skuPrices.price', 'defaultSku.skuID', 'productType.productTypeID','productType.productTypeIDPath', 'brand.brandID', 'brand.brandName', 'brand.urlTitle'];
 		var publicAttributes = this.getHibachiService().getPublicAttributesByEntityName('Product');
 	    publicProperties.append(publicAttributes, true);
 		return publicProperties;
@@ -101,7 +101,7 @@ component extends="HibachiService" accessors="true" {
         var properties = "relatedProduct.productID, relatedProduct.calculatedQATS, relatedProduct.calculatedProductRating, relatedProduct.activeFlag, relatedProduct.urlTitle, relatedProduct.productName, relatedProduct.calculatedTitle, relatedProduct.productCode, relatedProduct.calculatedSalePrice";	
         properties &= ",relatedProduct.brand.brandID, relatedProduct.brand.brandName, relatedProduct.brand.urlTitle";
         properties &= ",relatedProduct.productType.productTypeName, relatedProduct.productType.productTypeID";
-        properties &= ",relatedProduct.defaultSku.imageFile, relatedProduct.defaultSku.price, relatedProduct.defaultSku.listPrice, relatedProduct.defaultSku.skuID";
+        properties &= ",relatedProduct.defaultSku.imageFile, relatedProduct.defaultSku.skuPrices.price, relatedProduct.defaultSku.skuPrices.listPrice, relatedProduct.defaultSku.skuID";
 		
 		relatedProducts.setDisplayProperties(properties);
 		relatedProducts.addFilter("product.productID",arguments.productID);
@@ -1624,13 +1624,6 @@ component extends="HibachiService" accessors="true" {
 		productTypeCollectionList.setDisplayProperties('productTypeID,productTypeName,productTypeIDPath');
 		productTypeCollectionList.addFilter(
                     propertyIdentifier='products.productName', 
-                    value='%#arguments.keyword#%', 
-                    comparisonOperator='LIKE', 
-                    filterGroupAlias='keyword',
-                    logicalOperator='OR'
-        );
-        productTypeCollectionList.addFilter(
-                    propertyIdentifier='products.defaultSkuCode', 
                     value='%#arguments.keyword#%', 
                     comparisonOperator='LIKE', 
                     filterGroupAlias='keyword',
