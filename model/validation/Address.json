@@ -28,7 +28,7 @@
 		"locality": [
 			{ "contexts": "billing,full,location", "conditions": "localityRequired", "required": true }
 		],
-		"city": [{ "contexts": "billing,full,location", "conditions": "cityRequired", "regex" : "^[A-Za-z\s]+$", "required": true }],
+		"city": [{ "contexts": "billing,full,location", "conditions": "cityRequired", "regex" : "^[A-Za-z\s'-]+$", "required": true }],
 		"stateCode": [
 			{ "contexts": "billing,full,location", "conditions": "stateCodeRequired", "required": true }
 		],
