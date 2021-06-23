@@ -54,7 +54,7 @@ Notes:
 
 <cfoutput>
 	<!---TODO:subscriptionOrderItemName--->
-	<cfset displayPropertyList = "account.firstName,account.lastName,account.company,calculatedCurrentStatus.subscriptionStatusType.typeName,nextBillDate,expirationDate,gracePeriodTerm.termName,renewalPrice,autoPayFlag"/>
+	<cfset displayPropertyList = "account.firstName,account.lastName,account.company,subscriptionStatus.subscriptionStatusType.typeName,nextBillDate,expirationDate,gracePeriodTerm.termName,renewalPrice,autoPayFlag"/>
 	<cfset rc.subscriptionUsageCollectionList.setDisplayProperties(
 		displayPropertyList,
 		{
