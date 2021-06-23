@@ -139,6 +139,33 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
         return query;
 	}
 	
+	
+	        
+    /*
+    
+    create indices
+    
+    
+        CREATE INDEX IX_PT_cov1 ON swProductFilterFacetOption ( productTypeID, skuID, productTypeURLTitle, productTypeName, productPublishedStartDateTime DESC, productPublishedEndDateTime DESC );
+        CREATE INDEX IX_PT_cov2 ON swProductFilterFacetOption ( productTypeURLTitle, skuID, productTypeID, productTypeName, productPublishedStartDateTime DESC, productPublishedEndDateTime DESC );
+        
+        CREATE INDEX IX_BR_cov1 ON swProductFilterFacetOption ( brandID, skuID, brandName, productPublishedStartDateTime DESC, productPublishedEndDateTime DESC); 
+        CREATE INDEX IX_BR_cov2 ON swProductFilterFacetOption ( brandName, skuID, brandID, productPublishedStartDateTime DESC, productPublishedEndDateTime DESC); 
+        CREATE INDEX IX_BR_cov3 ON swProductFilterFacetOption ( productTypeURLTitle, brandID, skuID, brandName, productPublishedStartDateTime DESC, productPublishedEndDateTime DESC);
+    
+        CREATE INDEX IX_OP_cov1 ON swProductFilterFacetOption ( optionGroupCode, optionID, optionName, optionCode, optionGroupName, skuID, productPublishedStartDateTime DESC, productPublishedEndDateTime DESC );
+        CREATE INDEX IX_OP_f1 ON swProductFilterFacetOption ( optionGroupCode, optionID, skuID );
+        CREATE INDEX IX_OP_f2 ON swProductFilterFacetOption ( optionGroupCode, optionName, skuID );
+        CREATE INDEX IX_OP_f3 ON swProductFilterFacetOption ( optionGroupCode, optionCode, skuID );
+
+        CREATE INDEX IX_ATT_f1 ON swProductFilterFacetOption ( attributeCode, attributeOptionID, skuID);
+        CREATE INDEX IX_ATT_f2 ON swProductFilterFacetOption ( attributeCode, attributeOptionValue, skuID);
+        CREATE INDEX IX_ATT_f3 ON swProductFilterFacetOption ( attributeCode, attributeOptionUrlTitle, skuID);
+        CREATE INDEX IX_ATT_f4 ON swProductFilterFacetOption ( attributeCode, attributeOptionLabel, skuID);
+
+    
+    */
+	
 
 	public any function rePopulateProductFilterFacetOptionTable(){
         var startTicks = getTickCount();
@@ -163,6 +190,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
             RENAME TABLE `swProductFilterFacetOption` TO `old_swProductFilterFacetOption`, `tmp_swProductFilterFacetOption` TO `swProductFilterFacetOption`;
             DROP TABLE `old_swProductFilterFacetOption`;
         ";
+
         
         // *NOTE - using multi-query syntax here, as if the query takes too-much time, 
         //         the requests timeouts and the cf kills the request, 

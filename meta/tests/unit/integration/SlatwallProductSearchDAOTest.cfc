@@ -217,13 +217,13 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	    var testSearchQueryArray = [
             // 'brand=Abus,Arrow',
             // 'brand_id=2c9480847791123e01779122657d0acf',
-            'brand_id=2c92808477f3032d0177f30ae57102ed,2c938084760493a2017604c413a01007,2c9480847791123e01779122657d0acf',
+            // 'brand_id=2c92808477f3032d0177f30ae57102ed,2c938084760493a2017604c413a01007,2c9480847791123e01779122657d0acf',
             // 'brand_id=2c9480847791123e01779122657d0acf,2c9480847791123e0177911b1a37006d,2c938084760493a2017604c413a01007,2c92808477f3032d0177f30a76970036',
             // 'brand_slug=acb,pqr,1112233', // bad option
             
             // 'productType=Steel,Levers',
             // 'productType_id=2c91808575d3a3570175e7144d6e0069,2c9480847791123e01779122a4470ae0,2c938084760493a2017604c68a441533,2c9480847791123e01779123092e0af1',
-            // 'productType_id=2c96808477fca3d90177fca5cf1e0033',
+            'productType_id=2c96808477fca3d90177fca5cf1e0033',
             
             // 'brand=Gardall',
             // 'productType_slug=parts',
