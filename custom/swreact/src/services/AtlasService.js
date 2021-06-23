@@ -1,2 +1,0 @@
-const AtlasService = {}
-export { AtlasService }

@@ -267,7 +267,7 @@ component  accessors="true" output="false"
 	 * ?orderBy=someKey|direction,someOtherKey|direction ...
 	 * 
 	 */
-    public void function getProducts(required struct data, struct urlScope=url ){
+    public void function productSearch(required struct data, struct urlScope=url ){
         var hibachiScope = this.getHibachiScope();
         
         // we're not using RequestContext here, but the URL-scope
@@ -4667,7 +4667,7 @@ component  accessors="true" output="false"
 					arguments.data.ajaxResponse['skuID'] = sku.getSkuID();
 				
 					var skuCollectionList = this.getSkuService().getSkuCollectionList();
-				    skuCollectionList.setDisplayProperties( "skuID,skuCode,product.productName,product.productCode,product.productType.productTypeName,product.brand.brandName,listPrice,price,renewalPrice,calculatedSkuDefinition,activeFlag,publishedFlag,calculatedQATS");
+				    skuCollectionList.setDisplayProperties( "skuID,skuCode,product.productName,product.productCode,product.productType.productTypeName,product.brand.brandName,skuPrices.listPrice,skuPrices.price,skuPrices.renewalPrice,calculatedSkuDefinition,activeFlag,publishedFlag,calculatedQATS");
 		    	    skuCollectionList.addFilter('skuID',sku.getSkuID());
 					var results = skuCollectionList.getRecords()
 					if(!ArrayIsEmpty(results) ) {
