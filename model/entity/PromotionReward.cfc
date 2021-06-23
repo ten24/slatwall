@@ -175,8 +175,8 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 		}
 		return variables.currencyCode;
 	}
-	
-	public numeric function getAmount(any sku, string currencyCode, numeric quantity, any account){
+	// return type numeric causing error in validation
+	public any function getAmount(any sku, string currencyCode, numeric quantity, any account){
 		
 		//Get price from sku prices table for fixed amount rewards
 		if(getAmountType() == 'amount' && structKeyExists(arguments,'sku')){
