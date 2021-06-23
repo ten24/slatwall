@@ -178,6 +178,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	    dump(queryData);
 	    
 	    var start = getTickCount();
+		queryData['useJoinsInsteadWhere'] = false;
 	    var facetOptions = this.getDao().getPotentialFilterFacetsAndOptions(argumentCollection = queryData);
 	    var timeTook = getTickCount()-start;
 		dump("getProductFilterFacetOptions took #timeTook#");
@@ -230,7 +231,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
             
             // 'category_name=',
             
-            'option_productFinish_id=2c91808e757ef05301758d90688b0a29,2c91808e757ef05301758d90688b0a12',
+            // 'option_productFinish_id=2c91808e757ef05301758d90688b0a29,2c91808e757ef05301758d90688b0a12',
             // 'option_productFinish=p1,p2,p3',
             
             // 'option_safesFinish_id=2c91808372e5f4500172e6e6e05a0048',
@@ -245,7 +246,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
             // 'option_language=english,spanish',
             // 'option_size_slug=medium,small',
             
-            // 'keyword=Serrated',
+            'keyword=safe',
         ];
         
 	    var urlScope = URL ?: {};

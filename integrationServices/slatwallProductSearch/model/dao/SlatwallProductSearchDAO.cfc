@@ -1281,6 +1281,8 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
 	    param name="arguments.productType" default={};
 	    param name="arguments.applySiteFilter" default=false;
 	    
+        param name="arguments.keyword" default='';
+
 	    var facetsSqlFilterQueryParams = {};
 	    var facetsSqlFilterQueryFragments = {};
 	    var subFacetsSqlFilterQueryFragments = {};
@@ -1296,6 +1298,19 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
 	        ( productPublishedStartDateTime IS NULL OR productPublishedStartDateTime <= NOW() )
             AND ( productPublishedEndDateTime IS NULL OR productPublishedEndDateTime >= NOW() )
 	    ";
+	    
+	    if( arguments.keyword.len() ){
+            facetsSqlFilterQueryParams['keyword'] = "%"&arguments.keyword&"%";
+	        facetsSqlFilterQueryFragments['keyword'] = " 
+    	        skuID IN (
+    	            SELECT DISTINCT s.skuID
+                    	FROM swSku s
+                    LEFT JOIN swProduct p ON s.productID = p.productID 
+                    WHERE s.skuCode LIKE :keyword
+                        OR  p.productName LIKE :keyword OR p.productCode LIKE :keyword 
+                )
+            ";
+	    }
 
 	    for(var facetName in ['brand', 'content', 'category', 'productType'] ){
     	    facetsSqlFilterQueryFragments[facetName] = '';
@@ -1482,7 +1497,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
                     continue;
                 }
 
-                if(['attribute', 'option', 'productSite', 'productPublishedPeriod' ].find(facetName)){
+                if(['attribute', 'option', 'productSite', 'keyword', 'productPublishedPeriod' ].find(facetName)){
                     if( filterQueryFragments.len() ){
                         filterQueryFragments &= ' AND';
                     }
@@ -1537,6 +1552,8 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
 	    param name="arguments.productType" default={};
 	    param name="arguments.applySiteFilter" default=false;
 	    
+        param name="arguments.keyword" default='';
+	    
 	    var facetsSqlFilterQueryParams = {};
 	    var facetsAdditionalJOINFragments = {};
 	    var subFacetsAdditionalJOINFragments = {};
@@ -1545,6 +1562,19 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
 	        facetsAdditionalJOINFragments['productSite'] = '';
 	        facetsSqlFilterQueryParams['siteID'] = arguments.site.getSiteID();
 	        facetsAdditionalJOINFragments['productSite'] = '(ffo.siteID = :siteID OR ffo.siteID IS NULL)';
+	    }
+	    
+	    if( arguments.keyword.len() ){
+            facetsSqlFilterQueryParams['keyword'] = "%"&arguments.keyword&"%";
+	        facetsAdditionalJOINFragments['keyword'] = " 
+    	        ffo.skuID IN (
+    	            SELECT DISTINCT s.skuID
+                    	FROM swSku s
+                    LEFT JOIN swProduct p ON s.productID = p.productID 
+                    WHERE s.skuCode LIKE :keyword
+                        OR  p.productName LIKE :keyword OR p.productCode LIKE :keyword 
+                )
+            ";
 	    }
 	    
 	    // CF-Server's date-time instead of BD-Server's 
@@ -1725,7 +1755,9 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
         param name="arguments.productType" default={};
         param name="arguments.includeSKUCount" default=true;
 	    param name="arguments.applySiteFilter" default=false;
-	    
+        
+        param name="arguments.keyword" default='';
+        
 	    var facetsMetadata = this.getFacetsMetaData();
     	var queryFragmentsData = this.makeFacetSqlFilterQueryFragments(argumentCollection=arguments);
 
@@ -1842,6 +1874,8 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
         param name="arguments.productType" default={};
         param name="arguments.includeSKUCount" default=true;
 	    param name="arguments.applySiteFilter" default=false;
+	    
+        param name="arguments.keyword" default='';
 	    
 	    var facetsMetadata = this.getFacetsMetaDataForJOIN();
     	var queryFragmentsData = this.makeFacetSqlFilterQueryFragmentsForJOIN(argumentCollection=arguments);
@@ -1961,6 +1995,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
 	    param name="arguments.applySiteFilter" default=false;
 	    
 	    param name="arguments.useJoinsInsteadWhere" default=true;
+        param name="arguments.keyword" default='';
         
         var startTicks = getTickCount();
 
