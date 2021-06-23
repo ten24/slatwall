@@ -54,6 +54,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
 	
 	public any function setting(required string settingName, array filterEntities=[], formatValue=false){
 	    return this.getSlatwallProductSearchIntegrationCFC().setting(argumentCollection=arguments);
+	    
 	}
 	
 	public string function getCurrentRequestFullURL(){
@@ -848,79 +849,53 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
 	    }
 	}
 	
-	public string function getFacetFilterKeyColumnNameByFacetNameAndFacetValueKayForJOIN(required string facetName, required string facetValueKey){
+	public string function getFacetFilterKeyColumnNameJOINPrefixByFacetNameAndFacetValueKay(required string facetName, required string facetValueKey){
 	    
 	    if(arguments.facetName == 'brand'){
 	        if(arguments.facetValueKey == 'id' ){
-	            return 'br.brandID';
+	            return 'br';
 	        }  
 	        if(arguments.facetValueKey == 'name' ){
-	            return 'br.brandName';
+	            return 'ffo';
 	        }
 	    }
 	    
 	    if(arguments.facetName == 'content'){
 	        if(arguments.facetValueKey == 'id' ){
-	            return 'co.contentID';
+	            return 'co';
 	        }  
 	        if(arguments.facetValueKey == 'name' ){
-	            return 'co.contentTitle';
+	            return 'ffo';
 	        }
 	        if(arguments.facetValueKey == 'slug' ){
-	            return 'co.contentUrlTitle';
+	            return 'ffo';
 	        }
 	    }
 	    
 	    if(arguments.facetName == 'category'){
 	        if(arguments.facetValueKey == 'id' ){
-	            return 'ct.categoryID';
+	            return 'ct';
 	        }  
 	        if(arguments.facetValueKey == 'name' ){
-	            return 'ct.categoryName';
+	            return 'ffo';
 	        }  
 	        if(arguments.facetValueKey == 'slug' ){
-	            return 'ct.categoryUrlTitle';
+	            return 'ffo';
 	        }
 	    }
 	    
 	    if(arguments.facetName == 'productType'){
 	        if(arguments.facetValueKey == 'id' ){
-	            return 'pt.productTypeID';
+	            return 'pt';
 	        }  
 	        if(arguments.facetValueKey == 'name' ){
-	            return 'pt.productTypeName';
+	            return 'ffo';
 	        }  
 	        if(arguments.facetValueKey == 'slug' ){
-	            return 'pt.productTypeUrlTitle';
+	            return 'ffo';
 	        }
 	    }
 	    
-	    if(arguments.facetName == 'attribute'){
-	        if(arguments.facetValueKey == 'id' ){
-	            return 'ffo.attributeOptionID';
-	        }  
-	        if(arguments.facetValueKey == 'name' ){
-	            return 'ffo.attributeOptionLabel';
-	        }  
-	        if(arguments.facetValueKey == 'slug' ){
-	            return 'ffo.attributeOptionUrlTitle';
-	        }
-	        if(arguments.facetValueKey == 'code' ){
-	            return 'ffo.attributeOptionValue';
-	        }
-	    }
-
-	    if(arguments.facetName == 'option'){
-	        if(arguments.facetValueKey == 'id' ){
-	            return 'ffo.optionID';
-	        }  
-	        if(arguments.facetValueKey == 'name' ){
-	            return 'ffo.optionName';
-	        }
-	        if(arguments.facetValueKey == 'code' ){
-	            return 'ffo.optionCode';
-	        }
-	    }
 	}
 
 	public struct function getFacetsMetaData(){
@@ -1541,13 +1516,13 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
 	    if( arguments.applySiteFilter && !isNull(arguments.site) ){
 	        facetsAdditionalJOINFragments['productSite'] = '';
 	        facetsSqlFilterQueryParams['siteID'] = arguments.site.getSiteID();
-	        facetsAdditionalJOINFragments['productSite'] = '(siteID = :siteID OR siteID IS NULL)';
+	        facetsAdditionalJOINFragments['productSite'] = '(ffo.siteID = :siteID OR ffo.siteID IS NULL)';
 	    }
 	    
 	    // CF-Server's date-time instead of BD-Server's 
 	    facetsAdditionalJOINFragments['productPublishedPeriod'] = "
-	        ( productPublishedStartDateTime IS NULL OR productPublishedStartDateTime <= NOW() )
-            AND ( productPublishedEndDateTime IS NULL OR productPublishedEndDateTime >= NOW() )
+	        ( ffo.productPublishedStartDateTime IS NULL OR ffo.productPublishedStartDateTime <= NOW() )
+            AND ( ffo.productPublishedEndDateTime IS NULL OR ffo.productPublishedEndDateTime >= NOW() )
 	    ";
 
 	    for(var facetName in ['brand', 'content', 'category', 'productType'] ){
@@ -1558,9 +1533,13 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
     	        var joinFragment = '';
     	        for(var facetValueKey in selectedFacetOptions ){
                     var filterValue = selectedFacetOptions[facetValueKey];
-                    var columnName = this.getFacetFilterKeyColumnNameByFacetNameAndFacetValueKayForJOIN(facetName, facetValueKey);
+                    var columnName = this.getFacetFilterKeyColumnNameByFacetNameAndFacetValueKay(facetName, facetValueKey);
                     
-                    if( !isNUll(columnName) ){
+                    if( !isNull(columnName) ){
+        
+                        var prefix = this.getFacetFilterKeyColumnNameJOINPrefixByFacetNameAndFacetValueKay(facetName, facetValueKey);
+                        columnName = prefix&'.'&columnName;
+                        
                         var filterValuePlaceholder = facetName&'_'&columnName;
                         filterValuePlaceholder = filterValuePlaceholder.replace('.', '_', 'ALL');
                         
@@ -1650,7 +1629,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
 	            
 	            // loop over different filter values [id, name, code, slug] 
     	        for(var facetValueKey in selectedSubFacetOptions ){
-                    var facetValueColumnName = this.getFacetFilterKeyColumnNameByFacetNameAndFacetValueKayForJOIN(facetName, facetValueKey);
+                    var facetValueColumnName = this.getFacetFilterKeyColumnNameByFacetNameAndFacetValueKay(facetName, facetValueKey);
     	            if( isNull(facetValueColumnName) ){
     	                continue;
     	            }
@@ -1660,8 +1639,6 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
                     filterValuePlaceholder = filterValuePlaceholder.replace('.', '_', 'ALL');
                     
                     facetsSqlFilterQueryParams[ filterValuePlaceholder ] = facetKeyOptions;
-                    
-                    facetValueColumnName = listLast(facetValueColumnName, '.');
                     
                     if( isArray(facetKeyOptions) ){
                         subFacetQueryFragment &= ' AND #facetValueColumnName# IN (:#filterValuePlaceholder#)';
@@ -1945,7 +1922,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
 	}
 
 	
-	public any function getPotentialFilterFacetsAndOptions(boolean useJoin = false){
+	public any function getPotentialFilterFacetsAndOptions(){
         param name="arguments.brand" default={};
         param name="arguments.option" default={};
         param name="arguments.content" default={};
@@ -1954,16 +1931,16 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
         param name="arguments.productType" default={};
         param name="arguments.includeSKUCount" default=true;
 	    param name="arguments.applySiteFilter" default=false;
+	    
+	    param name="arguments.useJoinsInsteadWhere" default=true;
         
         var startTicks = getTickCount();
 
-        if(arguments.useJoin){
+        if(arguments.useJoinsInsteadWhere){
 	        var optionsQueryData = this.doGetAllFacetOptionsSQLJOINQueryAndParams(argumentCollection = arguments);
         } else {
 	        var optionsQueryData = this.doGetAllFacetOptionsSQLQueryAndParams(argumentCollection = arguments);
         }
-        
-        // dump(optionsQueryData);
 	    
         var queryService = new Query();
         queryService.setSQL( optionsQueryData.sql );
@@ -1980,7 +1957,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
         queryService = queryService.execute().getResult();
 
 	    this.logQuery(queryService, 'getPotentialFilterFacetsAndOptions' );
-        this.logHibachi("SlatwallProductSearchDAO:: getPotentialFilterFacetsAndOptions [useJoin: #arguments.useJoin#] took #getTickCount()-startTicks# ms.;");
+        this.logHibachi("SlatwallProductSearchDAO:: getPotentialFilterFacetsAndOptions [useJoinsInsteadWhere: #arguments.useJoinsInsteadWhere#] took #getTickCount()-startTicks# ms.;");
         return queryService;
 	}
 	

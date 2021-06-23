@@ -184,12 +184,12 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	    dump(facetOptions);
 	   
 		start = getTickCount();
-		queryData['useJoin'] = true;
+		queryData['useJoinsInsteadWhere'] = true;
 		var facetOptions = this.getDao().getPotentialFilterFacetsAndOptions(argumentCollection = queryData);
         timeTook = getTickCount()-start;
 		dump("getProductFilterFacetOptions:: JOIN took #timeTook#");
 		
-// 		queryData['useJoin'] = false;
+// 		queryData['useJoinsInsteadWhere'] = false;
 // 		start = getTickCount();
 // 		var facetOptions = this.getDao().getPotentialFilterFacetsAndOptions(argumentCollection = queryData);
 //         timeTook = getTickCount()-start;
@@ -217,7 +217,7 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
 	    var testSearchQueryArray = [
             // 'brand=Abus,Arrow',
             // 'brand_id=2c9480847791123e01779122657d0acf',
-            // 'brand_id=2c9480847791123e01779122657d0acf,2c9480847791123e0177911b1a37006d,2c928084761df6e801761e02e2fd0014',
+            'brand_id=2c92808477f3032d0177f30ae57102ed,2c938084760493a2017604c413a01007,2c9480847791123e01779122657d0acf',
             // 'brand_id=2c9480847791123e01779122657d0acf,2c9480847791123e0177911b1a37006d,2c938084760493a2017604c413a01007,2c92808477f3032d0177f30a76970036',
             // 'brand_slug=acb,pqr,1112233', // bad option
             
@@ -225,12 +225,12 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
             // 'productType_id=2c91808575d3a3570175e7144d6e0069,2c9480847791123e01779122a4470ae0,2c938084760493a2017604c68a441533,2c9480847791123e01779123092e0af1',
             // 'productType_id=2c96808477fca3d90177fca5cf1e0033',
             
-            'brand=Gardall',
-            'productType_slug=parts',
+            // 'brand=Gardall',
+            // 'productType_slug=parts',
             
             // 'category_name=',
             
-            // 'option_productFinish_id=2c91808e757ef05301758d90688b0a29,2c91808e757ef05301758d90688b0a12',
+            'option_productFinish_id=2c91808e757ef05301758d90688b0a29,2c91808e757ef05301758d90688b0a12',
             // 'option_productFinish=p1,p2,p3',
             
             // 'option_safesFinish_id=2c91808372e5f4500172e6e6e05a0048',
