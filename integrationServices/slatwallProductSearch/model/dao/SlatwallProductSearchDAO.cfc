@@ -1267,7 +1267,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
     	        //  + sku-stock for locations having no site assigned    e.g. `Default` location
     	        //
                 stockAvailabilitySQLFragment &= "
-                    stk.locationID IN (
+                    AND stk.locationID IN (
                         SELECT DISTINCT locationID from swLocationSite WHERE siteID = :siteID 
                             UNION ALL
                         SELECT DISTINCT locationID FROM swLocation where locationID NOT IN (SELECT DISTINCT locationID FROM swLocationSite) 
