@@ -2,7 +2,7 @@
 	"properties": {
 		"countryCode": [{ "contexts": "save", "required": true, "minLength": 2, "maxLength": 2 }],
 		"countryName": [{ "contexts": "save", "required": true, "regex" : "^[A-Za-z\s'-]+$" }],
-		"countryCode3Digit": [{ "contexts": "save", "minLength": 3, "maxLength": 3, "uniqueOrNull": true, "regex": "^[a-zA-Z0-9-_.|:~^]+$" }],
+		"countryCode3Digit": [{ "contexts": "save", "minLength": 3, "maxLength": 3, "uniqueOrNull": true, "regex": "^[A-Z]+$" }],
 		"countryISONumber": [{ "contexts": "save", "dataType": "numeric" }]
 	}
 }
