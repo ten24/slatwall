@@ -484,6 +484,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 				orderItems.sku.product.productType.productTypeName,
 				orderItems.sku.product.productType.systemCode,
 				orderItems.sku.product.productDescription,
+				orderItems.orderItemGiftRecipients.orderItemGiftRecipientID,
+				orderItems.orderItemGiftRecipients.firstName,
+				orderItems.orderItemGiftRecipients.lastName,
+				orderItems.orderItemGiftRecipients.emailAddress,
 			";
 		}
 		
