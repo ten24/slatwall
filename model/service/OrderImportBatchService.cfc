@@ -94,7 +94,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					for(var i=1; i<=importQuery.recordCount; i++){
 						var rowError = false;
 						for(var column in columns){
-							if(listFindNoCase(requiredColumns,column)){
+							if(listFindNoCase(requiredColumns,column) && ( !structKeyExists(importQuery, column) || !len( importQuery[column][i] ) )){
 								structAppend(errors,{'row#i#':'Column # column # is required'});
 								rowError=true;
 								if(rowError){
