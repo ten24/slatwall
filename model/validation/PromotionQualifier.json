@@ -1,0 +1,5 @@
+{
+  "properties": {
+    "cacheDuration": [{ "contexts": "save", "dataType": "numeric" }]
+  }
+}
