@@ -308,11 +308,13 @@ component  accessors="true" output="false"
         // Additional Params
         param name="arguments.parsedQuery.includeSKUCount" default=true;
         param name="arguments.parsedQuery.applySiteFilter" default=false;
+        param name="arguments.parsedQuery.applyStockFilter" default=false;
+
         param name="arguments.parsedQuery.priceRangesCount" default=5;
         param name="arguments.parsedQuery.includePagination" default=false;
         param name="arguments.parsedQuery.propertyIdentifierList" default='';
 	    param name="arguments.parsedQuery.includePotentialFilters" default=true;
-	    param name="arguments.parsedQuery.returnFacetList" default='brand,option,attribute'; // brand,option,attribute,category,productType,
+	    param name="arguments.parsedQuery.returnFacetList" default='brand,option,attribute,sorting,priceRange'; // brand,option,attribute,category,sorting,priceRange,productType
 
 	    var currentRequestSite = hibachiScope.getCurrentRequestSite();
 	    if( !isNUll(currentRequestSite) ){
