@@ -140,6 +140,8 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         param name="arguments.includeSKUCount" default=true;
         param name="arguments.priceRangesCount" default=5;
 	    param name="arguments.applySiteFilter" default=false;
+	    
+        param name="arguments.keyword" default='';
         
 	    var rawFilterOptions = this.getSlatwallProductSearchDAO().getPotentialFilterFacetsAndOptions( argumentCollection = arguments);
 	    var startTicks = getTickCount();
@@ -512,7 +514,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
             for( var propertyIdentifier in ['product.productName', 'product.productCode', 'sku.skuCode'] ){
                 collectionList.addFilter(
                     propertyIdentifier=propertyIdentifier, 
-                    value='%#arguments.keyword#%', 
+                    value="%"&arguments.keyword&"%", 
                     comparisonOperator='LIKE', 
                     filterGroupAlias='keyword',
                     logicalOperator='OR'
