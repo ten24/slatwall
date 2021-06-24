@@ -80,12 +80,12 @@ component entityname="SlatwallProductFilterFacetOption" table="SwProductFilterFa
 	property name="optionCode" ormtype="string" length="100"  index="IX_OPTION_CODE";
 	property name="optionSortOrder" ormtype="integer";
 
-    property name="optionGroupName" ormtype="string";
+    property name="optionGroupName" length="50" ormtype="string";
     property name="optionGroupCode" length="50" ormtype="string" index="IX_OPTION_GROUP_CODE";
 	property name="optionGroupSortOrder" ormtype="integer";
 	
 	property name="attributeCode" length="50" ormtype="string" index="IX_ATTRIBUTE_CODE";
-	property name="attributeName" ormtype="string";
+	property name="attributeName" length="50" ormtype="string";
 	property name="attributeUrlTitle" ormtype="string";
 	property name="attributeSortOrder" ormtype="integer";
 	property name="attributeInputType" ormtype="string" index="IX_ATTRIBUTE_INPUT_TYPE";
@@ -95,9 +95,9 @@ component entityname="SlatwallProductFilterFacetOption" table="SwProductFilterFa
 	property name="attributeSetObject" ormtype="string" index="IX_ATTRIBUTE_SET_OBJECT";
 	property name="attributeSetSortOrder" ormtype="integer";
 
-    property name="attributeOptionValue" ormtype="string" length="100"  index="IX_ATTRIBUTE_OPTION_VALUE";
-	property name="attributeOptionLabel" ormtype="string" length="100"  index="IX_ATTRIBUTE_OPTION_LABEL";
-	property name="attributeOptionUrlTitle" ormtype="string" length="100"  index="IX_ATTRIBUTE_OPTION_URL";
+    property name="attributeOptionValue" ormtype="string" length="80"  index="IX_ATTRIBUTE_OPTION_VALUE";
+	property name="attributeOptionLabel" ormtype="string" length="80"  index="IX_ATTRIBUTE_OPTION_LABEL";
+	property name="attributeOptionUrlTitle" ormtype="string" length="80"  index="IX_ATTRIBUTE_OPTION_URL";
 	property name="attributeOptionSortOrde" ormtype="integer";
 	
 	property name="productPublishedStartDateTime" ormtype="timestamp";

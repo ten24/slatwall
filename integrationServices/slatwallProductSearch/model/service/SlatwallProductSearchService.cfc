@@ -137,9 +137,12 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    param name="arguments.category" default={};
 	    param name="arguments.attribute" default={};
 	    param name="arguments.productType" default={};
+	    
         param name="arguments.includeSKUCount" default=true;
         param name="arguments.priceRangesCount" default=5;
 	    param name="arguments.applySiteFilter" default=false;
+	    
+	    param name="arguments.returnFacetList" default='brand,option,attribute'; // brand,option,attribute,category,productType,
 	    
         param name="arguments.keyword" default='';
         
@@ -150,6 +153,11 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         // - duplicate-removal 
         // - faster lookups 
 	    var potentialFacetsAndOption = this.getFacetsMetaData();
+	    for(var facetName in potentialFacetsAndOption.keyArray() ){
+    	    if(!arguments.returnFacetList.listFindNoCase( facetName) ){
+                potentialFacetsAndOption.delete(facetName);
+            }
+	    }
 
        	this.logHibachi("SlatwallProductSearchService:: getPotentialFilterFacetsAndOptionsFormatted - processing - #rawFilterOptions.recordCount# ");
             
@@ -639,7 +647,9 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         param name="arguments.priceRangesCount" default=5;
         param name="arguments.includePagination" default=false;
 	    param name="arguments.includePotentialFilters" default=true;
-	    
+	    param name="arguments.propertyIdentifierList" default='';
+	    param name="arguments.returnFacetList" default='brand,option,attribute'; // brand,option,attribute,category,productType,
+
 	    
 	    var collectionData = this.getBaseSearchCollectionData(argumentCollection=arguments);
 	    
