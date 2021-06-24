@@ -104,6 +104,18 @@ component displayname="Currency" entityname="SlatwallCurrency" table="SwCurrency
 
 	// =============== START: Custom Validation Methods ====================
 	
+	public boolean function isCurrencyNotUsed(){
+
+		var SkuCost=getService('SkuService').getSkuCostCollectionList();
+		SkuCost.addFilter('currency.currencyCode',this.getCurrencyCode());
+		if(SkuCost.getRecordsCount() != 0){
+			return false;
+		}else{
+			return true;
+		}
+	}
+	
+	
 	// ===============  END: Custom Validation Methods =====================
 	
 	// =============== START: Custom Formatting Methods ====================
