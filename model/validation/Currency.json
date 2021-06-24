@@ -6,6 +6,6 @@
 			],
 		"currencyName": [{ "contexts": "save", "required": true }],
 		"currencySymbol": [{ "contexts": "save", "required": true }],
-		"currencyRates":[]
+		"currencyRates":[ { "contexts": "delete", "maxCollection": 0 } ]
 	 }
 }
