@@ -312,7 +312,8 @@ component  accessors="true" output="false"
         param name="arguments.parsedQuery.includePagination" default=false;
         param name="arguments.parsedQuery.propertyIdentifierList" default='';
 	    param name="arguments.parsedQuery.includePotentialFilters" default=true;
-	    
+	    param name="arguments.parsedQuery.returnFacetList" default='brand,option,attribute'; // brand,option,attribute,category,productType,
+
 	    var currentRequestSite = hibachiScope.getCurrentRequestSite();
 	    if( !isNUll(currentRequestSite) ){
             arguments.parsedQuery.site = currentRequestSite;

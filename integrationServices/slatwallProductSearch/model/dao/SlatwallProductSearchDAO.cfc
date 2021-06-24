@@ -145,9 +145,13 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
     
     create indices
     
+    CREATE INDEX IX_PT_cov1 ON swProductFilterFacetOption (skuID, productTypeID, productTypeName, productPublishedStartDateTime DESC, productPublishedEndDateTime DESC);
+    CREATE INDEX IX_PT_cov2 ON swProductFilterFacetOption (productTypeURLTitle, skuID, productTypeID, productTypeName, productPublishedStartDateTime DESC, productPublishedEndDateTime DESC);
+
+
     
-        CREATE INDEX IX_PT_cov1 ON swProductFilterFacetOption ( productTypeID, skuID, productTypeURLTitle, productTypeName, productPublishedStartDateTime DESC, productPublishedEndDateTime DESC );
-        CREATE INDEX IX_PT_cov2 ON swProductFilterFacetOption ( productTypeURLTitle, skuID, productTypeID, productTypeName, productPublishedStartDateTime DESC, productPublishedEndDateTime DESC );
+        CREATE INDEX IX_PT_cov1 ON swProductFilterFacetOption ( productTypeURLTitle, skuID, productPublishedStartDateTime DESC, productPublishedEndDateTime DESC, productTypeID, productTypeName );
+        CREATE INDEX IX_PT_cov3 ON swProductFilterFacetOption ( productTypeURLTitle, productPublishedStartDateTime DESC, productPublishedEndDateTime DESC, skuID, productTypeID, productTypeName );
         
         CREATE INDEX IX_BR_cov1 ON swProductFilterFacetOption ( brandID, skuID, brandName, productPublishedStartDateTime DESC, productPublishedEndDateTime DESC); 
         CREATE INDEX IX_BR_cov2 ON swProductFilterFacetOption ( brandName, skuID, brandID, productPublishedStartDateTime DESC, productPublishedEndDateTime DESC); 
@@ -424,7 +428,8 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
             LEFT JOIN swBrand br
                 ON br.brandID = p.brandID
                     AND ( br.activeFlag = 1 OR br.activeFlag IS NULL ) 
-
+                    AND ( br.publishedFlag = 1 OR br.publishedFlag IS NULL )
+            
             LEFT JOIN swProductCategory pc
                 ON pc.productID = p.productID            
             LEFT JOIN swCategory cr
@@ -1756,12 +1761,18 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
 	    param name="arguments.applySiteFilter" default=false;
         
         param name="arguments.keyword" default='';
+	    param name="arguments.returnFacetList" default='brand,option,attribute'; // brand,option,attribute,category,productType,
         
 	    var facetsMetadata = this.getFacetsMetaData();
     	var queryFragmentsData = this.makeFacetSqlFilterQueryFragments(argumentCollection=arguments);
 
         var getAllFacetOptionsSQL = '';
         for(var facetName in facetsMetadata ){
+            
+            if(!arguments.returnFacetList.listFindNoCase( facetName) ){
+                continue;
+            }
+            
             if( len(getAllFacetOptionsSQL) ){
                // union-all because there won't be any duplictes in the result-set, 
                // so we can avoide some computation, by avoiding the sorting of result-set to remove duplicates [ default behaviour of simple UNION]
@@ -1874,13 +1885,21 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
         param name="arguments.includeSKUCount" default=true;
 	    param name="arguments.applySiteFilter" default=false;
 	    
+	    param name="arguments.returnFacetList" default='brand,option,attribute'; // brand,option,attribute,category,productType,
+        
         param name="arguments.keyword" default='';
 	    
 	    var facetsMetadata = this.getFacetsMetaDataForJOIN();
     	var queryFragmentsData = this.makeFacetSqlFilterQueryFragmentsForJOIN(argumentCollection=arguments);
 
         var getAllFacetOptionsSQL = '';
+        
         for(var facetName in facetsMetadata ){
+            
+            if(!arguments.returnFacetList.listFindNoCase( facetName) ){
+                continue;
+            }
+            
             if( len(getAllFacetOptionsSQL) ){
                // union-all because there won't be any duplictes in the result-set, 
                // so we can avoide some computation, by avoiding the sorting of result-set to remove duplicates [ default behaviour of simple UNION]
@@ -1994,6 +2013,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
 	    param name="arguments.applySiteFilter" default=false;
 	    
 	    param name="arguments.useJoinsInsteadWhere" default=true;
+	    param name="arguments.returnFacetList" default='brand,option,attribute'; // brand,option,attribute,category,productType,
         param name="arguments.keyword" default='';
         
         var startTicks = getTickCount();

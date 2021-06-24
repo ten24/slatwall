@@ -226,11 +226,11 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
             // 'productType_id=2c91808575d3a3570175e7144d6e0069,2c9480847791123e01779122a4470ae0,2c938084760493a2017604c68a441533,2c9480847791123e01779123092e0af1',
             // 'productType_id=2c96808477fca3d90177fca5cf1e0033',
             
-            "productType_slug=parts",
-            "brand=Gardall",
+            // "productType_slug=parts",
+            // "brand=Gardall",
             
             // 'brand=Gardall',
-            // 'productType_slug=parts',
+            'productType_slug=parts',
             
             // 'category_name=',
             
@@ -248,8 +248,9 @@ component accessors="true" extends="Slatwall.meta.tests.unit.SlatwallUnitTestBas
             
             // 'option_language=english,spanish',
             // 'option_size_slug=medium,small',
-            
-            'keyword=safe',
+            // 'productType_slug=key-releases'
+
+            // 'keyword=safe',
         ];
         
 	    var urlScope = URL ?: {};
