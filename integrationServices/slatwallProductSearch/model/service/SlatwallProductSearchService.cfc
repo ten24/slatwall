@@ -141,8 +141,9 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         param name="arguments.includeSKUCount" default=true;
         param name="arguments.priceRangesCount" default=5;
 	    param name="arguments.applySiteFilter" default=false;
+        param name="arguments.applyStockFilter" default=false;
 	    
-	    param name="arguments.returnFacetList" default='brand,option,attribute'; // brand,option,attribute,category,productType,
+	    param name="arguments.returnFacetList" default='brand,option,attribute,sorting,priceRange'; // brand,option,attribute,category,sorting,priceRange,productType
 	    
         param name="arguments.keyword" default='';
         
@@ -359,6 +360,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 		param name="arguments.priceGroupCode" default='';
 		
         param name="arguments.applySiteFilter" default=false;
+        param name="arguments.applyStockFilter" default=false;
         
 	    // facets
 	    param name="arguments.brand" default={};
@@ -411,7 +413,9 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
             filterGroupAlias = 'publishedEndDateTimeFilter');
         
         // STOCK, 
-        collectionList.addFilter('sku.stocks.calculatedQATS', 0, '>');
+        if(arguments.applyStockFilter){
+            collectionList.addFilter('sku.stocks.calculatedQATS', 0, '>');
+        }
         
         if( arguments.applySiteFilter && !isNull(arguments.site) ){
             // site's filters
@@ -644,11 +648,12 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
         // additional properties
         param name="arguments.includeSKUCount" default=true;
         param name="arguments.applySiteFilter" default=false;
+        param name="arguments.applyStockFilter" default=false;
         param name="arguments.priceRangesCount" default=5;
         param name="arguments.includePagination" default=false;
 	    param name="arguments.includePotentialFilters" default=true;
 	    param name="arguments.propertyIdentifierList" default='';
-	    param name="arguments.returnFacetList" default='brand,option,attribute'; // brand,option,attribute,category,productType,
+	    param name="arguments.returnFacetList" default='brand,option,attribute,category,sorting,priceRange'; // brand,option,attribute,category,sorting,priceRange,productType
 
 	    
 	    var collectionData = this.getBaseSearchCollectionData(argumentCollection=arguments);
@@ -693,7 +698,10 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    // filter's options
 	    if( arguments.includePotentialFilters ){
 	        var potentialFilters = this.getPotentialFilterFacetsAndOptionsFormatted(argumentCollection=arguments);
-	        potentialFilters['priceRange']['options'] = this.makePriceRangeOptions(arguments.priceRangesCount, collectionData.priceRangeCollectionList );
+	        
+	        if( arguments.returnFacetList.listFindNoCase('proceRange') ){
+	            potentialFilters['priceRange']['options'] = this.makePriceRangeOptions(arguments.priceRangesCount, collectionData.priceRangeCollectionList );
+	        }
 	        
 	        resultSet['potentialFilters'] = potentialFilters;
 	    }
