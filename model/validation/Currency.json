@@ -2,10 +2,10 @@
 	"properties": {
 		"currencyCode": [
 			{ "contexts": "save", "required": true, "maxLength": 3, "unique": true },
-			{ "contexts": "delete", "maxCollection": 0 }
+			{ "contexts": "delete", "method": "isCurrencyNotUsed" }
 			],
 		"currencyName": [{ "contexts": "save", "required": true }],
 		"currencySymbol": [{ "contexts": "save", "required": true }],
-		
-	}
+		"currencyRates":[]
+	 }
 }
