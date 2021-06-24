@@ -1255,23 +1255,28 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
         thisFacetOptionsQuery = replace(thisFacetOptionsQuery, '$filterQueryFragment$', filterQueryFragment );
         
         var stockAvailabilitySQLFragment = "";
-        if(arguments.applyStockFilter ){
-            stockAvailabilitySQLFragment = " INNER JOIN swStock stk ON rs.skuID = stk.skuID AND stk.calculatedQATS > 0 ";
-        }
         
-        if( arguments.applySiteFilter && arguments.site.hasLocation() ){
-	        // we're filtering for sku-stock for 
-	        // 
-            //  locations having that perticular site 
-	        //  + sku-stock for locations having no site assigned    e.g. `Default` location
-	        //
-            stockAvailabilitySQLFragment &= "
-                    AND stk.locationID IN (
+        if(arguments.applyStockFilter ){
+            
+            stockAvailabilitySQLFragment = " INNER JOIN swStock stk ON rs.skuID = stk.skuID AND stk.calculatedQATS > 0 ";
+            
+            if( arguments.applySiteFilter && arguments.site.hasLocation() ){
+    	        // we're filtering for sku-stock for 
+    	        // 
+                //  locations having that perticular site 
+    	        //  + sku-stock for locations having no site assigned    e.g. `Default` location
+    	        //
+                stockAvailabilitySQLFragment &= "
+                    stk.locationID IN (
                         SELECT DISTINCT locationID from swLocationSite WHERE siteID = :siteID 
                             UNION ALL
                         SELECT DISTINCT locationID FROM swLocation where locationID NOT IN (SELECT DISTINCT locationID FROM swLocationSite) 
-                    )";
-	    } 
+                    )
+                ";
+    	    } 
+        }
+        
+	    
         thisFacetOptionsQuery = replace(thisFacetOptionsQuery, '$stockAvailabilitySQLFragment$', stockAvailabilitySQLFragment );
         
         return thisFacetOptionsQuery;
@@ -1526,22 +1531,27 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
         thisFacetOptionsQuery = replace(thisFacetOptionsQuery, '$filterQueryFragment$', filterQueryFragments );
         
         var stockAvailabilitySQLFragment = "";
+        
         if(arguments.applyStockFilter ){
+            
             stockAvailabilitySQLFragment = " INNER JOIN swStock stk ON rs.skuID = stk.skuID AND stk.calculatedQATS > 0 ";
-        }
-        if( arguments.applySiteFilter && arguments.site.hasLocation() ){
-	        // we're filtering for sku-stock for 
-	        // 
-            //  locations having that perticular site 
-	        //  + sku-stock for locations having no site assigned    e.g. `Default` location
-	        //
-            stockAvailabilitySQLFragment &= "
+            
+            if( arguments.applySiteFilter && arguments.site.hasLocation() ){
+    	        // we're filtering for sku-stock for 
+    	        // 
+                //  locations having that perticular site 
+    	        //  + sku-stock for locations having no site assigned    e.g. `Default` location
+    	        //
+    	        
+                stockAvailabilitySQLFragment &= "
                     AND stk.locationID IN (
                         SELECT DISTINCT locationID from swLocationSite WHERE siteID = :siteID 
                             UNION ALL
                         SELECT DISTINCT locationID FROM swLocation where locationID NOT IN (SELECT DISTINCT locationID FROM swLocationSite) 
-                    )";
-	    } 
+                    )
+                ";
+    	    } 
+        }
         thisFacetOptionsQuery = replace(thisFacetOptionsQuery, '$stockAvailabilitySQLFragment$', stockAvailabilitySQLFragment );
         
         return thisFacetOptionsQuery;
