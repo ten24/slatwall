@@ -1211,9 +1211,10 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
 	public string function makeGetFacetOptionQuery(
 	    required struct facetMetaData, 
 	    required struct facetsFilterQueryFragments, 
-	    boolean includeSKUCount=true
-	    boolean applySiteFilter=false
-	    any site,
+	    boolean includeSKUCount=true,
+	    boolean applySiteFilter=false,
+	    boolean applyStockFilter=false,
+	    any site
 	){
 	    
 	    var thisFacetOptionsQuery = this.getFacetOptionQuerySQLTemplate(arguments.includeSKUCount);
@@ -1253,11 +1254,11 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
         
         thisFacetOptionsQuery = replace(thisFacetOptionsQuery, '$filterQueryFragment$', filterQueryFragment );
         
-        var stockAvailabilitySQLFragment = "    
-            INNER JOIN swStock stk 
-                ON rs.skuID = stk.skuID 
-                AND stk.calculatedQATS > 0
-        ";
+        var stockAvailabilitySQLFragment = "";
+        if(arguments.applyStockFilter ){
+            stockAvailabilitySQLFragment = " INNER JOIN swStock stk ON rs.skuID = stk.skuID AND stk.calculatedQATS > 0 ";
+        }
+        
         if( arguments.applySiteFilter && arguments.site.hasLocation() ){
 	        // we're filtering for sku-stock for 
 	        // 
@@ -1284,7 +1285,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
 	    param name="arguments.attribute" default={};
 	    param name="arguments.productType" default={};
 	    param name="arguments.applySiteFilter" default=false;
-	    
+
         param name="arguments.keyword" default='';
 
 	    var facetsSqlFilterQueryParams = {};
@@ -1473,9 +1474,10 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
 	public string function makeGetFacetOptionJOINQuery(
 	    required struct facetMetaData, 
 	    required struct facetsFilterQueryFragments, 
-	    boolean includeSKUCount=true
-	    boolean applySiteFilter=false
-	    any site,
+	    boolean includeSKUCount=true,
+	    boolean applySiteFilter=false,
+	    boolean applyStockFilter=false,
+	    any site
 	){
 	    
 	    var thisFacetOptionsQuery = this.getFacetOptionQuerySQLTemplateForJOIN(arguments.includeSKUCount);
@@ -1523,11 +1525,10 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
         thisFacetOptionsQuery = replace(thisFacetOptionsQuery, '$joinFragments$', joinQueryFragments );
         thisFacetOptionsQuery = replace(thisFacetOptionsQuery, '$filterQueryFragment$', filterQueryFragments );
         
-        var stockAvailabilitySQLFragment = "    
-            INNER JOIN swStock stk 
-                ON rs.skuID = stk.skuID 
-                AND stk.calculatedQATS > 0
-        ";
+        var stockAvailabilitySQLFragment = "";
+        if(arguments.applyStockFilter ){
+            stockAvailabilitySQLFragment = " INNER JOIN swStock stk ON rs.skuID = stk.skuID AND stk.calculatedQATS > 0 ";
+        }
         if( arguments.applySiteFilter && arguments.site.hasLocation() ){
 	        // we're filtering for sku-stock for 
 	        // 
@@ -1555,7 +1556,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
 	    param name="arguments.attribute" default={};
 	    param name="arguments.productType" default={};
 	    param name="arguments.applySiteFilter" default=false;
-	    
+
         param name="arguments.keyword" default='';
 	    
 	    var facetsSqlFilterQueryParams = {};
@@ -1759,10 +1760,11 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
         param name="arguments.productType" default={};
         param name="arguments.includeSKUCount" default=true;
 	    param name="arguments.applySiteFilter" default=false;
-        
+        param name="arguments.applyStockFilter" default=false;
+
         param name="arguments.keyword" default='';
-	    param name="arguments.returnFacetList" default='brand,option,attribute'; // brand,option,attribute,category,productType,
-        
+	    param name="arguments.returnFacetList" default='brand,option,attribute,sorting,priceRange'; // brand,option,attribute,category,sorting,priceRange,productType
+	    
 	    var facetsMetadata = this.getFacetsMetaData();
     	var queryFragmentsData = this.makeFacetSqlFilterQueryFragments(argumentCollection=arguments);
 
@@ -1787,6 +1789,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
                 facetsFilterQueryFragments = queryFragmentsData.fragments, 
                 includeSKUCount = arguments.includeSKUCount, 
                 applySiteFilter = arguments.applySiteFilter,
+                applyStockFilter = arguments.applyStockFilter,
                 site = arguments.site ?: javaCast('null', '')
             );
             
@@ -1884,8 +1887,9 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
         param name="arguments.productType" default={};
         param name="arguments.includeSKUCount" default=true;
 	    param name="arguments.applySiteFilter" default=false;
-	    
-	    param name="arguments.returnFacetList" default='brand,option,attribute'; // brand,option,attribute,category,productType,
+        param name="arguments.applyStockFilter" default=false;
+
+	    param name="arguments.returnFacetList" default='brand,option,attribute,sorting,priceRange'; // brand,option,attribute,category,sorting,priceRange,productType
         
         param name="arguments.keyword" default='';
 	    
@@ -1914,6 +1918,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
                 facetsFilterQueryFragments = queryFragmentsData.fragments, 
                 includeSKUCount = arguments.includeSKUCount, 
                 applySiteFilter = arguments.applySiteFilter,
+                applyStockFilter = arguments.applyStockFilter,
                 site = arguments.site ?: javaCast('null', '')
             );
             
@@ -2011,10 +2016,11 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
         param name="arguments.productType" default={};
         param name="arguments.includeSKUCount" default=true;
 	    param name="arguments.applySiteFilter" default=false;
-	    
-	    param name="arguments.useJoinsInsteadWhere" default=true;
-	    param name="arguments.returnFacetList" default='brand,option,attribute'; // brand,option,attribute,category,productType,
+        param name="arguments.applyStockFilter" default=false;
+
         param name="arguments.keyword" default='';
+	    param name="arguments.returnFacetList" default='brand,option,attribute,sorting,priceRange'; // brand,option,attribute,category,sorting,priceRange,productType
+	    param name="arguments.useJoinsInsteadWhere" default=true;
         
         var startTicks = getTickCount();
 
