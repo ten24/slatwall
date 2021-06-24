@@ -97,9 +97,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							if(listFindNoCase(requiredColumns,column) && ( !structKeyExists(importQuery, column) || !len( importQuery[column][i] ) )){
 								structAppend(errors,{'row#i#':'Column # column # is required'});
 								rowError=true;
-								if(rowError){
-									break;
-								}
+								break;
 							}else if(len(importQuery[column][i])){
 								/* * * * * * * * ** * * *** * ** * * * **  * * * * ** ** *  ** * * * * ** * * * * * ** * *  * * * * *
 							NOTE: This is where the skuCode, accountNumber, quantity, originalOrderNumber variables used below are declared
