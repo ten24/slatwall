@@ -94,9 +94,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					for(var i=1; i<=importQuery.recordCount; i++){
 						var rowError = false;
 						for(var column in columns){
-							if(listFindNoCase(requiredColumns,column) && !len(importQuery[column][i])){
-								ArrayAppend(errors,{'row#i#':'Column #column# is required'});
+							if(listFindNoCase(requiredColumns,column) && ( !structKeyExists(importQuery, column) || !len( importQuery[column][i] ) )){
+								structAppend(errors,{'row#i#':'Column # column # is required'});
 								rowError=true;
+								break;
 							}else if(len(importQuery[column][i])){
 								/* * * * * * * * ** * * *** * ** * * * **  * * * * ** ** *  ** * * * * ** * * * * * ** * *  * * * * *
 							NOTE: This is where the skuCode, accountNumber, quantity, originalOrderNumber variables used below are declared
@@ -104,6 +105,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 								local[column] = importQuery[column][i]
 							}
 						}
+						
 						if(rowError){
 							break;
 						}
