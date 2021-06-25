@@ -2684,18 +2684,31 @@ component  accessors="true" output="false"
      */
     public any function clearOrderFulfillment(required any data){
         param name="data.orderFulfillmentID" default="";
+        param name="data.clearFromOrder" default=true;
 
         var orderFulfillment = getFulfillmentService().getOrderFulfillment(arguments.data.orderFulfillmentID);
         var orderValid = !isNull(orderFulfillment) && orderFulfillment.getOrder().getOrderID() == getHibachiScope().getCart().getOrderID();
         var orderPlaced = !isNull(orderFulfillment.getOrder().getOrderStatusType()) && orderFulfillment.getOrder().getOrderStatusType().getSystemCode() != "ostNotPlaced";
+        var cart = getHibachiScope().getCart();
 
         if( orderValid && !orderPlaced ){
 
             orderFulfillment = getFulfillmentService().clearOrderFulfillment(orderFulfillment);
             orderFulfillment = getFulfillmentService().saveOrderFulfillment(orderFulfillment);
 
-            if(orderFulfillment.hasErrors()){
-                this.addErrors(arguments.data, orderFulfillment.getErrors());
+            // clear shipping address from order as well
+            if(arguments.data.clearFromOrder){
+                cart.setShippingAccountAddress(javacast('null',''));
+		        cart.setShippingAddress(javacast('null',''));
+
+                cart = getOrderService().saveOrder(cart);
+            }
+
+            if(orderFulfillment.hasErrors() || cart.hasErrors()){
+                var errors = [];
+                arrayAppend(errors, orderFulfillment.getErrors(), true);
+                arrayAppend(errors, cart.getErrors(), true);
+                this.addErrors(arguments.data, errors);
                 getHibachiScope().addActionResult( "public:cart.clearOrderFulfillment", true );
                 return;
             }
