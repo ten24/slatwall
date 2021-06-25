@@ -284,13 +284,14 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 
 	public any function callErpOneUpdateDataApi( required any requestData, string endpoint="create" ){
 	    this.logHibachi("ERPONE:: called callErpOneUpdateDataApi endPoint: #arguments.endPoint#, requestData: #serializeJSON(arguments.requestData)#" );
-
+		
 		var httpRequest = this.createHttpRequest('distone/rest/service/data/'&arguments.endpoint,"POST","application/json; charset=UTF-8");
 		
 		// Authentication headers
 		httpRequest.addParam( type='header', name='authorization', value=this.getAccessToken() );
 		httpRequest.addParam(type="body", value=serializeJSON(requestData));
 		var rawRequest = httpRequest.send().getPrefix();
+		
 		if( !IsJson(rawRequest.fileContent) ){
 			throw("ERPONE - callErpOneUpdateDataApi: API response is not valid json for request: #Serializejson(arguments.requestData)# response: #rawRequest.fileContent#");
 		}
@@ -2102,7 +2103,8 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 				*/
 			
 				if( structKeyExists(contactResponse, 'updated') && contactResponse.updated > 0 ){
-					logHibachi("ERPOne - Successfully updated Sy_contact Data");
+					entity.setLastSyncedDateTime(now());
+					logHibachi("ERPOne - Successfully updated Sy_contact Data#now()#");
 				} else {
 					throw("ERPONE - callErpOnePushSy_contactApi: Error occured while updating `sy_contact`");
 				}
@@ -2131,9 +2133,10 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 					"table"	 : "sy_contact",
 					"triggers" : "true",
 					"records"	 : [ {
-						"company_sy" : this.setting("devMode") ? this.setting("devCompany") : this.setting("prodCompany"),
-						"First_Name" : entity.getFirstName(),
-						"Last_Name" : entity.getLastName()
+						"company_sy": this.setting("devMode") ? this.setting("devCompany") : this.setting("prodCompany"),
+						"First_Name": entity.getFirstName(),
+						"Last_Name" : entity.getLastName(),
+						"key1"		: entity.getCompanyCode()
 					} ]
 				}, "create" );
 				
@@ -2150,12 +2153,13 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
     					"triggers" : "true",
     					"records" : [{
         					"company_cu" : this.setting("devMode") ? this.setting("devCompany") : this.setting("prodCompany"),
-        					"customer" : arguments.entity.getCompanyCode()
+        					"customer"   : entity.getCompanyCode()
     					}] 
 					}, "create" );
 
 					entity.setRemoteContact(contactResponse.rowids[1]);
-					
+					entity.setErponeAccountIDoption(response.rowids[1]);
+					entity.setLastSyncedDateTime(now());
 					logHibachi("ERPOne - Successfully created cu_prospect on Erpone with rowID #prospectResponse.rowids[1]#");
 					
 				} else {
@@ -2303,6 +2307,8 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 			}, "create" );
 			
 			if(structKeyExists(response, 'created') && response.created == 1){
+				arguments.entity.setERPOneQuoteSyncDateTime(now());
+				arguments.entity.setErponeOrderIDOption(response.rowids[1]);
 			    // the order in th ERP is not gonna have an order number, until it has been processed there
 			    // and we need ERP's order-number as the remove ID, that's what used to figure-out and link the order relations
 				
@@ -2314,6 +2320,8 @@ component extends="Slatwall.integrationServices.BaseImporterService" persistent=
 			}else{
 				throw("ERPONE - pushOrderDataToErpOne #arguments.entity.getOrderNumber()#: Error: #Serializejson(response)#");
 			}
+		}else{
+				throw("ERPONE - pushOrderDataToErpOne : Customer Code for account used in invalid");
 		}
 
 		var orderItemsData = [];
