@@ -921,9 +921,13 @@ component extends="framework.one" {
 						    ormReload();
     						writeLog(file="#variables.framework.applicationKey#", text="General Log - ORMReload() was successful");
 						} catch(e) {
-	    					writeLog(file="#variables.framework.applicationKey#", text="General Log - ORMReload() run into errros");
-						    getHibachiScope().logHibachiException( e );
-						    rethrow;
+	   
+						    if( variables.framework.hibachi.errorDisplayFlag || getEnvironment() == 'local' ){
+						        rethrow;
+						    } else {
+						        writeLog(file="#variables.framework.applicationKey#", text="General Log - ORMReload() run into errros");
+						        getHibachiScope().logHibachiException( e );
+						    }
 						}
 						
 						// we have to migrate attribute data to custom properties now, if we have some that haven't been migrated yet
