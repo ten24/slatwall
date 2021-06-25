@@ -915,11 +915,16 @@ component extends="framework.one" {
                         // Flag to clear Entity-metadata cache	
 						variables.clearEntityMetadataCache = true;
 
-
 						// Reload ORM
-						writeLog(file="#variables.framework.applicationKey#", text="General Log - ORMReload() started");
-						ormReload();
-						writeLog(file="#variables.framework.applicationKey#", text="General Log - ORMReload() was successful");
+						try{
+						    writeLog(file="#variables.framework.applicationKey#", text="General Log - ORMReload() started");
+						    ormReload();
+    						writeLog(file="#variables.framework.applicationKey#", text="General Log - ORMReload() was successful");
+						} catch(e) {
+					        writeLog(file="#variables.framework.applicationKey#", text="General Log - ORMReload() run into errros");
+					        getHibachiScope().logHibachiException( e );
+					        rethrow;
+						}
 						
 						// we have to migrate attribute data to custom properties now, if we have some that haven't been migrated yet
 					
