@@ -149,6 +149,12 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 		return variables[ arguments.quantityType ];
 	}
 
+	// average cost validation
+	public any function getAverageCost(){
+		IsNull(variables.averageCost) ? 0 : variables.averageCost
+	}
+
+
 	public void function updateAverageCost(required numeric newCost, required numeric newQuantity){
 		var currentQOH = val(getQOH());
 		var currentAverageCost = val(getAverageCost());

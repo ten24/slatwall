@@ -167,14 +167,17 @@ component extends="HibachiService" accessors="true" output="false" {
 	// ====================== START: Save Overrides ===========================
 	
 	public any function saveCountry(required any country, struct data={}, string context="save") {
-	
-		if(structKeyExists(arguments.data, "countryCode") && arguments.country.getNewFlag()) {
+		var isNewCountry = arguments.country.getNewFlag();
+		if( structKeyExists(arguments.data, "countryCode") && isNewCountry ) {
 			arguments.country.setCountryCode( arguments.data.countryCode );
 		}
 	
 		// Call the generic save method to populate and validate
 		arguments.country = save(entity=arguments.country, data=arguments.data, context=arguments.context);
-	
+		if ( arguments.country.hasErrors() && isNewCountry ) {
+			arguments.country.setCountryCode('');
+		}
+		
 		// remove the cache of country code options
 		getHibachiCacheService().resetCachedKey("addressService_getCountryCodeOptions");
 		

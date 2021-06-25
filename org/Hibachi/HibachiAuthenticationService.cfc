@@ -1,10 +1,12 @@
 component output="false" accessors="true" extends="HibachiService" {
-
+    
+    property name="HibachiDAO";
 	property name="hibachiService" type="any";
 	property name="hibachiCacheService" type="any";
-	//The Hibachi cache Service is not bean factory safe.
 	property name="hibachiSessionService" type="any";
 	property name="totpAuthenticator" type="any";
+	property name="hibachiJsonService" type="any";
+	property name="hibachiCollectionService";
 	
 	public void function init(){
 		//on init load all possible record level perms
@@ -17,7 +19,7 @@ component output="false" accessors="true" extends="HibachiService" {
 			//Cleanup permissionRecordRestrictionMap
 			variables.permissionRecordRestrictionMap = {};
 			//load possible entities by permissionREcordRestrictions
-			var query = getDAO("HibachiDAO").getRecordLevelPermissionEntitieNames();
+			var query = this.getHibachiDAO().getRecordLevelPermissionEntitieNames();
 			//for every entity
 			for(var entry in query){
 				variables.permissionRecordRestrictionMap[entry['entityClassName']] = true;
@@ -321,7 +323,7 @@ component output="false" accessors="true" extends="HibachiService" {
 
 		var cacheKey = "authenticateCollectionPropertyIdentifier_" & hash("#arguments.crudType##arguments.collection.getCollectionConfigStruct()['baseEntityName']##arguments.propertyIdentifier##arguments.account.getPermissionGroupCacheKey()#",'md5');;
 		if(!this.getHibachiCacheService().hasCachedValue(cacheKey)){
-			var propertyIdentifierWithoutAlias = getService('hibachiCollectionService').getHibachiPropertyIdentifierByCollectionPropertyIdentifier(arguments.propertyIdentifier);
+			var propertyIdentifierWithoutAlias = this.getHibachiCollectionService().getHibachiPropertyIdentifierByCollectionPropertyIdentifier(arguments.propertyIdentifier);
 			var isObject = this.getHibachiService().getPropertyIsObjectByEntityNameAndPropertyIdentifier(entityName=arguments.collection.getCollectionObject(),propertyIdentifier=propertyIdentifierWithoutAlias);
 			if(isObject){
 				var lastEntity = this.getHibachiService().getLastEntityNameInPropertyIdentifier(entityName=arguments.collection.getCollectionObject(),propertyIdentifier=propertyIdentifierWithoutAlias);
@@ -367,7 +369,7 @@ component output="false" accessors="true" extends="HibachiService" {
 	
 	public struct function getEntityPermissionDetails() {
 		// First check to see if this is cached
-		if(!getService('HibachiCacheService').hasCachedValue('entityPermissionDetails')){
+		if(!this.getHibachiCacheService().hasCachedValue('entityPermissionDetails')){
 			
 			// Create place holder struct for the data
 			var entityPermissions = {};
@@ -384,9 +386,13 @@ component output="false" accessors="true" extends="HibachiService" {
 					// Get the entityName
 					var entityName = listFirst(listLast(replace(entityDirectoryArray[e], '\', '/', 'all'), '/'), '.');
 					
-					// Get the entityMetaData which contains all the important permissions setup stuff
-					var entityMetaData = createObject('component', '#getApplicationValue('applicationKey')#.model.entity.#entityName#').getThisMetaData();
+					if(entityName == "HibachiEntity" ){
+					   continue;
+					}
 					
+					// Get the entityMetaData which contains all the important permissions setup stuff
+					var entityMetaData = this.getHibachiService().getEntityMetaData(entityName);
+
 					// Setup the permisions of this entity is setup for it
 					if(structKeyExists(entityMetaData, "hb_permission") && (entityMetaData.hb_permission eq "this" || getHasPropertyByEntityNameAndPropertyIdentifier(entityName=entityName, propertyIdentifier=entityMetaData.hb_permission))) {
 						
@@ -442,11 +448,11 @@ component output="false" accessors="true" extends="HibachiService" {
 			
 			// Update the cached value to be used in the future
 			this.getHibachiCacheService().setCachedValue('entityPermissionDetails',entityPermissions);
-			getService('HibachiJsonService').createPermissionJson('entity',entityPermissions);
+			this.getHibachiJsonService().createPermissionJson('entity',entityPermissions);
 			
 			
 		}
-		return getService('HibachiCacheService').getCachedValue('entityPermissionDetails');
+		return this.getHibachiCacheService().getCachedValue('entityPermissionDetails');
 	}
 	
 	public struct function getActionPermissionDetails(){
