@@ -1399,6 +1399,9 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	* @Suppress
 	*/
 	public any function getSalePriceDetailsByCurrencyCode(required string currencyCode) {
+	    if( this.isNew() || isNull(this.getProduct()) ){
+	        return {}; // at vendor-order-tabs/vendor-order-items.cfm smartlist, some new sku/s are geting created due to process-onject properties;
+	    }
 		if(!structKeyExists(variables, "salePriceDetailsByCurrencyCode_#currencyCode#")) {
 			variables["salePriceDetails_#currencyCode#"] = getProduct().getSkuSalePriceDetailsByCurrencyCode(skuID=getSkuID(),currencyCode=arguments.currencyCode);
 		}
@@ -2046,6 +2049,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	}
 	
 	public void function preUpdate(Struct oldData){
+
 		super.preUpdate(argumentCollection=arguments);
 		
 		var sql =  "UPDATE 
