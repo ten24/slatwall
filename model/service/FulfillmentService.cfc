@@ -74,10 +74,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		arguments.orderFulfillment.setEstimatedFulfillmentDateTime(javacast('null',''));
 		arguments.orderFulfillment.setEstimatedShippingDate(javacast('null',''));
 		arguments.orderFulfillment.setPickupDate(javacast('null',''));
-		arguments.orderFulfillment.setAccountAddress(javacast('null',''));
-		arguments.orderFulfillment.setShippingAddress(javacast('null',''));
-		arguments.orderFulfillment.setShippingMethod(javacast('null',''));
-		arguments.orderFulfillment.setPickupLocation(javacast('null',''));
+		arguments.orderFulfillment.removeAccountAddress();
+		arguments.orderFulfillment.removeShippingAddress();
+		arguments.orderFulfillment.removeShippingMethod();
+		arguments.orderFulfillment.removePickupLocation();
 		arguments.orderFulfillment.setHandlingFeeTaxCategory(javacast('null',''));
 
 		if(orderFulfillment.hasFulfillmentShippingMethodOption()){
