@@ -308,11 +308,14 @@ component  accessors="true" output="false"
         // Additional Params
         param name="arguments.parsedQuery.includeSKUCount" default=true;
         param name="arguments.parsedQuery.applySiteFilter" default=false;
+        param name="arguments.parsedQuery.applyStockFilter" default=false;
+
         param name="arguments.parsedQuery.priceRangesCount" default=5;
         param name="arguments.parsedQuery.includePagination" default=false;
         param name="arguments.parsedQuery.propertyIdentifierList" default='';
 	    param name="arguments.parsedQuery.includePotentialFilters" default=true;
-	    
+	    param name="arguments.parsedQuery.returnFacetList" default='brand,option,attribute,sorting,priceRange'; // brand,option,attribute,category,sorting,priceRange,productType
+
 	    var currentRequestSite = hibachiScope.getCurrentRequestSite();
 	    if( !isNUll(currentRequestSite) ){
             arguments.parsedQuery.site = currentRequestSite;
@@ -887,103 +890,6 @@ component  accessors="true" output="false"
 
         this.getHibachiScope().addActionResult("public:scope.getProductType", true);
 	}
-    
-    /**
-     * Function get Product Type detail information
-     * @param urlTitle
-     * @return none
-    */
-    public void function getProductTypeLegacy(required struct data){
-        param name="arguments.data.urlTitle";
-
-        var productType = getProductService().getProductTypeByUrlTitle( arguments.data.urlTitle );
-        if( IsNull( productType ) 
-            || ( !IsNull(productType.getActiveFlag()) && !productType.getActiveFlag() ) 
-            || ( !IsNull(productType.getPublishedFlag()) && !productType.getPublishedFlag() )
-            ) {
-            getHibachiScope().addActionResult( "public:product.getProductType", true );
-            return;
-        }
-        var childProductTypeCollectionList = getProductService().getProductTypeCollectionList();
-        childProductTypeCollectionList.setDisplayProperties("productTypeName, urlTitle, imageFile, productTypeID, productTypeIDPath");
-        if(structKeyExists(arguments.data, 'brandUrlTitle')){
-            var brandProductTypeList = getProductService().getProductTypesForBrand( arguments.data.brandUrlTitle );
-            childProductTypeCollectionList.addFilter('productTypeID', ArrayToList(brandProductTypeList), "IN");
-        }
-        childProductTypeCollectionList.addFilter('productTypeIDPath', "%#productType.getProductTypeID()#%", "LIKE");
-        childProductTypeCollectionList.addOrderBy("productTypeIDPath|ASC"); //to arrange them from parent to child order
-        var childProductTypesRecord = childProductTypeCollectionList.getRecords( formatRecords = true );
-        
-        var childProductTypes = [];
-        var typeIndex = 0;
-        for( var childProductType in childProductTypesRecord ) {
-            
-            //skip current record
-            if( childProductType['productTypeID'] == productType.getProductTypeID()  ) {
-                continue;
-            }
-            
-            //remove parent ids from path
-            var productTypeIDPath = childProductType['productTypeIDPath'];
-            productTypeIDPath = ReplaceList( productTypeIDPath, productType.getProductTypeIDPath(), "");
-            productTypeIDPath = ListChangeDelims( productTypeIDPath, ",", ",");
-            
-            var responseStruct = {
-                "title": childProductType['productTypeName'],
-                "productTypeID": childProductType['productTypeID'],
-                "imageFile" : trim(childProductType['imageFile']) != "" ? getProductService().getProductTypeImageBasePath( frontendURL = true ) & "/" & childProductType['imageFile'] : "",
-                "urlTitle" : childProductType['urlTitle']
-            };
-            
-            //if it's a parent type set title and correct index
-            if( productTypeIDPath == childProductType['productTypeID'] ) {
-                childProductTypes[ ++typeIndex ] = responseStruct;
-                //add an index for 2nd level sub types
-                childProductTypes[ typeIndex ]["childProductTypes"] = [];
-            } else {
-                
-                //remove immediate parent id from path
-                productTypeIDPath = ReplaceList( productTypeIDPath, childProductTypes[ typeIndex ]['productTypeID'], "");
-                productTypeIDPath = ListChangeDelims( productTypeIDPath, ",", ",");
-                
-                //add show products flag if it's last child
-                StructAppend( responseStruct, {"showProducts" : productTypeIDPath !== childProductType['productTypeID'] });
-                
-                //append sub type array
-                ArrayAppend( childProductTypes[ typeIndex ]["childProductTypes"], responseStruct);
-            }
-        }
-        
-        var descriptionTemplate = productType.getSettingValueFormatted('productTypeMetaDescriptionString');
-        var metaKeywordsTemplate = productType.getSettingValueFormatted('productTypeMetaKeywordsString');
-        getProductService().appendSettingsToProductType(productType);
-
-        var response = {
-            "title"         : productType.getProductTypeName(),
-            "urlTitle"      : productType.getUrlTitle(),
-            "breadcrumbs"   : getProductService().getProductTypeAncestorsbyPath(productType.getProductTypeIDPath()),
-            "imageFile"     : productType.getImageFile(),
-            "settings"      : productType["settings"],
-            "description"   : productType.stringReplace(template=descriptionTemplate, formatValues=true),
-            "metaKeywords"  : productType.stringReplace(template=metaKeywordsTemplate, formatValues=true),
-            "productTypeID" : productType.getProductTypeID()
-        };
-
-
-        // if image is not empty, prefix with base-path
-        if( !isNull(response.imageFile) ){
-            response['imageFile'] = this.getProductService().getProductTypeImageBasePath( frontendURL = true ) & "/" & response.imageFile;
-        }    
-    
-        if( childProductTypes.len() > 0 ){
-           response["childProductTypes"] = childProductTypes; 
-        } else {
-            response["showProducts"] = true;
-        }
-        
-        arguments.data.ajaxResponse['data'] = response;
-        this.getHibachiScope().addActionResult( "public:product.getProductType", false );
-    }
     
      /**
      * Function get Product Options By Option Group
@@ -2684,18 +2590,31 @@ component  accessors="true" output="false"
      */
     public any function clearOrderFulfillment(required any data){
         param name="data.orderFulfillmentID" default="";
+        param name="data.clearOrderShippingAddress" default=true;
 
         var orderFulfillment = getFulfillmentService().getOrderFulfillment(arguments.data.orderFulfillmentID);
         var orderValid = !isNull(orderFulfillment) && orderFulfillment.getOrder().getOrderID() == getHibachiScope().getCart().getOrderID();
         var orderPlaced = !isNull(orderFulfillment.getOrder().getOrderStatusType()) && orderFulfillment.getOrder().getOrderStatusType().getSystemCode() != "ostNotPlaced";
+        var cart = getHibachiScope().getCart();
 
         if( orderValid && !orderPlaced ){
 
             orderFulfillment = getFulfillmentService().clearOrderFulfillment(orderFulfillment);
             orderFulfillment = getFulfillmentService().saveOrderFulfillment(orderFulfillment);
 
-            if(orderFulfillment.hasErrors()){
-                this.addErrors(arguments.data, orderFulfillment.getErrors());
+            // clear shipping address from order as well
+            if(arguments.data.clearOrderShippingAddress){
+                cart.setShippingAccountAddress(javacast('null',''));
+		        cart.setShippingAddress(javacast('null',''));
+
+                cart = getOrderService().saveOrder(cart);
+            }
+
+            if(orderFulfillment.hasErrors() || cart.hasErrors()){
+                var errors = [];
+                arrayAppend(errors, orderFulfillment.getErrors(), true);
+                arrayAppend(errors, cart.getErrors(), true);
+                this.addErrors(arguments.data, errors);
                 getHibachiScope().addActionResult( "public:cart.clearOrderFulfillment", true );
                 return;
             }
@@ -4667,7 +4586,7 @@ component  accessors="true" output="false"
 					arguments.data.ajaxResponse['skuID'] = sku.getSkuID();
 				
 					var skuCollectionList = this.getSkuService().getSkuCollectionList();
-				    skuCollectionList.setDisplayProperties( "skuID,skuCode,product.productName,product.productCode,product.productType.productTypeName,product.brand.brandName,listPrice,price,renewalPrice,calculatedSkuDefinition,activeFlag,publishedFlag,calculatedQATS");
+				    skuCollectionList.setDisplayProperties( "skuID,skuCode,product.productName,product.productCode,product.productType.productTypeName,product.brand.brandName,skuPrices.listPrice,skuPrices.price,skuPrices.renewalPrice,calculatedSkuDefinition,activeFlag,publishedFlag,calculatedQATS");
 		    	    skuCollectionList.addFilter('skuID',sku.getSkuID());
 					var results = skuCollectionList.getRecords()
 					if(!ArrayIsEmpty(results) ) {

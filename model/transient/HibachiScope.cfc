@@ -479,11 +479,15 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 			availablePropertyList&="orderItems.orderItemID,orderItems.price,orderItems.skuPrice,orderItems.currencyCode,orderItems.quantity,orderItems.extendedPrice,orderItems.extendedPriceAfterDiscount,orderItems.extendedUnitPrice,orderItems.extendedUnitPriceAfterDiscount, orderItems.taxAmount,orderItems.taxLiabilityAmount,orderItems.childOrderItems,
 				orderItems.orderFulfillment.orderFulfillmentID,
 				orderItems.sku.skuID,orderItems.sku.skuCode,orderItems.sku.imagePath,orderItems.sku.imageFile,orderItems.sku.skuDefinition,
-				orderItems.sku.product.productID,orderItems.sku.product.productName,orderItems.sku.product.productCode,orderItems.sku.product.urlTitle,orderItems.sku.product.baseProductType,orderItems.sku.listPrice,
+				orderItems.sku.product.productID,orderItems.sku.product.productName,orderItems.sku.product.productCode,orderItems.sku.product.urlTitle,orderItems.sku.product.baseProductType,orderItems.sku.skuPrices.listPrice,
 				orderItems.sku.product.brand.brandName,
 				orderItems.sku.product.productType.productTypeName,
 				orderItems.sku.product.productType.systemCode,
 				orderItems.sku.product.productDescription,
+				orderItems.orderItemGiftRecipients.orderItemGiftRecipientID,
+				orderItems.orderItemGiftRecipients.firstName,
+				orderItems.orderItemGiftRecipients.lastName,
+				orderItems.orderItemGiftRecipients.emailAddress,
 			";
 		}
 		
