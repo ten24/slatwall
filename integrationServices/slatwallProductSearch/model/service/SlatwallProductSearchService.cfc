@@ -699,7 +699,7 @@ component extends="Slatwall.model.service.HibachiService" persistent="false" acc
 	    if( arguments.includePotentialFilters ){
 	        var potentialFilters = this.getPotentialFilterFacetsAndOptionsFormatted(argumentCollection=arguments);
 	        
-	        if( arguments.returnFacetList.listFindNoCase('proceRange') ){
+	        if( arguments.returnFacetList.listFindNoCase('priceRange') ){
 	            potentialFilters['priceRange']['options'] = this.makePriceRangeOptions(arguments.priceRangesCount, collectionData.priceRangeCollectionList );
 	        }
 	        
