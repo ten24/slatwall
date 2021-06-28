@@ -58,7 +58,7 @@ class SWDraggable implements ng.IDirective{
 
     public link:ng.IDirectiveLinkFn = (scope:any, element:any, attrs:any) =>{
         scope.$watch('swDraggable.draggable',(newValue,oldValue)=>{
-
+            
             angular.element(element).attr("draggable", newValue);
 
             var id = angular.element(element).attr("id");

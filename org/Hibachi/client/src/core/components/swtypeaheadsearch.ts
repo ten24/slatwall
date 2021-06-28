@@ -73,7 +73,9 @@ class SWTypeaheadSearchController {
         this.resultsDeferred = $q.defer();
         this.resultsPromise = this.resultsDeferred.promise;
 
-        if( angular.isUndefined(this.typeaheadDataKey)){
+        if( this.typeaheadDataKey == null || 
+            this.typeaheadDataKey.trim().length === 0
+        ){
             this.typeaheadDataKey = this.utilityService.createID(32); 
         }
 
@@ -195,7 +197,10 @@ class SWTypeaheadSearchController {
     };
     
     public toggleDropdown = ()=>{
-        this.dropdownOpen = !this.dropdownOpen;    
+        this.dropdownOpen = !this.dropdownOpen;
+        if(this.dropdownOpen == true){
+            this.hideSearch = true;
+        }
     }
 
     public toggleOptions = (onClickSearch) =>{
@@ -205,6 +210,9 @@ class SWTypeaheadSearchController {
         }
         
         this.hideSearch = !this.hideSearch;
+        if(this.hideSearch == false){
+            this.dropdownOpen = false;
+        }
         
     };
 
@@ -284,10 +292,26 @@ class SWTypeaheadSearchController {
         }, 500);
     };
 
-   public updateSelections = () =>{
+    public updateSelections = () =>{
        this.typeaheadService.updateSelections(this.typeaheadDataKey);
-       this.hideSearch = true;
-   }
+    }
+    
+    public updateCollectionConfigWithSearchableColumns = () => {
+        var newColumns = this.collectionConfig.columns
+                            .map((column)  => {
+                                //try to find that(column with same prop identifier) in our searchable columns
+                                let existingColumFromSearchableColumns = this.searchableColumns.find( (searchableColum) => {
+                                                    return column['propertyIdentifier'] === searchableColum['propertyIdentifier']; 
+                                                });
+                                if(existingColumFromSearchableColumns) {
+                                    return angular.copy(existingColumFromSearchableColumns); 
+                                }
+                                return angular.copy(column);
+                            });
+                            
+        this.collectionConfig.loadColumns(newColumns);
+
+    }
 
     public updateSearchableProperties = (column) =>{
         if(angular.isString(column) && column == 'all'){
@@ -300,11 +324,17 @@ class SWTypeaheadSearchController {
             column.isSearchable = true; 
             this.searchableColumnSelection = column.title; 
         }
-        //probably need to refetch the collection
+
+        this.updateCollectionConfigWithSearchableColumns();
+        this.toggleDropdown();
+        
+        if(this.searchText && this.searchText.length){
+            this.search(this.searchText);
+        }
     }
 
     public addOrRemoveItem = (item)=>{
-        var remove = item.selected || false; 
+        var remove = item.selected || false;
 
         if(!this.hideSearch && !this.multiselectMode){
             this.hideSearch = true;
@@ -323,10 +353,12 @@ class SWTypeaheadSearchController {
         }
 
         if(!remove && angular.isDefined(this.addFunction)){
+            this.observerService.notifyById('typeahead_add_item', this.typeaheadDataKey, item);
             this.addFunction()(item);
         }
 
         if(remove && angular.isDefined(this.removeFunction)){
+            this.observerService.notifyById('typeahead_remove_item', this.typeaheadDataKey, item);
             this.removeFunction()(item.selectedIndex); 
             item.selected = false; 
             item.selectedIndex = undefined;
@@ -370,11 +402,11 @@ class SWTypeaheadSearchController {
 
 class SWTypeaheadSearch implements ng.IDirective{
 
-    public templateUrl;
+    public template = require("./typeaheadsearch.html");
     public transclude=true; 
     public restrict = "EA";
+    
     public scope = {};
-
     public bindToController = {
         collectionConfig:"=?",
         entity:"@?",
@@ -412,13 +444,12 @@ class SWTypeaheadSearch implements ng.IDirective{
         urlBase:'@?', 
         urlProperty:'@?'
     };
+    
     public controller=SWTypeaheadSearchController;
     public controllerAs="swTypeaheadSearch";
     
-    // @ngInject
-    constructor(public $compile, public typeaheadService, private corePartialsPath,hibachiPathBuilder){
-        this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "typeaheadsearch.html";
-    }
+    // @ngInject;
+    constructor(public $compile, public typeaheadService){}
     
     public compile = (element: JQuery, attrs: angular.IAttributes, transclude: any) => {
         return {
@@ -471,7 +502,7 @@ class SWTypeaheadSearch implements ng.IDirective{
                     `
                 }
 
-                
+                anchorTemplateString = anchorTemplateString + rightContentTemplateString; 
                 var listItemTemplate = angular.element(listItemTemplateString);
                 var anchorTemplate = angular.element(anchorTemplateString);
                
@@ -492,21 +523,7 @@ class SWTypeaheadSearch implements ng.IDirective{
     }
 
     public static Factory(){
-        var directive:ng.IDirectiveFactory = (
-            $compile
-            ,typeaheadService
-            ,corePartialsPath
-            ,hibachiPathBuilder
-
-        )=> new SWTypeaheadSearch(
-            $compile
-            ,typeaheadService
-            ,corePartialsPath
-            ,hibachiPathBuilder
-        );
-        directive.$inject = ["$compile","typeaheadService","corePartialsPath",
-            'hibachiPathBuilder'];
-        return directive;
+        return /** @ngIngect */ ($compile,typeaheadService) => new this($compile,typeaheadService);
     }
 }
 export{

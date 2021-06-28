@@ -62,6 +62,7 @@ Notes:
 	<hb:HibachiPropertyRow>
 		<hb:HibachiPropertyList>
 			<cfif isnull(rc.processObject.getAccountID())>
+			
 			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="newAccountFlag" edit="#rc.edit#" fieldType="yesno">
 			<hb:HibachiDisplayToggle selector="input[name='newAccountFlag']" loadVisable="#rc.processObject.getNewAccountFlag()#">
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="firstName" edit="#rc.edit#">
@@ -71,26 +72,26 @@ Notes:
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="emailAddress" edit="#rc.edit#">
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="emailAddressConfirm" edit="#rc.edit#">
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="createAuthenticationFlag" edit="#rc.edit#" fieldType="yesno">
-				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="organizationFlag" edit="#rc.edit#" fieldType="yesno">
 				<hb:HibachiDisplayToggle selector="input[name='createAuthenticationFlag']" loadVisable="#rc.processObject.getCreateAuthenticationFlag()#">
 					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="password" edit="#rc.edit#">
 					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="passwordConfirm" edit="#rc.edit#">
 				</hb:HibachiDisplayToggle>
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="organizationFlag" edit="#rc.edit#" fieldType="yesno">
 			</hb:HibachiDisplayToggle>
 			<hb:HibachiDisplayToggle selector="input[name='newAccountFlag']" showValues="0" loadVisable="#!rc.processObject.getNewAccountFlag()#">
-				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="accountID" autocompletePropertyIdentifiers="adminIcon,fullName,company,emailAddress,phoneNumber,primaryAddress.simpleRepresentation" edit="true">
+				<swa:SlatwallAccountTypeahead /> 	
 			</hb:HibachiDisplayToggle>
 			<hr />
 			<cfelse>
 				<hb:HibachiFormField fieldName="accountID" value="#rc.processObject.getAccountID()#" fieldType="hidden">
 				<hb:HibachiFormField fieldName="newAccountFlag" value="#rc.processObject.getNewAccountFlag()#" fieldType="hidden">	
 			</cfif>
-			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="orderTypeID" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="currencyCode" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="orderCreatedSite" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="orderOriginID" edit="#rc.edit#">
 			<!---location type ahead collection--->
 			<hb:HibachiPropertyDisplay labelText="#rc.$.slatwall.rbKey('entity.order.defaultStockLocation')#" object="#rc.processObject#" property="defaultStockLocationID" edit="true">
+			<input type="hidden" name="orderTypeID" value="444df2df9f923d6c6fd0942a466e84cc">
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
 	

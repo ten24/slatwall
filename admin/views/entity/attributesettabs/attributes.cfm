@@ -67,6 +67,7 @@ Notes:
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="attributeName" />					      
 		<hb:HibachiListingColumn propertyIdentifier="attributeCode" />
 		<hb:HibachiListingColumn propertyIdentifier="attributeInputType" />
+		<hb:HibachiListingColumn propertyIdentifier="attributeInputDisplayType" />
 		<hb:HibachiListingColumn propertyIdentifier="relatedObject" />
 		<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
 	</hb:HibachiListingDisplay>

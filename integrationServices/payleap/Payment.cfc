@@ -42,9 +42,7 @@
     
     If you modify this program, you may extend this exception to your version 
     of the program, but you are not obligated to do so.
-
 Notes:
-
 */
 
 component accessors="true" output="false" displayname="PayLeap" implements="Slatwall.integrationServices.PaymentInterface" extends="Slatwall.integrationServices.BasePayment" {

@@ -53,10 +53,10 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	
 	// Data Properties
 	property name="locationID" hb_formFieldType="select" hb_rbKey="entity.location";
+	property name="location";
 	property name="packingSlipNumber" hb_rbKey="entity.stockReceiver.packingSlipNumber";
 	property name="boxCount" hb_rbKey="entity.stockReceiver.boxCount";
 	property name="orderReturnItems" type="array" hb_populateArray="true";
-	property name="stockLossFlag" hb_formFieldType="yesno" default="0" hb_populateEnabled="public";
 	
 	public any function getLocationIDOptions() {
 		if(!structKeyExists(variables, "locationIDOptions")) {
@@ -68,7 +68,27 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		return variables.locationIDOptions;
 	}
 	
+	public any function getLocationID(){
+		if(!structKeyExists(variables,'locationID') && !isNull(getLocation())){
+			variables.locationID = getLocation().getLocationID();
+		}
+		if(structKeyExists(variables,'locationID')){
+			return variables.locationID;
+		}
+	}
+	
+	public any function getLocation(){
+		if(!structKeyExists(variables,'location') && !isNull(getOrderReturn())){
+			variables.location = getOrderReturn().getReturnLocation();
+		}
+		if(structKeyExists(variables,'location')){
+			return variables.location;
+		}
+	}
+	
 	public boolean function validReturnItemsQuantity(){
+		var hasReturnItems = false;
+		
 		if ( isNull( this.getOrderReturnItems() ) ){
 			return false;
 		}
@@ -79,9 +99,31 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			}
 			if ( val(returnItem.quantity) > returnItem.unreceivedQuantity || val(returnItem.quantity) < 0 ){
 				return false;
-			}			
+			}
+			
+			if(returnItem.quantity > 0){
+				hasReturnItems = true;
+			}
 		}
 		
+		return true && hasReturnItems;
+	}
+	
+	public boolean function validStockLossQuantity(){
+		if ( isNull( this.getOrderReturnItems() ) ){
+			return false;
+		}
+		for(var returnItem in this.getOrderReturnItems()){
+			if(!structKeyExists(returnItem,'quantity')){
+				returnItem.quantity = 0;
+			}
+			if(!structKeyExists(returnItem,'stockLoss')){
+				returnItem.stockLoss = 0;
+			}
+			if(val(returnItem.stockLoss) > returnItem.quantity){
+				return false;
+			}
+		}
 		return true;
 	}
 	

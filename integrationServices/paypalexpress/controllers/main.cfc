@@ -99,7 +99,7 @@ component accessors="true" output="false" {
 		
 		var paymentMethod = getPaymentService().getPaymentMethod( rc.paymentMethodID );
 
-		arguments.rc.$.slatwall.setPublicPopulateFlag( true );
+		arguments.rc.$.slatwall.setObjectPopulateMode( 'public' );
 		
 		if(!isNull(paymentMethod) && paymentMethod.getIntegration().getIntegrationPackage() eq "paypalexpress") {
 			

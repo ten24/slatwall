@@ -88,11 +88,40 @@ component entityname="SlatwallProductBundleBuildItem" table="SwProductBundleBuil
 	// ============  END:  Non-Persistent Property Methods =================
 		
 	// ============= START: Bidirectional Helper Methods ===================
+
+	public void function setProductBundleBuild( required any productBundleBuild ){
+		variables.productBundleBuild = arguments.productBundleBuild;
+		variables.productBundleBuild.addProductBundleBuildItem(this);
+	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================
 
 	// =============== START: Custom Validation Methods ====================
-	
+	public boolean function hasQuantityWithinMaxOrderQuantity(boolean forceMaxOrderSettingFlag=false){
+		var quantity = getQuantity();
+		//if forceMaxOrderSettingFlag is true and the quantity is > than the maxOrderQuantitySettting
+		//then we'll want to return true so that we validate against that instead
+		if ( arguments.forceMaxOrderSettingFlag && quantity > getSku().setting('skuOrderMaximumQuantity') ) {
+			return true;
+		} else if ( quantity <= this.getProductBundleGroup().getMaximumQuantity() && quantity <= getMaximumOrderQuantitySetting() ) {
+			return true;
+		}
+		return false;
+    }
+    
+    public boolean function hasQuantityWithinMinOrderQuantity() {
+    	if ( !isNull(this.getProductBundleGroup().getMinimumQuantity()) ) {
+			return quantity >= this.getProductBundleGroup().getMinimumQuantity();
+		}
+    	return ( this.getQuantity() ?: 0 ) >= this.getSku().setting('skuOrderMinimumQuantity');
+    }
+ 	
+ 	public numeric function getMaximumOrderQuantitySetting() {
+		if( this.getSku().getActiveFlag() && this.getSku().getProduct().getActiveFlag() ){
+			return getSku().setting('skuOrderMaximumQuantity');
+		}
+		return 0;
+	}
 	// ===============  END: Custom Validation Methods =====================
 	
 	// =============== START: Custom Formatting Methods ====================

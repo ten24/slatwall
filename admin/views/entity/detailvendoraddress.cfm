@@ -60,7 +60,8 @@ Notes:
 								   backAction="admin:entity.detailVendor" 
 								   backQueryString="vendorID=#rc.vendor.getVendorID()#"
 								   cancelAction="admin:entity.detailVendor"
-								   cancelQueryString="vendorID=#rc.vendor.getVendorID()#">
+								   cancelQueryString="vendorID=#rc.vendor.getVendorID()#"
+								   deleteQueryString="sRedirectAction=entity.detailvendor&vendorID=#rc.vendor.getVendorID()#">
 								   	   
 		</hb:HibachiEntityActionBar>
 			

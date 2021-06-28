@@ -69,7 +69,7 @@ Notes:
 				<hb:HibachiEntityDetailItem view="admin:entity/orderpaymenttabs/appliedaccountpayments" />
 			</cfif>
 
-			<hb:HibachiEntityDetailItem view="admin:entity/orderpaymenttabs/paymenttransactions" />
+			<hb:HibachiEntityDetailItem count="#rc.orderPayment.getCalculatedPaymentTransactionsCount()#" view="admin:entity/orderpaymenttabs/paymenttransactions" />
 			
 			<!--- Custom Attributes --->
 			<cfloop array="#rc.orderPayment.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">

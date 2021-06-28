@@ -115,6 +115,7 @@ Notes:
 					<cfif not isNull(rc.processObject.getPickupLocationID())>
 						<cfset selectedLocationID = rc.processObject.getPickupLocationID() />
 					</cfif>
+
 					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="pickupLocationID" edit="#rc.edit#" labelText="#rc.$.slatwall.rbKey('entity.orderFulfillment.pickupLocation')#">
 					
 				</hb:HibachiDisplayToggle>

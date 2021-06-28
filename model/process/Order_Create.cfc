@@ -54,7 +54,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	// Data Properties
 	property name="orderTypeID" hb_rbKey="entity.order.orderType" hb_formFieldType="select";
 	property name="currencyCode" hb_rbKey="entity.currency" hb_formFieldType="select";
-	property name="newAccountFlag";
+	property name="newAccountFlag" default="false";
 	property name="accountID" hb_rbKey="entity.account" hb_formFieldType="textautocomplete" cfc="Account";
 	property name="firstName" hb_rbKey="entity.account.firstName";
 	property name="lastName" hb_rbKey="entity.account.lastName";
@@ -79,6 +79,14 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		}
 		return variables.orderTypeID;
 	}
+
+	public string function getCurrencyCode() {
+
+		if(!structKeyExists(variables, 'currencyCode')){
+			variables.currencyCode = getService("SettingService").getSettingValue('skuCurrency');//'Default Currency'
+		} 
+		return variables.currencyCode; 
+	} 
 	
 	public array function getCurrencyCodeOptions() {
 		var currencyCodeOptions = getService("currencyService").getCurrencyOptions();
@@ -144,7 +152,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		locationCollectionList.addFilter('parentLocation',"NULL",'IS NOT');
 		return locationCollectionList;
 	}
-	
+
 	public any function getOrderCreatedSiteOptions(){
 		var collectionList = getService('SiteService').getCollectionList('Site');
 		collectionList.addDisplayProperty('siteID|value');

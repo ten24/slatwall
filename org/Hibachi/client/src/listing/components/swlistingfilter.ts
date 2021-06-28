@@ -28,18 +28,7 @@ class SWListingFilter implements ng.IDirective{
     public controllerAs="swListingFilter";
 
     public static Factory(){
-        var directive:ng.IDirectiveFactory=(
-
-        )=>new SWListingFilter(
-
-        );
-        directive.$inject = [
-
-        ];
-        return directive;
-    }
-    constructor(){
-
+        return /** @ngInject */ () => new this();
     }
 
     public link:ng.IDirectiveLinkFn = (scope: any, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{

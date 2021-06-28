@@ -137,7 +137,8 @@ Notes:
 				FROM SlatwallProductReview pr 
 				WHERE pr.product = :product
 				AND pr.activeFlag = 1
-				',{product=arguments.product},true
+				AND productReviewStatusType.systemCode = :approved
+				',{product=arguments.product, approved='prstApproved'},true
 			);
 		}
 		
@@ -594,5 +595,27 @@ Notes:
 			true
 			)>
 	</cffunction>
+	
+	<cffunction name="getDefaultSkuCodeByProductUniquePropertyNameAndUniqueValue" access="public">
+	
+		<cfargument name="propertyName" required="true" />
+		<cfargument name="propertyValue" required="true" type="string" />
+		
+		<cfset var rs = "" />
+		<cfquery name="rs">
+		
+		SELECT
+		   skucode 
+		FROM
+		   swProduct product 
+		   inner join
+		      swsku sku 
+		      on product.defaultSkuID = sku.skuID 
+		WHERE
+		   product.#arguments.propertyName#  = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.propertyValue#"/>
+		</cfquery>
+		<cfreturn rs.skucode />
+	</cffunction>
+	
 </cfcomponent>
 

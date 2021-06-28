@@ -19,6 +19,7 @@
 	<cfset variables.entityHasProperty = {} />
 	<cfset variables.entityHasAttribute = {} />
 	<cfset variables.processComponentDirectoryListing = [] />
+	<cfset variables.properlyCasedShortEntityName = {} />
 	
 	<cfscript>
 		public any function get(required string entityName, required any idOrFilter, boolean isReturnNewOnNotFound = false ) {
@@ -106,11 +107,12 @@
 			// Add the entity by it's name to the arguments for calling events
 	    	arguments[ lcase(arguments.entity.getClassName()) ] = arguments.entity;
 			
+			// Do delete validation
+			// validating before announcing the event, so that the handler can check for errors and do some conditional logic 
+			arguments.entity.validate(context="delete"); 
+			
 			// Announce Before Event
 			getHibachiEventService().announceEvent("before#arguments.entity.getClassName()#Delete", arguments);
-			
-			// Do delete validation
-			arguments.entity.validate(context="delete");
 			
 			// If the entity Passes validation
 			if(!arguments.entity.hasErrors()) {
@@ -140,10 +142,12 @@
 		
 		// @hint default process method
 		public any function process(required any entity, struct data={}, string processContext=""){
-			
+		
 			// Create the invoke arguments struct
 			var invokeArguments = {};
+			invokeArguments[ "1" ] = arguments.entity;//compatibility with on missing method 
 			invokeArguments[ "data" ] = arguments.data;
+			invokeArguments[ "2" ] = arguments.data;//compatibility with on missing method 
 			invokeArguments[ lcase(arguments.entity.getClassName()) ] = arguments.entity;
 			invokeArguments.entity = arguments.entity;
 			
@@ -189,9 +193,38 @@
 			return arguments.entity;
 		}
 		
+		
+		public any function savePopulatedSubPrpertiesRecursively(required any entity, required string context){
+
+		    var subPropertiesStruct = arguments.entity.getPopulatedSubProperties();
+		    if( !isStruct(subPropertiesStruct) ){
+		        return;
+		    }
+		    
+			// Loop ove each property that was populated
+			for(var propertyName in subPropertiesStruct ){
+				
+				// if sub-property was a `*.to-many` then it will be an array
+				var entityOrArray = subPropertiesStruct[ propertyName ]; 
+				
+				if( !IsArray(entityOrArray) ){
+				    entityOrArray = [ entityOrArray ];
+				} 
+				
+    		    var entityService = this.getServiceByEntityName( entityOrArray[1].getClassName() );
+	
+				for( var entity in entityOrArray){
+				    // we're not worried about the validation errors as populated sub-properties should have been be validated already, 
+				    // and errors should have been bubbled to the root entity
+				    entityService.invokeMethod('save'&entity.getClassName(), { 1=entity, 2={}, 3=arguments.context } );    
+				}
+			}
+			
+		}
+		
 		// @hint the default save method will populate, validate, and if not errors delegate to the DAO where entitySave() is called.
 	    public any function save(required any entity, struct data, string context="save") {
-	    	
+
 	    	if(!isObject(arguments.entity) || !arguments.entity.isPersistent()) {
 	    		throw("The entity being passed to this service is not a persistent entity. READ THIS!!!! -> Make sure that you aren't calling the oMM method with named arguments. Also, make sure to check the spelling of your 'fieldname' attributes.");
 	    	}
@@ -203,8 +236,7 @@
 	    	getHibachiEventService().announceEvent("before#arguments.entity.getClassName()#Save", arguments);
 	    	
 			// If data was passed in to this method then populate it with the new data
-	        if(structKeyExists(arguments,"data")){
-	        	
+	        if(structKeyExists(arguments,"data") && isStruct(arguments.data) && !StructIsEmpty(arguments.data)){
 	        	// Populate this object
 				arguments.entity.populate(argumentCollection=arguments);
 	
@@ -215,10 +247,26 @@
 			//check if this is new before save - announcements will need this information later.
 	        var isNew = arguments.entity.isNew();
 	        
+	        
+	        
+	        // so the event-handler-functions can declare required-argument as entity-name 
+	        // Example `after[Account]CreateSuccess(required any account, struct data, string context )`
+	        arguments[ arguments.entity.getClassName() ] = arguments.entity;
+
 	        // If the object passed validation then call save in the DAO, otherwise set the errors flag
 	        if(!arguments.entity.hasErrors()) {
+	            
+	            // save populated sub-properties first; if any
+	            // because if we're creating new nested entities, like sku-with product, 
+	            // and not calling save on sku, 
+	            //   the SKU-validation will run [ NOTE: check `validate()`` function in HibachiTransient ), 
+	            //   but the events will not get fired
+	            if( !isNull(arguments.entity.getPopulatedSubProperties()) ){
+	 
+	                this.savePopulatedSubPrpertiesRecursively( arguments.entity, arguments.context );
+	            }
+	            
 	            arguments.entity = getHibachiDAO().save(target=arguments.entity);
-        
                 // Announce After Events for Success
 				getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#Save", arguments);
 				getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#SaveSuccess", arguments);
@@ -227,9 +275,12 @@
 				if (isNew){
 					getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#Create", arguments);
 					getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#CreateSuccess", arguments);
+				} else {
+					getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#Update", arguments);
+					getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#UpdateSuccess", arguments);
 				}
 		    } else {
-            
+
                 // Announce After Events for Failure
 				getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#Save", arguments);
 				getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#SaveFailure", arguments);
@@ -238,6 +289,9 @@
 				if (isNew){
 					getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#Create", arguments);
 					getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#CreateFailure", arguments);
+				} else {
+					getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#Update", arguments);
+					getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#UpdateFailure", arguments);
 				}
 	        }
 
@@ -346,8 +400,8 @@
     };
     
 	public query function transformArrayOfStructsToQuery( required array arrayOfStructs, required array colNames ){
-		var rowsTotal = ArrayLen(arrayOfStructs);
-		var columnsTotal = ArrayLen(colNames); 
+		var rowsTotal = ArrayLen(arguments.arrayOfStructs);
+		var columnsTotal = ArrayLen(arguments.colNames); 
 		if (rowsTotal < 1){return QueryNew("");}
 		var columnNames = arguments.colNames;
 		var newQuery = queryNew(arrayToList(columnNames), "VarChar"&repeatString(",VarChar", arraylen(columnNames)-1));
@@ -357,10 +411,10 @@
 				var column = nullReplace(columnNames[n], "");
 				var value = "";
 				//Fixes undefined values
-				if (!StructKeyExists(arrayOfStructs[i], "#column#")){
+				if (!StructKeyExists(arguments.arrayOfStructs[i], "#column#")){
 					value = "";
 				}else{
-					value = arrayOfStructs[i][column];
+					value = arguments.arrayOfStructs[i][column];
 				}
 				querySetCell(newQuery, column, value, i);
 			}
@@ -409,35 +463,41 @@
 		 * NOTE: Ordered arguments only--named arguments not supported.
 		*/
 		public any function onMissingMethod( required string missingMethodName, required struct missingMethodArguments ) {
-			var lCaseMissingMethodName = lCase( missingMethodName );
+			var lCaseMissingMethodName = lCase( arguments.missingMethodName );
 	
 			if ( lCaseMissingMethodName.startsWith( 'get' ) ) {
-				if(right(lCaseMissingMethodName,9) == "smartlist") {
-					return onMissingGetSmartListMethod( missingMethodName, missingMethodArguments );
-				} else if(right(lCaseMissingMethodName,14) == "collectionlist"){
-					return onMissingGetCollectionListMethod( missingMethodName, missingMethodArguments );
-				} else if(right(lCaseMissingMethodName,6) == "struct"){
-					return onMissingGetEntityStructMethod( missingMethodName, missingMethodArguments );
+				if(right(lCaseMissingMethodName, 9) == "smartlist") {
+					return onMissingGetSmartListMethod( arguments.missingMethodName, arguments.missingMethodArguments );
+				} else if(right(lCaseMissingMethodName, 14) == "collectionlist"){
+					return onMissingGetCollectionListMethod( arguments.missingMethodName, arguments.missingMethodArguments );
+				} else if(right(lCaseMissingMethodName, 6) == "struct"){
+					return onMissingGetEntityStructMethod( arguments.missingMethodName, arguments.missingMethodArguments );
+				} else if(right(lCaseMissingMethodName, 15) == "processcontexts"){ 
+					return onMissingGetEntityProcessContexts( arguments.missingMethodName, arguments.missingMethodArguments );
+				} else if(right(lCaseMissingMethodName, 12) == "eventoptions"){
+					return onMissingGetEntityEventOptions( arguments.missingMethodName, arguments.missingMethodArguments );	
 				} else {
-					return onMissingGetMethod( missingMethodName, missingMethodArguments );
+					return onMissingGetMethod( arguments.missingMethodName, arguments.missingMethodArguments );
 				}
 			} else if ( lCaseMissingMethodName.startsWith( 'new' ) ) {
-				return onMissingNewMethod( missingMethodName, missingMethodArguments );
+				return onMissingNewMethod( arguments.missingMethodName, arguments.missingMethodArguments );
 			} else if ( lCaseMissingMethodName.startsWith( 'list' ) ) {
-				return onMissingListMethod( missingMethodName, missingMethodArguments );
+				return onMissingListMethod( arguments.missingMethodName, arguments.missingMethodArguments );
 			} else if ( lCaseMissingMethodName.startsWith( 'save' ) ) {
-				return onMissingSaveMethod( missingMethodName, missingMethodArguments );
+				return onMissingSaveMethod( arguments.missingMethodName, arguments.missingMethodArguments );
 			} else if ( lCaseMissingMethodName.startsWith( 'delete' ) )	{
-				return onMissingDeleteMethod( missingMethodName, missingMethodArguments );
+				return onMissingDeleteMethod( arguments.missingMethodName, arguments.missingMethodArguments );
 			} else if ( lCaseMissingMethodName.startsWith( 'count' ) ) {
-				return onMissingCountMethod( missingMethodName, missingMethodArguments );
+				return onMissingCountMethod( arguments.missingMethodName, arguments.missingMethodArguments );
 			} else if ( lCaseMissingMethodName.startsWith( 'export' ) ) {
-				return onMissingExportMethod( missingMethodName, missingMethodArguments );
+				return onMissingExportMethod( arguments.missingMethodName, arguments.missingMethodArguments );
 			} else if ( lCaseMissingMethodName.startsWith( 'process' ) ) {
-				if(right(lCaseMissingMethodName,27) == "_updateCalculatedProperties") {
-					return onMissingUpdateCalculatedProperties(missingMethodName, missingMethodArguments);
+				if( right(lCaseMissingMethodName,6) == "_email" ) {
+					return onMissingEmailProcessMethod ( arguments.missingMethodName, arguments.missingMethodArguments ); 
+				} else if (right(lCaseMissingMethodName,27) == "_updateCalculatedProperties") {
+					return onMissingUpdateCalculatedProperties(arguments.missingMethodName, arguments.missingMethodArguments);
 				}else{
-					return onMissingProcessMethod( missingMethodName, missingMethodArguments );
+					return onMissingProcessMethod( arguments.missingMethodName, arguments.missingMethodArguments );
 				}
 			}
 
@@ -448,10 +508,9 @@
 	
 		/********** PRIVATE ************************************************************/
 		private function onMissingDeleteMethod( required string missingMethodName, required struct missingMethodArguments ) {
-			return delete( missingMethodArguments[ 1 ] );
+			return delete( arguments.missingMethodArguments[ 1 ] );
 		}
-	
-	
+		
 		/**
 		 * Provides dynamic get methods, by convention, on missing method:
 		 *
@@ -467,9 +526,9 @@
 		 * NOTE: Ordered arguments only--named arguments not supported.
 		 */
 		private function onMissingGetMethod( required string missingMethodName, required struct missingMethodArguments ){
-			var isReturnNewOnNotFound = structKeyExists( missingMethodArguments, '2' ) ? missingMethodArguments[ 2 ] : false;
+			var isReturnNewOnNotFound = structKeyExists( arguments.missingMethodArguments, '2' ) ? arguments.missingMethodArguments[ 2 ] : false;
 	
-			var entityName = missingMethodName.substring( 3 );
+			var entityName = arguments.missingMethodName.substring( 3 );
 	
 			if ( entityName.matches( '(?i).+by.+' ) ) {
 				var tokens = entityName.split( '(?i)by', 2 );
@@ -478,15 +537,15 @@
 					tokens = tokens[ 2 ].split( 'AND' );
 					var filter = {};
 					for(var i = 1; i <= arrayLen(tokens); i++) {
-						filter[ tokens[ i ] ] = missingMethodArguments[ 1 ][ i ];
+						filter[ tokens[ i ] ] = arguments.missingMethodArguments[ 1 ][ i ];
 					}
 					return get( entityName, filter, isReturnNewOnNotFound );
 				} else {
-					var filter = { '#tokens[ 2 ]#' = missingMethodArguments[ 1 ] };
+					var filter = { '#tokens[ 2 ]#' = arguments.missingMethodArguments[ 1 ] };
 					return get( entityName, filter, isReturnNewOnNotFound );
 				}
 			} else {
-				var id = missingMethodArguments[ 1 ];
+				var id = arguments.missingMethodArguments[ 1 ];
 				return get( entityName, id, isReturnNewOnNotFound );
 			}
 		}
@@ -505,10 +564,10 @@
 			var smartListArgs = {};
 			var entityNameLength = len(arguments.missingMethodName) - 12;
 			
-			var entityName = missingMethodName.substring( 3,entityNameLength + 3 );
+			var entityName = arguments.missingMethodName.substring( 3,entityNameLength + 3 );
 			var data = {};
-			if( structCount(missingMethodArguments) && !isNull(missingMethodArguments[ 1 ]) && isStruct(missingMethodArguments[ 1 ]) ) {
-				data = missingMethodArguments[ 1 ];
+			if( structCount(arguments.missingMethodArguments) && !isNull(arguments.missingMethodArguments[ 1 ]) && isStruct(arguments.missingMethodArguments[ 1 ]) ) {
+				data = arguments.missingMethodArguments[ 1 ];
 			}
 			
 			return getSmartList(entityName=entityName, data=data);
@@ -528,10 +587,10 @@
 			var collectionArgs = {};
 			var entityNameLength = len(arguments.missingMethodName) - 17;
 			
-			var entityName = missingMethodName.substring( 3,entityNameLength + 3 );
+			var entityName = arguments.missingMethodName.substring( 3,entityNameLength + 3 );
 			var data = {};
-			if( structCount(missingMethodArguments) && !isNull(missingMethodArguments[ 1 ]) && isStruct(missingMethodArguments[ 1 ]) ) {
-				data = missingMethodArguments[ 1 ];
+			if( structCount(arguments.missingMethodArguments) && !isNull(arguments.missingMethodArguments[ 1 ]) && isStruct(arguments.missingMethodArguments[ 1 ]) ) {
+				data = arguments.missingMethodArguments[ 1 ];
 			}
 			
 			return getCollectionList(entityName=entityName, data=data);
@@ -540,20 +599,111 @@
 
 		private function onMissingGetEntityStructMethod( required string missingMethodName, required struct missingMethodArguments ){
 			var entityNameLength = len(arguments.missingMethodName) - 9;
-			var entityName = missingMethodName.substring( 3,entityNameLength + 3 );
-			var entityID = missingMethodArguments[ 1 ]; 
+			var entityName = arguments.missingMethodName.substring( 3,entityNameLength + 3 );
+			var entityID = arguments.missingMethodArguments[ 1 ]; 
 			
 			var collection = getCollectionList(entityName=entityName);
-			
-			if(structCount(arguments.missingMethodArguments) > 1){
+			if(arrayLen(arguments.missingMethodArguments) == 2){
 				collection.setDisplayProperties(arguments.missingMethodArguments[2]);
-			} 
-			
+			}
 			collection.addFilter(getPrimaryIDPropertyNameByEntityName(entityName), entityID);
 			collection.setPageRecordsShow(1);
 			return collection.getPageRecords(formatRecords=false)[1];
 		}
+
+		private function onMissingGetEntityProcessContexts( required string missingMethodName, required struct missingMethodArguments ) {
+			var entityNameLength = len(arguments.missingMethodName) - 18;
+			var entityName = arguments.missingMethodName.substring( 3, entityNameLength + 3 );
+
+			var metaData = getEntityMetaData(entityName);
+
+			var processContexts = ''; 
+			if(structKeyExists(metaData, 'hb_processContexts')){
+				processContexts = metaData.hb_processContexts;
+			}
+			
+			return processContexts;	
+		}
+
+		//this is defined on hibachi service rather than hibachi event service so it can be overriden at the entity service level to allow for defining custom events to be used with workflow
+		private function onMissingGetEntityEventOptions( required string missingMethodName, required struct missingMethodArguments ){
+			var entityNameLength = len(arguments.missingMethodName) - 15;
+			var entityName = arguments.missingMethodName.substring( 3, entityNameLength + 3 );
+			var entityService = getServiceByEntityName(entityName); 
+			var entityMetaData = getEntityMetaData(entityName); 
+
+			var doOneToManyOptions = true; 
+			
+			if( structCount(arguments.missingMethodArguments) && 
+				structKeyExists(arguments.missingMethodArguments, "1") &&
+				isBoolean(arguments.missingMethodArguments["1"])
+			){
+				doOneToManyOptions = arguments.missingMethodArguments["1"];  
+			} 	
+
+			var positions = ['before','after'];
+			var processes = ['Save','Delete','Create'];
+			var statuses = ['','Success','Failure'];
+
+			var processContextList = entityService.invokeMethod('get#entityName#ProcessContexts'); 	
 	
+			arrayAppend(array=processes, value=listToArray(processContextList), merge=true); 
+
+			var eventOptions = []; 
+
+			for(var process in processes){
+				for(var position in positions){
+					for(var status in statuses){
+						arrayAppend(eventOptions, getEventNameOptionsStruct(entityName, position, process, status));
+					}
+				}
+			}
+
+			if(doOneToManyOptions){
+				for(var property in entityMetaData.properties){
+					if( structKeyExists(property,'fieldType') && 
+						property.fieldType == 'one-to-many' && 
+						property.cfc != entityName
+					){
+						var relatedEntityService = getServiceByEntityName(property.CFC);
+						var relatedEntityOptions = relatedEntityService.invokeMethod('get#property.cfc#EventOptions', {"1":false});
+						arrayAppend(array=eventOptions, value=relatedEntityOptions, merge=true); 
+					}
+				}
+			}
+
+			return eventOptions;
+		} 	
+
+		
+		private struct function getEventNameOptionsStruct(required string entityName, string position="before", string process="save", string status=""){
+		
+			var optionStruct = {};
+			
+			optionStruct['name'] = "#getHibachiScope().rbKey('entity.#arguments.entityName#')# - ";
+			
+			var processPrefix = "";
+			
+			if(lcase(arguments.process) != 'save' && lcase(arguments.process) != 'delete' && lcase(arguments.process) != 'create'){
+				processPrefix = "Process_";
+				optionStruct['name'] &= "#getHibachiScope().rbKey('define.#arguments.position#')# #getHibachiScope().rbKey('entity.#arguments.entityName#.process.#arguments.process#')#";
+			}else{
+				optionStruct['name'] &= "#getHibachiScope().rbKey('define.#arguments.position#')# #getHibachiScope().rbKey('define.#arguments.process#')#"; 
+			}
+			
+			if(len(arguments.status)){
+				optionStruct['name'] &= " #getHibachiScope().rbKey('define.#arguments.status#')# | #arguments.position##entityName##processPrefix##arguments.process##arguments.status#";
+			}else{
+				optionStruct['name'] &= " | #arguments.position##arguments.entityName##processPrefix##arguments.process#";	
+			}
+			
+			optionStruct['value'] = arguments.position & entityName & processPrefix & arguments.process & arguments.status;
+
+			optionStruct['entityName'] = arguments.entityName;
+			
+			return optionStruct;
+		}
+
 		/**
 		 * Provides dynamic list methods, by convention, on missing method:
 		 *
@@ -738,7 +888,7 @@
 		 * ...in which XXX is an ORM entity name.
 		 */
 		private function onMissingCountMethod( required string missingMethodName, required struct missingMethodArguments ){
-			var entityName = missingMethodName.substring( 5 );
+			var entityName = arguments.missingMethodName.substring( 5 );
 	
 			return count( entityName );
 		}
@@ -746,28 +896,59 @@
 	
 		private function onMissingNewMethod( required string missingMethodName, required struct missingMethodArguments )
 		{
-			var entityName = missingMethodName.substring( 3 );
+			var entityName = arguments.missingMethodName.substring( 3 );
 	
 			return new( entityName );
 		}
 	
 	
 		private function onMissingSaveMethod( required string missingMethodName, required struct missingMethodArguments ) {
-			if ( structKeyExists( missingMethodArguments, '3' ) ) {
-				return save( entity=missingMethodArguments[1], data=missingMethodArguments[2], context=missingMethodArguments[3]);
-			} else if ( structKeyExists( missingMethodArguments, '2' ) ) {
-				return save( entity=missingMethodArguments[1], data=missingMethodArguments[2]);
+
+			if ( structKeyExists(  arguments.missingMethodArguments, '3' ) ) {
+
+				return save( entity = arguments.missingMethodArguments[1], data = arguments.missingMethodArguments[2], context = arguments.missingMethodArguments[3]);
+			} else if ( structKeyExists(  arguments.missingMethodArguments, '2' ) ) {
+
+				return save( entity = arguments.missingMethodArguments[1], data = arguments.missingMethodArguments[2]);
 			} else {
-				return save( entity=missingMethodArguments[1] );
+
+				return save( entity = arguments.missingMethodArguments[1] );
 			}
 		}
 		
 		private function onMissingProcessMethod( required string missingMethodName, required struct missingMethodArguments ) {
-			if ( structKeyExists( missingMethodArguments, '3' ) ) {
-				return process( entity=missingMethodArguments[1], data=missingMethodArguments[2], processContext=missingMethodArguments[3]);
-			} else if ( structKeyExists( missingMethodArguments, '2' ) ) {
-				return process( entity=missingMethodArguments[1], processContext=missingMethodArguments[2]);
+			if ( structKeyExists(  arguments.missingMethodArguments, '3' ) ) {
+				return process( entity = arguments.missingMethodArguments[1], data = arguments.missingMethodArguments[2], processContext = arguments.missingMethodArguments[3]);
+			} else if ( structKeyExists( arguments.missingMethodArguments, '2' ) ) {
+				return process( entity = arguments.missingMethodArguments[1], processContext = arguments.missingMethodArguments[2]);
 			}
+		}
+
+		private function onMissingEmailProcessMethod( required string missingMethodName, required struct missingMethodArguments ) { 
+
+			var entity = arguments.missingMethodArguments['1'];
+
+			var emailService = getService('emailService'); 
+			
+			//this depends on emailService in ../../model/service/EmailService	
+			if( isNull(emailService) ||
+				structCount(arguments.missingMethodArguments) < 2
+			){
+				return entity; 
+			}
+
+			if(!structKeyExists(arguments.missingMethodArguments, '3')){
+				var email = emailService.generateAndSendFromEntityAndEmailTemplate( entity=entity, emailTemplate=arguments.missingMethodArguments['2'] ); 
+			} else {
+				var email = emailService.generateAndSendFromEntityAndEmailTemplate( entity=entity, emailTemplate=arguments.missingMethodArguments['2'], locale=arguments.missingMethodArguments['3'] ); 
+			}
+
+			if(email.hasErrors()){
+				entity.addErrors(email.getErrors());
+			}
+
+			return entity;
+			
 		}
 		
 		/**
@@ -778,7 +959,7 @@
 		 * ...in which XXX is an ORM entity name.
 		 */
 		private function onMissingExportMethod( required string missingMethodName, required struct missingMethodArguments ){
-			var entityMeta = getMetaData(getEntityObject( missingMethodName.substring( 6 ) ));
+			var entityMeta = getMetaData(getEntityObject( arguments.missingMethodName.substring( 6 ) ));
 			var exportQry = getHibachiDAO().getExportQuery(tableName = entityMeta.table);
 			
 			export(data=exportQry);
@@ -786,53 +967,85 @@
 		
 
 		private any function onMissingUpdateCalculatedProperties( required string missingMethodName, required struct missingMethodArguments ){
-			var entity = missingMethodArguments[1];
+			var entity = arguments.missingMethodArguments[1];
 			entity.updateCalculatedProperties();
 			return entity;
 		}
+		
+		
+		
+		
+		
+		
+		
+		////////////                                                                         //////////////////////////// 
+		////////////                         META DATA functions haviely CACHED              //////////////////////////// 
+		////////////                                                                         //////////////////////////// 
+		
+		
+		
+		
 		
 		
 		// @hint returns the correct service on a given entityName.  This is very useful for creating abstract code
 		public boolean function getEntityNameIsValidFlag( required string entityName ) {
 			
 			// Use the short version of the entityName
-			if(len(getProperlyCasedShortEntityName(arguments.entityName, true))){
-				return true;
-			}
+			arguments.entityName = this.getProperlyCasedShortEntityName(arguments.entityName, true);
 			
-			return false;
+			return  arguments.entityName.len();
 		}
 		
 		// @hint returns the correct service on a given entityName.  This is very useful for creating abstract code
 		public any function getServiceByEntityName( required string entityName ) {
-			
 			// Use the short version of the entityName
-			arguments.entityName = getProperlyCasedShortEntityName(arguments.entityName);
+			arguments.entityName = this.getProperlyCasedShortEntityName(arguments.entityName);
 			
-			if(structKeyExists(getEntitiesMetaData(), arguments.entityName) && structKeyExists(getEntitiesMetaData()[arguments.entityName], "hb_serviceName")) {
-				if(hasService(getEntitiesMetaData()[ arguments.entityName ].hb_serviceName)){
-					return getService( getEntitiesMetaData()[ arguments.entityName ].hb_serviceName );
+			if( isNull(arguments.entityName) ){
+			    return;
+			}
+			
+			var thisEntityMetadata = this.getEntityMetaData( arguments.entityName );
+			
+			if( thisEntityMetadata.keyExists('hb_serviceName') ){
+			    var serviceName = thisEntityMetadata['hb_serviceName'];
+			    
+			    // check the beanfactory if there's a service-bean registered by this name
+				if( this.hasService(serviceName) ){
+					return this.getService( serviceName );
 				}
 			}
 			
 			// By default just return the base hibachi service
-			return getService("hibachiService");
+			return this.getService("hibachiService");
 		}
 		
 		// ======================= START: Entity Name Helper Methods ==============================
 		
 		public string function getProperlyCasedShortEntityName( required string entityName, boolean returnBlankIfNotFound=false ) {
-			if(left(arguments.entityName, len(getApplicationValue('applicationKey'))) == getApplicationValue('applicationKey')) {
-				arguments.entityName = right(arguments.entityName, len(arguments.entityName)-len(getApplicationValue('applicationKey')));
+		
+			if(structKeyExists(variables.properlyCasedShortEntityName, arguments.entityName)){
+				return variables.properlyCasedShortEntityName[arguments.entityName];
 			}
 			
-			if( structKeyExists(getEntitiesMetaData(), arguments.entityName) ) {
-				var keyList = structKeyList(getEntitiesMetaData());
-				var keyIndex = listFindNoCase(keyList, arguments.entityName);
-				return listGetAt(keyList, keyIndex);
+			var applicationKey = this.getApplicationValue('applicationKey');
+			var applicationKeyLen = len(applicationKey);
+			
+			// if it begins with applicationKey, strip that that
+			if( left(arguments.entityName, applicationKeyLen) == applicationKey ){
+				arguments.entityName = right( arguments.entityName, len(arguments.entityName)-applicationKeyLen );
 			}
 			
-			if(arguments.returnBlankIfNotFound) {
+			var allEntitiesMetadata = this.getEntitiesMetaData();
+			
+			if( this.getEntitiesMetaData().keyExists(arguments.entityName) ){
+			    var properlyCasedEntityNames = this.getEntitiesMetaData().keyArray();
+			    var idx = properlyCasedEntityNames.findNoCase(arguments.entityName);
+				variables.properlyCasedShortEntityName[arguments.entityName] = properlyCasedEntityNames[idx];
+				return variables.properlyCasedShortEntityName[arguments.entityName];
+			}
+			
+			if(arguments.returnBlankIfNotFound){
 				return "";
 			}
 			
@@ -840,16 +1053,18 @@
 		}
 		
 		public string function getProperlyCasedFullEntityName( required string entityName ) {
-			return "#getApplicationValue('applicationKey')##getProperlyCasedShortEntityName( arguments.entityName )#";
+			return this.getApplicationValue('applicationKey')&this.getProperlyCasedShortEntityName( arguments.entityName );
 		}
 		
 		public string function getProperlyCasedFullClassNameByEntityName( required string entityName ) {
-			return "#getApplicationValue('applicationKey')#.model.entity.#getProperlyCasedShortEntityName( arguments.entityName )#";
+			return this.getApplicationValue('applicationKey')&".model.entity."&this.getProperlyCasedShortEntityName( arguments.entityName );
 		}
 
 		public string function getProperlyCasedPropertyIdentifier( required string baseEntityName, required string propertyIdentifier ) {
-			var currentPropertiesStruct = getPropertiesStructByEntityName(arguments.baseEntityName);
-			var currentStructKeys = listToArray(StructKeyList(currentPropertiesStruct));
+			
+			var currentPropertiesStruct = this.getPropertiesStructByEntityName(arguments.baseEntityName);
+			var currentStructKeys = StructKeyArray(currentPropertiesStruct);
+			
 			var _propertyIdentifier = '';
 			var propertyIdentifierParts = ListToArray(arguments.propertyIdentifier, '.');
 
@@ -858,15 +1073,16 @@
 					_propertyIdentifier = listAppend(_propertyIdentifier, propertyIdentifierParts[i], '.');
 					continue;
 				}
+				// TODO investigate/optimize, the structs are case-insensitive ????
 				if(structKeyExists(currentPropertiesStruct, propertyIdentifierParts[i])){
 					propertyIdentifierParts[i] = currentStructKeys[arrayFindNoCase(currentStructKeys, propertyIdentifierParts[i])];
 					if(structKeyExists(currentPropertiesStruct[propertyIdentifierParts[i]], 'cfc')){
 						arguments.baseEntityName = currentPropertiesStruct[propertyIdentifierParts[i]]['cfc'];
-						currentPropertiesStruct = getService('hibachiService').getPropertiesStructByEntityName(arguments.baseEntityName);
-						currentStructKeys = listToArray(StructKeyList(currentPropertiesStruct));
+						currentPropertiesStruct = this.getPropertiesStructByEntityName(arguments.baseEntityName);
+						currentStructKeys = StructKeyArray(currentPropertiesStruct);
 					}
 				}else{
-					logHibachi("The Property #propertyIdentifierParts[i]# is invalid for the entity #arguments.baseEntityName# on property Identifier: #arguments.propertyIdentifier#");
+					this.logHibachi("The Property #propertyIdentifierParts[i]# is invalid for the entity #arguments.baseEntityName# on property Identifier: #arguments.propertyIdentifier#");
 				}
 				_propertyIdentifier = listAppend(_propertyIdentifier, propertyIdentifierParts[i], '.');
 			}
@@ -878,98 +1094,119 @@
 		// ===================== START: Cached Entity Meta Data Methods ===========================
 		
 		public any function getEntitiesMetaData() {
-			if(!structKeyExists(variables, 'entitiesMetaData') || !structCount(variables.entitiesMetaData)) {
-				var entityNamesArr = listToArray(structKeyList(ORMGetSessionFactory().getAllClassMetadata()));
+		    var cacheKey = "class_EntitiesMetaData_ALL"; // prefixed with class, as it has been used at a lot of other places, and we clear the cache by prefix
+			
+			if( !this.getHibachiCacheService().hasCachedValue(cacheKey) ){
+			    
+			    var applicationKey = this.getApplicationKey();
+			    
+			    // this function is not bean factory safe;
+			    
+			    writeLog( file=applicationKey, text="HibachiService::getEntitiesMetaData is not cached, cacheKey: #cacheKey#, ... CACHING ");
+			    
+			    var ormEntitiesMetaData = ORMGetSessionFactory().getAllClassMetadata();
+			    var entityNamesArr = structKeyArray( ormEntitiesMetaData );
 				var allMD = {};
+			
 				for(var entityName in entityNamesArr) {
-					var entity = entityNew(entityName);
-					if(structKeyExists(entity, "getThisMetaData")) {
-						var entityMetaData = entityNew(entityName).getThisMetaData();
-						if(isStruct(entityMetaData) && structKeyExists(entityMetaData, "fullname")) {
+				
+					var entityObject = entityNew(entityName); // cant use this.getEntityObject(...) here as it becomes recursive
+					
+					if( structKeyExists(entityObject, "getThisMetaData") ){
+						var entityMetaData = entityObject.getThisMetaData();
+						if( isStruct(entityMetaData) && structKeyExists(entityMetaData, "fullname") ){
 							var entityShortName = listLast(entityMetaData.fullname, '.');
 							allMD[ entityShortName ] = entityMetaData;
 						}
 					}
+					
 				}
-				variables.entitiesMetaData = allMD;
+				
+				this.getHibachiCacheService().setCachedValue(cacheKey, allMD );
+				
+			    writeLog( file=applicationKey, text="HibachiService::getEntitiesMetaData FINISHED caching ");
 			}
-			
-			return variables.entitiesMetaData;
+	
+			return this.getHibachiCacheService().getCachedValue(cacheKey);
 		}
 		
 		public any function getEntityMetaData( required string entityName ) {
-			return getEntitiesMetaData()[ getProperlyCasedShortEntityName( arguments.entityName ) ];
+			return this.getEntitiesMetaData()[ this.getProperlyCasedShortEntityName( arguments.entityName ) ];
 		}
 		
 		// @hint returns the entity meta data object that is used by a lot of the helper methods below
 		public any function getEntityORMMetaDataObject( required string entityName ) {
-			arguments.entityName = getProperlyCasedFullEntityName( arguments.entityName );
-			if(!structKeyExists(variables.entityORMMetaDataObjects, arguments.entityName)) {
-				variables.entityORMMetaDataObjects[ arguments.entityName ] = ormGetSessionFactory().getClassMetadata( arguments.entityName );
+			var cacheKey = "class_EntityORMMetaDataCache_"&arguments.entityName;
+			
+			if( !this.getHibachiCacheService().hasCachedValue(cacheKey) ) {
+			    arguments.entityName = this.getProperlyCasedFullEntityName( arguments.entityName );
+				this.getHibachiCacheService().setCachedValue(cacheKey, ormGetSessionFactory().getClassMetadata( arguments.entityName ));
 			}
 			
-			return variables.entityORMMetaDataObjects[ arguments.entityName ];
+			return this.getHibachiCacheService().getCachedValue(cacheKey);
 		}
 		
 		// @hint returns the metaData struct for an entity
-		public any function getEntityObject( required string entityName ) {
+		public any function getEntityObject( required string entityName ){
 			
-			arguments.entityName = getProperlyCasedFullEntityName( arguments.entityName );
+			var cacheKey = "class_EntityObjectCache_#arguments.entityName#";
 			
-			if(!structKeyExists(variables.entityObjects, arguments.entityName)) {
-				variables.entityObjects[ arguments.entityName ] = entityNew(arguments.entityName);
+			if( !this.getHibachiCacheService().hasCachedValue(cacheKey) ){
+			    arguments.entityName = this.getProperlyCasedFullEntityName( arguments.entityName );
+				this.getHibachiCacheService().setCachedValue(cacheKey, entityNew(arguments.entityName));
 			}
-			
-			return variables.entityObjects[ arguments.entityName ];
+	
+			return this.getHibachiCacheService().getCachedValue(cacheKey);
 		}
 		
 		// @hint returns the properties of a given entity
-		public any function getPropertiesByEntityName( required string entityName ) {
-			
-			// First Check the application cache
-			if( hasApplicationValue("classPropertyCache_#getProperlyCasedFullClassNameByEntityName( arguments.entityName )#") ) {
-				return getApplicationValue("classPropertyCache_#getProperlyCasedFullClassNameByEntityName( arguments.entityName )#");
-			}
-			
-			// Pull the meta data from the object (which in turn will cache it in the application for the next time)
-			return getEntityObject( arguments.entityName ).getProperties();
+		public any function getPropertiesByEntityName( required string entityName ){
+		    // this Hibachi transient caches this into HibachiCacheService
+			return this.getEntityObject( arguments.entityName ).getProperties();
 		}
 		
-		// @hint returns the properties of a given entity
-		public any function getPropertiesStructByEntityName( required string entityName ) {
-			// Pull the meta data from the object (which in turn will cache it in the application for the next time)
-			return getEntityObject( arguments.entityName ).getPropertiesStruct(); 
+		// @hint returns the propertieStruct of a given entity
+		public any function getPropertiesStructByEntityName( required string entityName ){
+		    // this Hibachi transient caches this into HibachiCacheService
+		    return this.getEntityObject( arguments.entityName ).getPropertiesStruct();
 		}
 		
 		public any function getToManyPropertiesByEntityName(required string entityName){
-			var cacheKey = 'toManyPropertiesBy#arguments.entityName#';
-			if(!structKeyExists(variables,cacheKey)){
-				var toManyProperties = [];
-				var properties = getComponentMetaData(getBeanFactory().getBeanInfo( arguments.entityName ).cfc).properties;
-				var propertyCount = arrayLen(properties);
-				// Loop over all properties
-				for(var i=1; i<=propertyCount; i++) {
-					// Set any one-to-many or many-to-many properties with a blank array as the default value
-					if(structKeyExists(properties[i], "fieldtype") && listFindNoCase("many-to-many,one-to-many", properties[i].fieldtype) && !structKeyExists(variables, properties[i].name) ) {
-						arrayAppend(toManyProperties,properties[i].name);
+		    var cacheKey = "class_EntityToManyPropertiesNamesCache_#arguments.entityName#";
+		    
+		    if( !this.getHibachiCacheService().hasCachedValue(cacheKey) ){
+		        
+		        // this's is not safe to use HibachiService's cached metadata-function, 
+		        // as on HibachiEntity.init() we call `getToManyPropertiesByEntityName`, 
+		        // now if the Hibachi caches were empty for whatever reason, these functions will try to obtain an object on the same entity to cache it's metadata first
+		        // hence we can never use an EntityObject or Hibachi's cached-metadata funcfions in here
+			    var allProperties  = GetComponentMetaData( this.getBeanFactory().getBeanInfo( arguments.entityName ).cfc ).properties;;
+				
+				var toManyPropertiesNames = [];
+			    for(var thisProperty in allProperties ){
+			        if( thisProperty.keyExists("fieldtype") && listFindNoCase("many-to-many,one-to-many", thisProperty.fieldtype) && !structKeyExists(variables, thisProperty.name) ){
+						toManyPropertiesNames.append(thisProperty.name);
 					}
-				}
-				variables[cacheKey] = toManyProperties;
+			    }
+			    
+				this.getHibachiCacheService().setCachedValue(cacheKey, toManyPropertiesNames );
 			}
-			return variables[cacheKey];
 			
+			return this.getHibachiCacheService().getCachedValue(cacheKey);
 		}
 		
 		public any function getPropertyIsPersistentByEntityNameAndPropertyIdentifier(required string entityName, required string propertyIdentifier){
 			var cacheKey = 'getPropertyIsPersistentByEntityNameAndPropertyIdentifier'&arguments.entityName&arguments.propertyIdentifier;
 			
 			if(!structKeyExists(variables,cacheKey)){
-				var propertyMetaData = getPropertiesStructByEntityName(
-				getLastEntityNameInPropertyIdentifier(
-						arguments.entityName,
-						arguments.propertyIdentifier
-					)	
-				)[listLast(arguments.propertyIdentifier, ".")];
+			    var lastEntityName = getLastEntityNameInPropertyIdentifier( arguments.entityName, arguments.propertyIdentifier );
+				var propertiesMetaData = getPropertiesStructByEntityName(lastEntityName);
+				var lastPropertyName = listLast(arguments.propertyIdentifier, ".");
+				if(!structKeyExists(propertiesMetaData, lastPropertyName) ){
+				    throw("propertyName: #lastPropertyName# is not valid for entityName: #lastEntityName#");
+				}
+				var propertyMetaData = propertiesMetaData[lastPropertyName];
+				
 				variables[cacheKey] = !structKeyExists(propertyMetaData,'persistent') || propertyMetaData.persistent; 
 			}
 			
@@ -1192,36 +1429,93 @@
 		
 		public string function hasToManyByEntityNameAndPropertyIdentifier( required string entityName, required string propertyIdentifier ) {
 			
-			if(listLen(arguments.propertyIdentifier, ".") gt 1) {
-				var propertiesSruct = getPropertiesStructByEntityName( arguments.entityName );
-				if( !structKeyExists(propertiesSruct, listFirst(arguments.propertyIdentifier, ".")) || !structKeyExists(propertiesSruct[listFirst(arguments.propertyIdentifier, ".")], "cfc") ) {
-					throw("The Property Identifier #arguments.propertyIdentifier# is invalid for the entity #arguments.entityName#");
-				}
-				if(
-					structKeyExists(propertiesSruct[listFirst(arguments.propertyIdentifier, ".")], "fieldtype") 
-					&& (
-						propertiesSruct[listFirst(arguments.propertyIdentifier, ".")]["fieldtype"] == 'one-to-many'
-						|| propertiesSruct[listFirst(arguments.propertyIdentifier, ".")]["fieldtype"] == 'many-to-many'
-					)
-				){
-					return true;
-				}
-				
-				return hasToManyByEntityNameAndPropertyIdentifier( entityName=listLast(propertiesSruct[listFirst(arguments.propertyIdentifier, ".")].cfc, "."), propertyIdentifier=right(arguments.propertyIdentifier, len(arguments.propertyIdentifier)-(len(listFirst(arguments.propertyIdentifier, "._"))+1)));	
-			}
-			return false;
+			var hasToMany = false;
+			var propertiesStruct = getPropertiesStructByEntityName( arguments.entityName );
+			var propertyIdentifierParts = ListToArray(arguments.propertyIdentifier, '.');
 			
+			for (var i = 1; i <= arraylen(propertyIdentifierParts); i++) {
+			
+				if(structKeyExists(propertiesStruct, propertyIdentifierParts[i]) && structKeyExists(propertiesStruct[propertyIdentifierParts[i]], 'cfc')){
+					var currentProperty = propertiesStruct[propertyIdentifierParts[i]];
+					if(	structKeyExists(currentProperty, "fieldtype") && currentProperty["fieldtype"].endsWith('-to-many')){
+						hasToMany = true;
+						break;
+					}
+					propertiesStruct = getService('hibachiService').getPropertiesStructByEntityName(currentProperty['cfc']);
+					
+				} else {
+					break;
+				}
+			}
+			
+			return hasToMany;
 		}
 		
+		public boolean function hasDefaultOrderByPropertyNameByEntityName(required string entityName){
+			var entityMetaData = this.getEntityMetaData( arguments.entityName );
+            return StructKeyExists(entityMetaData, "hb_defaultOrderProperty");
+		}
+		
+		public string function getDefaultOrderByPropertyNameByEntityName(required string entityName){
+			var entityMetaData = this.getEntityMetaData( arguments.entityName );
+            return entityMetaData["hb_defaultOrderProperty"];
+		}
+		
+		public string function getDefaultOrderByPropertyIdentifierByEntityName(required string entityName, string orderByPropertyName){
+
+			if( !structKeyExists(arguments, 'orderByPropertyName') ){
+			    arguments.orderByPropertyName = this.getDefaultOrderByPropertyNameByEntityName(arguments.entityName);
+			}
+
+			return '_' & lcase( this.getProperlyCasedShortEntityName(arguments.entityName) ) & '.' & arguments.orderByPropertyName;
+		}
 			
 		public any function getTableTopSortOrder(required string tableName, string contextIDColumn, string contextIDValue) {
 			return getHibachiDAO().getTableTopSortOrder(argumentcollection=arguments);
 		}
 		
 		public string function getTableNameByEntityName(required string entityName){
-			entityMetaData = getEntityMetaData( arguments.entityName );
+			var entityMetaData = getEntityMetaData( arguments.entityName );
 			return entityMetaData.table; 
 		}
+		
+		
+		public any function getAnyColumnValueByEntityNameAndUniqueKeyValue( required string entityName, required string columnToFetch, required string uniqueKey, required any uniqueValue, boolean useORM = false ){
+		    
+		    if(arguments.useORM){
+		        return this.getHibachiDAO().getAnyPropertyIdentifierValueByEntityNameAndUniquePropertyIdentifierValue(
+		            entityName                  = arguments.entityName,
+		            propertyIdentifierToFetch   = arguments.columnToFetch,
+		            filterPropertyIdentifier    = arguments.uniqueKey,
+		            filterValue                 = arguments.uniqueValue
+		        );
+		    }
+		    
+		    return this.getHibachiDAO().getAnyColumnValueByTableNameAndUniqueKeyValue(
+		        tableName       = this.getTableNameByEntityName( arguments.entityName ), 
+		        columnToFetch   = arguments.columnToFetch, 
+		        uniqueKey       = arguments.uniqueKey, 
+		        uniqueValue     = arguments.uniqueValue
+		    );
+		    
+		}
+		
+		public any function getPrimaryIDValueByEntityNameAndUniqueKeyValue( required string entityName, required string uniqueKey, required any uniqueValue, boolean useORM = false  ){
+		    
+		    arguments.columnToFetch  = this.getPrimaryIDColumnNameByEntityName( arguments.entityName );
+		    
+		    if(arguments.useORM){
+		        return this.getHibachiDAO().getAnyPropertyIdentifierValueByEntityNameAndUniquePropertyIdentifierValue(
+		            entityName                  = arguments.entityName,
+		            propertyIdentifierToFetch   = arguments.columnToFetch,
+		            filterPropertyIdentifier    = arguments.uniqueKey,
+		            filterValue                 = arguments.uniqueValue
+		        );
+		    }
+		    
+		    return this.getAnyColumnValueByEntityNameAndUniqueKeyValue( argumentCollection = arguments );
+		}
+		
 	
 		public any function updateRecordSortOrder(required string recordIDColumn, required string recordID, required string entityName, required numeric newSortOrder) {
 			var entityMetaData = getEntityMetaData( arguments.entityName );
@@ -1285,29 +1579,34 @@
 		
 		//used by the rest api to return default property values
 		public any function getDefaultPropertiesByEntityName(required string entityName){
-			// First Check the application cache
-			if( hasApplicationValue("classDefaultPropertyCache_#getProperlyCasedFullClassNameByEntityName( arguments.entityName )#") ) {
-				return getApplicationValue("classDefaultPropertyCache_#getProperlyCasedFullClassNameByEntityName( arguments.entityName )#");
+			var cacheKey = "classDefaultPropertyCache_#getProperlyCasedFullClassNameByEntityName( arguments.entityName )#";
+			// First Check the hibachi cache
+			if( this.getHibachiCacheService().hasCachedValue(cacheKey) ) {
+				return this.getHibachiCacheService().getCachedValue(cacheKey);
 			}
-			
-			// Pull the meta data from the object (which in turn will cache it in the application for the next time)
+			// Pull the meta data from the object (which in turn will cache it in the hibachi cache for the next time)
 			return getEntityObject( arguments.entityName ).getDefaultCollectionProperties();
 		}
 		
 		
 		public string function getOrmTypeByEntityNameAndPropertyIdentifier(required string entityName, required string propertyIdentifier) {
-			var lastEntityName =  getLastEntityNameInPropertyIdentifier(arguments.entityName, arguments.propertyIdentifier );
-
-			var object =  getEntityObject(lastEntityName);
-			var propertyName = listLast(arguments.propertyIdentifier, '.');
-			if(
-				!isNull(object)
-				&& !isSimpleValue(object)
-				&& structKeyExists(object.getPropertyMetaData(propertyName),'ormtype')
-			) {
-				return object.getPropertyMetaData(propertyName).ormtype;
+		
+			var cacheKey = 'getOrmTypeByEntityNameAndPropertyIdentifier-#arguments.entityName#-#arguments.propertyIdentifier#';
+			if(!structKeyExists(variables,cacheKey)){
+				variables[cacheKey] = "";
+				var lastEntityName =  getLastEntityNameInPropertyIdentifier(arguments.entityName, arguments.propertyIdentifier );
+	
+				var object =  getEntityObject(lastEntityName);
+				var propertyName = listLast(arguments.propertyIdentifier, '.');
+				if(
+					!isNull(object)
+					&& !isSimpleValue(object)
+					&& structKeyExists(object.getPropertyMetaData(propertyName),'ormtype')
+				) {
+					variables[cacheKey] = object.getPropertyMetaData(propertyName).ormtype;
+				}
 			}
-			return "";
+			return variables[cacheKey];
 		}
 		
 		public array function getOptionsByEntityNameAndPropertyIdentifier(
@@ -1634,7 +1933,7 @@
 							entity.updateCalculatedProperties(true);
 							logHibachi('flushed',true);
 							//commit batch
-							ormFlush();
+							this.getHibachiScope().hibachiORMFlush();
 							
 						}catch(any e){
 							logHibachi('#attributes.entityID# - error #e.message#',true);

@@ -117,7 +117,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 		
-		if(getHasPropertyByEntityNameAndPropertyIdentifier('CommentRelationship', arguments.entity.getClassName())) {
+		if(getService('hibachiservice').getHasPropertyByEntityNameAndPropertyIdentifier('CommentRelationship', arguments.entity.getClassName())) {
 			return getCommentDAO().deleteAllRelatedComments(primaryIDPropertyName=arguments.entity.getPrimaryIDPropertyName(), primaryIDValue=arguments.entity.getPrimaryIDValue());	
 		}
 		return true;
@@ -143,7 +143,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	
 	public any function saveComment(required any comment, required any data) {
-		
+
 		arguments.comment.populate( arguments.data );
 		
 		parseCommentAndCreateRelationships( arguments.comment );

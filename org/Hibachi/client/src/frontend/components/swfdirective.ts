@@ -86,7 +86,6 @@ class SWFDirective implements ng.IDirective {
             
             // Render the template.
             element.html('').append(this.$compile(template)(scope));
-            debugger;
         }
     }
 

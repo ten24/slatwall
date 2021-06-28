@@ -1,44 +1,117 @@
 <div class="row s-body-nav" ng-if="!swEntityActionBar.modal">
     <nav class="navbar navbar-default" role="navigation">
       <div class="col-md-6 s-header-info">
-			<!--- Page Title --->
+			<!-- Page Title -->
 			<h1 class="actionbar-title" ng-bind="swEntityActionBar.pageTitle"></h1>
 		</div>
 
 		<div class="col-md-6">
-			<div class="btn-toolbar">
-				<!--- ================ Listing =================== --->
-				<ng-transclude ng-if="swEntityActionBar.type === 'listing'"></ng-transclude>
-				<!--- ================ Detail ===================== 
-				<div ng-if="swEntityActionBar.type === 'detail'">
+			<div class="btn-toolbar" ng-if="swEntityActionBar.type === 'listing'">
+				<!-- ================ Listing =================== -->
+				<ng-transclude></ng-transclude>
+			</div>
+				<!-- ================ Detail ===================== -->
+			<div class="btn-toolbar" ng-if="swEntityActionBar.type === 'detail'">
+				<div class="btn-group btn-group-sm">
+
+					<sw-action-caller data-title-rb-key="{{swEntityActionBar.backAction.replace(':','.')}}"
+									  data-event="{{swEntityActionBar.backEvent}}"
+									  data-action="{{swEntityActionBar.backAction}}"
+									  data-query-string="{{swEntityActionBar.backQueryString}}"
+									  data-class="btn btn-default" 
+									  icon="arrow-left">
+					</sw-action-caller>
+					
+					<button ng-if="swEntityActionBar.processCallers.length > 0"
+							class="btn dropdown-toggle btn-default" 
+							data-toggle="dropdown" 
+							aria-expanded="false"
+							type="button">
+						<i class="icon-list-alt"></i> Actions 
+						<span class="caret"></span>
+					</button>
+					<ul class="dropdown-menu pull-right" ng-if="swEntityActionBar.swProcessCallers">
+
+						<sw-process-caller ng-repeat="process in swEntityActionBar.swProcessCallers"
+										   data-action="{{process.action}}"
+										   data-modal="process.modal"
+										   data-process-context="{{process.processContext}}"
+										   data-query-string="{{process.queryString}}"
+										   data-type="list">
+				
+						</sw-process-caller>
+					</ul>
+				</div>	
+				
+				<!-- TODO: Print/Email Template Links -->
+				<div class="btn-group btn-group-sm">
 					<div class="btn-group btn-group-sm">
-						<!--- Detail: Back Button 
-						<hb:HibachiActionCaller action="#swEntityActionBar.backAction#" queryString="#swEntityActionBar.backQueryString#" class="btn btn-default" icon="arrow-left">
-
-						<!--- Detail: Actions 
-						<cfif !swEntityActionBar.object.isNew() && len( trim( thistag.generatedcontent ) ) gt 1>
-							<button class="btn dropdown-toggle btn-default" data-toggle="dropdown"><i class="icon-list-alt"></i> #swEntityActionBar.hibachiScope.rbKey('define.actions')# <span class="caret"></span></button>
-							<ul class="dropdown-menu pull-right">
-								<hb:HibachiDividerHider>
-									#thistag.generatedcontent#
-								</hb:HibachiDividerHider>
-							</ul>
-						</cfif>
-
-						<!--- Detail: Button Groups 
-						<cfif structKeyExists(thistag, "buttonGroups") && arrayLen(thistag.buttonGroups)>
-							<cfloop array="#thisTag.buttonGroups#" index="buttonGroup">
-								<cfif structKeyExists(buttonGroup, "generatedContent") && len(buttonGroup.generatedContent)>											
-									#buttonGroup.generatedContent#
-								</cfif>
-							</cfloop>
-						</cfif>
+						<a class="btn dropdown-toggle btn-default" data-toggle="dropdown" href="#" aria-expanded="false"><i class="fa fa-envelope"></i></a>
+						<ul class="dropdown-menu pull-right">
+							<sw-process-caller ng-repeat="process in swEntityActionBar.swPrintProcessCallers"
+										   data-action="{{process.action}}"
+										   data-modal="process.modal"
+										   data-process-context="{{process.processContext}}"
+										   data-query-string="{{process.queryString}}"
+										   data-text="{{process.text}}"
+										   data-type="list">
+				
+						</sw-process-caller>
+						</ul>
 					</div>
-
-					<!--- Detail: Email / Print 
+				</div>
+				
+				<div class="btn-group btn-group-sm"></div>
+				
+				<div class="btn-group btn-group-sm">
+					
+					<sw-action-caller data-display="!swEntityActionBar.edit"
+									  data-title-rb-key="define.edit"
+									  data-event="{{swEntityActionBar.editEvent}}"
+									  data-payload="swEntityActionBar.payload"
+									  data-action="{{swEntityActionBar.editAction}}"
+									  data-query-string="{{swEntityActionBar.editQueryString}}"
+									  data-class="btn btn-default" 
+									  icon="pencil">
+					</sw-action-caller>
+					
+					<sw-action-caller data-display="swEntityActionBar.edit"
+									  data-title-rb-key="define.save"
+									  data-event="{{swEntityActionBar.saveEvent}}"
+									  data-payload="swEntityActionBar.payload"
+									  data-action="{{swEntityActionBar.saveAction}}"
+									  data-query-string="{{swEntityActionBar.saveQueryString}}"
+									  data-class="btn btn-success" 
+									  icon="ok">
+					</sw-action-caller>
+					
+					<sw-action-caller data-display="swEntityActionBar.edit"
+									  data-title-rb-key="define.cancel"
+									  data-event="{{swEntityActionBar.cancelEvent}}"
+									  data-payload="swEntityActionBar.payload"
+									  data-action="{{swEntityActionBar.cancelAction}}"
+									  data-query-string="{{swEntityActionBar.cancelQueryString}}"
+									  data-class="btn btn-default" 
+									  icon="remove">
+					</sw-action-caller>
+					
+					
+					<sw-action-caller ng-if="swEntityActionBar.showDelete"
+									  data-title-rb-key="define.delete"
+									  data-event="{{swEntityActionBar.deleteEvent}}"
+									  data-payload="swEntityActionBar.payload"
+									  data-action="{{swEntityActionBar.deleteAction}}"
+									  data-query-string="{{swEntityActionBar.deleteQueryString}}"
+									  data-class="btn btn-default" 
+									  icon="trash">
+					</sw-action-caller>
+				</div>
+			</div>
+	
+					<!-- Detail: Email / Print 
 					<div class="btn-group btn-group-sm">
 						<cfif arrayLen(swEntityActionBar.object.getEmailTemplates()) || arrayLen(swEntityActionBar.object.getPrintTemplates())>
-							<!--- Email 
+							<!-- Email 
 							<cfif arrayLen(swEntityActionBar.object.getEmailTemplates())>
 								<div class="btn-group btn-group-sm">
 									<a class="btn dropdown-toggle btn-default" data-toggle="dropdown" href="##"><i class="fa fa-envelope"></i></a>
@@ -49,7 +122,7 @@
 									</ul>
 								</div>
 							</cfif>
-							<!--- Print 
+							<!-- Print 
 							<cfif arrayLen(swEntityActionBar.object.getPrintTemplates())>
 								<div class="btn-group btn-group-sm">
 									<a class="btn dropdown-toggle btn-default" data-toggle="dropdown" href="##"><i class="fa fa-print"></i></a>
@@ -62,9 +135,9 @@
 							</cfif>
 						</cfif>
 					</div>
-					<!--- Detail: Print 
+					<!-- Detail: Print 
 
-					<!--- Detail: Additional Button Groups 
+					<!-- Detail: Additional Button Groups 
 					<cfif structKeyExists(thistag, "buttonGroups") && arrayLen(thistag.buttonGroups)>
 						<cfloop array="#thisTag.buttonGroups#" index="buttonGroup">
 							<cfif structKeyExists(buttonGroup, "generatedContent") && len(buttonGroup.generatedContent)>
@@ -73,38 +146,38 @@
 						</cfloop>
 					</cfif>
 
-					<!--- Detail: CRUD Buttons 
+					<!-- Detail: CRUD Buttons 
 					
 					<div class="btn-group btn-group-sm">
-						<!--- Setup delete Details 
+						<!-- Setup delete Details 
 						<cfset local.deleteErrors = swEntityActionBar.hibachiScope.getService("hibachiValidationService").validate(object=swEntityActionBar.object, context="delete", setErrors=false) />
 						<cfset local.deleteDisabled = local.deleteErrors.hasErrors() />
 						<cfset local.deleteDisabledText = local.deleteErrors.getAllErrorsHTML() />
 
 						<cfif swEntityActionBar.edit>
-							<!--- Delete 
+							<!-- Delete 
 							<cfif not swEntityActionBar.object.isNew() and swEntityActionBar.showdelete>
 								<cfset swEntityActionBar.deleteQueryString = listAppend(swEntityActionBar.deleteQueryString, "#swEntityActionBar.object.getPrimaryIDPropertyName()#=#swEntityActionBar.object.getPrimaryIDValue()#", "&") />
 								<hb:HibachiActionCaller action="#swEntityActionBar.deleteAction#" querystring="#swEntityActionBar.deleteQueryString#" text="#swEntityActionBar.hibachiScope.rbKey('define.delete')#" class="btn btn-default s-remove" icon="trash icon-white" confirm="true" disabled="#local.deleteDisabled#" disabledText="#local.deleteDisabledText#">
 							</cfif>
 
-							<!--- Cancel 
+							<!-- Cancel 
 							<cfif !len(swEntityActionBar.cancelQueryString)>
-								<!--- Setup default cancel query string 
+								<!-- Setup default cancel query string 
 								<cfset swEntityActionBar.cancelQueryString = "#swEntityActionBar.object.getPrimaryIDPropertyName()#=#swEntityActionBar.object.getPrimaryIDValue()#" />
 							</cfif>
 							<hb:HibachiActionCaller action="#swEntityActionBar.cancelAction#" querystring="#swEntityActionBar.cancelQueryString#" text="#swEntityActionBar.hibachiScope.rbKey('define.cancel')#" class="btn btn-default" icon="remove icon-white">
 
-							<!--- Save 
+							<!-- Save 
 							<hb:HibachiActionCaller action="#request.context.entityActionDetails.saveAction#" text="#swEntityActionBar.hibachiScope.rbKey('define.save')#" class="btn btn-success" type="button" submit="true" icon="ok icon-white">
 						<cfelse>
-							<!--- Delete 
+							<!-- Delete 
 							<cfif swEntityActionBar.showdelete>
 								<cfset swEntityActionBar.deleteQueryString = listAppend(swEntityActionBar.deleteQueryString, "#swEntityActionBar.object.getPrimaryIDPropertyName()#=#swEntityActionBar.object.getPrimaryIDValue()#", "&") />
 								<hb:HibachiActionCaller action="#swEntityActionBar.deleteAction#" querystring="#swEntityActionBar.deleteQueryString#" text="#swEntityActionBar.hibachiScope.rbKey('define.delete')#" class="btn btn-default s-remove" icon="trash icon-white" confirm="true" disabled="#local.deleteDisabled#" disabledText="#local.deleteDisabledText#">
 							</cfif>
 
-							<!--- Edit 
+							<!-- Edit 
 							<cfif swEntityActionBar.showedit>
 								<hb:HibachiActionCaller action="#request.context.entityActionDetails.editAction#" querystring="#swEntityActionBar.object.getPrimaryIDPropertyName()#=#swEntityActionBar.object.getPrimaryIDValue()#" text="#swEntityActionBar.hibachiScope.rbKey('define.edit')#" class="btn btn-default" icon="pencil icon-white" submit="true" disabled="#swEntityActionBar.object.isNotEditable()#">
 							</cfif>
@@ -112,7 +185,7 @@
 					</div>
 				</div>
 				
-				<!--- ================= Process =================== 
+				<!-- ================= Process =================== 
 				<div ng-if="swEntityActionBar.type === 'preprocess'">
 
 					<cfif !len(swEntityActionBar.processContext) and structKeyExists(request.context, "processContext")>
@@ -127,10 +200,18 @@
 					<div class="btn-group btn-group-sm">
 						<button type="submit" class="btn btn-primary">#swEntityActionBar.hibachiScope.rbKey( "entity.#swEntityActionBar.object.getClassName()#.process.#swEntityActionBar.processContext#" )#</button>
 					</div>
-				</div>--->
+				</div>-->
 			</div>
 		</div>
 	</nav>
 </div>
+
 <ng-transclude ng-if="swEntityActionBar.modal"></ng-transclude>
-<!--<hb:HibachiMessageDisplay />-->
+
+<div ng-repeat="message in swEntityActionBar.messages"
+		 class="alert alert-{{message.messageType}} fade in">
+
+		 <a class="close" data-dismiss="alert"><i class="fa fa-times"></i></a>
+
+		 {{message.message}}
+</div>

@@ -147,17 +147,17 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 		// If a count file was uploaded, then we can use that
 		if( !isNull(arguments.processObject.getCountFile()) ) {
-			
-			getService('hibachiTagService').cfsetting(requesttimeout="600");
+
+			getService('hibachiTagService').cfsetting(requesttimeout="600");			
 			
 			// Get the temp directory
 			var tempDir = getHibachiTempDirectory();
 			
 			// Upload file to temp directory
 			var documentData = fileUpload( tempDir,'countFile','','makeUnique' );
-			
+
 			//check uploaded file if its a valid text file
-			if( documentData.serverFileExt != "txt" && documentData.serverFileExt != "csv" ){
+			if( documentData.serverFileExt != "txt" && documentData.serverFileExt != "csv"  ){
 				
 				// Make sure that nothing is persisted
 				getHibachiScope().setORMHasErrors( true );
@@ -340,7 +340,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	// ====================== START: Status Methods ===========================
 	
 	public any function exportPhysical(){
-
+		
 		return getService('hibachiService').export(getPhysicalDiscrepancyQuery(argumentCollection=arguments),'skuCode,locationName,productName,QOH,discrepancy');
 	}
 	
@@ -362,7 +362,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		// Return the entity
 		return arguments.entity;
 	}
-	
+
 	public any function processCycleCountBatch_create(required any cycleCountBatch, required any processObject, struct data={}) {
 		arguments.cycleCountBatch.setCycleCountBatchStatusType( getService('TypeService').getTypeBySystemCode('ccbstOpen'));
 		arguments.cycleCountBatch.setCycleCountBatchName(arguments.processObject.getCycleCountBatchName());
@@ -376,7 +376,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 		return save(arguments.cycleCountBatch, arguments.data);
 	}
-
+	
 	// ======================  END: Save Overrides ============================
 	
 	// ==================== START: Smart List Overrides =======================

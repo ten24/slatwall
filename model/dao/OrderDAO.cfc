@@ -336,6 +336,43 @@ Notes:
 
 		<cfreturn 0 />
 	</cffunction>
+	
+	<cffunction name="removeAppliedOrderTemplateGiftCards" returntype="void" access="public">
+		<cfargument name="orderTemplateID" type="string" required="true" />
+		
+		<cfquery name="rs">
+			DELETE FROM swOrderTemplateAppliedGiftcard where orderTemplateID =  <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderTemplateID#" />
+		</cfquery>
+	</cffunction>
+
+	<cffunction name="removeTemporaryOrderTemplateItems" returntype="void" access="public">
+		<cfargument name="orderTemplateID" type="string" required="true" />
+		
+		<cfquery name="rs">
+			DELETE FROM SwOrderTemplateItem 
+			WHERE orderTemplateID =  <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderTemplateID#" />
+			AND temporaryFlag = 1
+		</cfquery>
+	</cffunction>
+	
+	<cffunction name="setScheduleOrderProcessingFlag" access="public" returntype="void" output="false">
+		<cfargument name="orderTemplateID" type="string" required="true" />
+		<cfargument name="value" type="boolean" required="true" />
+		<cfargument name="mostRecentError" type="string" required="false" />
+
+		<cfset var rs = "" />
+
+		<cfquery name="rs">
+			UPDATE SwOrderTemplate 
+			SET scheduleOrderProcessingFlag = <cfqueryparam cfsqltype="cf_sql_bit" value="#arguments.value#" /> 
+			<cfif structKeyExists(arguments, "mostRecentError")>
+			    ,mostRecentError = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.mostRecentError#" />
+			    ,mostRecentErrorDateTime = <cfqueryparam cfsqltype="CF_SQL_TIMESTAMP" value="#now()#" />
+			</cfif>
+			WHERE orderTemplateID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderTemplateID#" />
+		</cfquery>
+	</cffunction>
+
 	<cfscript>
 		public numeric function getOrderItemCountOnOrder(required any orderItem){
 			var orderItemCount = 0;
@@ -405,6 +442,61 @@ Notes:
 			}
 			return true;
 		}
+		
+		public query function getTrueRefundSkuSettingRecords(){
+			var sql = "select settingValue, skuID, productID, productTypeID, brandID from swsetting where settingName = 'skuIsRefundFee'";
+			var settingQuery = queryExecute(sql);
+			return settingQuery;
+		}
+		
+		public void function removeOrderTemplateSku(required string orderTemplateID, required string skuID){
+			var sql = "DELETE FROM swordertemplateitem
+						WHERE orderTemplateID = :orderTemplateID
+						AND skuID = :skuID";
+			var params = {
+				orderTemplateID: arguments.orderTemplateID,
+				skuID: arguments.skuID
+			};
+			queryExecute(sql,params);
+		}
+		
+		public void function replaceOrderTemplateSku(required string orderTemplateID, required string removalSkuID, required string replacementSkuID){
+			var sql = "UPDATE swordertemplateitem
+						SET skuID = :replacementSkuID,
+						WHERE orderTemplateID = :orderTemplateID
+						AND skuID = :removalSkuID";
+			var params = {
+				orderTemplateID: arguments.orderTemplateID,
+				removalSkuID: arguments.removalSkuID,
+				replacementSkuID: arguments.replacementSkuID
+			};
+			queryExecute(sql,params);
+		}
+		
+    	public any function getAppliedOrderTemplatePromotionCodes( required string orderTemplateID ){
+    		var query = new Query();
+    		var sql = " 
+        		SELECT 
+        		    p.promotionCode, p.promotionCodeID
+                FROM swordertemplatepromotioncode o
+                INNER JOIN swpromotioncode p
+                    ON p.promotionCodeID = o.promotionCodeID
+                WHERE o.orderTemplateID=:orderTemplateID
+    		";
+    		
+			query.addParam(name="orderTemplateID",value=arguments.orderTemplateID);
+
+    		return query.execute( sql=sql, returntype='array').getResult();
+        }
+        
+        public any function getSkuIDByOrderItemRemoteID(required string orderItemRemoteID){
+    		var sql = 'SELECT skuID from sworderitem where remoteID = :orderItemRemoteID';
+    		var params = {'orderItemRemoteID' : arguments.orderItemRemoteID};
+    		
+    		var result = queryExecute(sql, params);
+    		return result['skuID'];
+    	}
+	
 	</cfscript>
 
 </cfcomponent>

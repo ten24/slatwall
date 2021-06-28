@@ -55,6 +55,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	property name="settingService" type="any";
 	property name="skuService" type="any";
 
+	public array function getContentPublicProperties(){
+	    var publicProperties = ['contentID','contentIDPath','title', 'urlTitlePath', 'urlTitle', 'sortOrder', 'associatedImage', 'parentContent.contentID', 'productListingPageFlag', 'displayInNavigation'];
+	    var publicAttributes = this.getPublicAttributesByEntityName('content');
+	    publicProperties.append(publicAttributes, true);
+		return publicProperties;
+	}
+	public array function getCategoryPublicProperties(){
+		var publicProperties = ['categoryID','categoryIDPath','urlTitle', 'categoryName', 'categoryNamePath', 'categoryDescription'];
+		var publicAttributes = this.getPublicAttributesByEntityName('Category');
+	    publicProperties.append(publicAttributes, true);
+		return publicProperties;
+	}
 	public boolean function restrictedContentExists() {
 		return getSettingService().getSettingRecordExistsFlag(settingName="contentRestrictAccessFlag", settingValue=1);
 	}
@@ -210,6 +222,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return getContentDAO().getContentByCMSContentIDAndCMSSiteID( argumentCollection=arguments );
 	}
 
+	public any function getAllContentBySiteIDAndUrlTitlePaths( required string siteID, required string urlTitlePaths, string columnList = '*' ) {
+		return getContentDAO().getAllContentBySiteIDAndUrlTitlePaths( argumentCollection=arguments );
+	}
+		public any function getAllContentBySiteIDAndUrlTitlePathPrefix( required string siteID, required string urlTitlePathPrefix, string columnList = '*' ) {
+		return getContentDAO().getAllContentBySiteIDAndUrlTitlePathPrefix( argumentCollection=arguments );
+	}
+
+
 	public any function getContentBySiteIDAndUrlTitlePath(required string siteID, required string urlTitlePath){
 		return getContentDao().getContentBySiteIDAndUrlTitlePath(argumentCollection=arguments);
 	}
@@ -298,7 +318,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		arguments.processObject.setNewContent(arguments.content.duplicate(onlyPersistent=true));
 		var data = {};
 		data['title']=arguments.processObject.getTitle();
-		data['urlTitle']=arguments.processObject.getUrlTitle();
+		
+		// check if url title exists or not 
+		var urlTitle = arguments.processObject.getUrlTitle() ?: arguments.content.getUrlTitle();
+		urlTitle = this.getHibachiUtilityService().createUniqueURLTitle(titleString=urlTitle, tableName="SwContent");
+		data["urlTitle"] = urlTitle;
+
+
 		this.saveContent(arguments.processObject.getNewContent(),data);
 		//get all settings that exist on the object
 		var settingCollectionList = this.getSettingCollectionList();
@@ -320,7 +346,26 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		return arguments.processObject.getNewContent();
 	}
+	/** 
+	 * Function append settings values to existing Content
+	 * @param - Content
+	 * @return - updated Content
+	 **/
+	public any function appendSettingsAndOptionsToContent(required any content) {
+				if(structKeyExists(content, "contentID")){
+					var currentContent = this.getContent(content.contentID);
+	            	content["settings"]['contentHTMLTitleString'] = currentContent.stringReplace( template = currentContent.setting('contentHTMLTitleString'), formatValues = true );
+	            	content["settings"]['contentMetaDescriptionString'] = currentContent.stringReplace( template = currentContent.setting('contentMetaDescriptionString'), formatValues = true );
+	            	content["settings"]['contentMetaKeywordsString'] = currentContent.stringReplace( template = currentContent.setting('contentMetaKeywordsString'), formatValues = true );
+	            	content["settings"]['contentRestrictAccessFlag'] = currentContent.stringReplace( template = currentContent.setting('contentRestrictAccessFlag'), formatValues = true );
+	            	content["settings"]['contentRequirePurchaseFlag'] = currentContent.stringReplace( template = currentContent.setting('contentRequirePurchaseFlag'), formatValues = true );
+	            	content["settings"]['contentRequireSubscriptionFlag'] = currentContent.stringReplace( template = currentContent.setting('contentRequireSubscriptionFlag'), formatValues = true );
+	            	content["settings"]['contentEnableTrackingFlag'] = currentContent.stringReplace( template = currentContent.setting('contentEnableTrackingFlag'), formatValues = true );
+	            	content["settings"]['contentTemplateFile'] = currentContent.stringReplace( template = currentContent.setting('contentTemplateFile'), formatValues = true );
+				}
 
+		return arguments.content;
+	}
 	// =====================  END: Process Methods ============================
 
 	// ====================== START: Save Overrides ===========================

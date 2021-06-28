@@ -57,6 +57,55 @@ Notes:
 			WHERE locationID = <cfqueryparam value="#arguments.fromLocationID#" cfsqltype="cf_sql_varchar" >
 		</cfquery>
 	</cffunction>
+	
+	
+	<cffunction name="createEmptySKUStocksForAllParentLocations">
+		<cfargument name="skuID" type="string" required="true">
+		<cfset local.accountID = this.getHibachiScope().getAccount().getAccountID() />
+		<cfquery name="local.createStocks" >
+			INSERT INTO SwStock 
+			( stockID, skuID, locationID, createdByAccountID, modifiedByAccountID, createdDateTime, modifiedDateTime )
+            SELECT 
+                LOWER(REPLACE(CAST(UUID() AS char character set utf8),'-',''))      AS stockID,  
+                <cfqueryparam value="#arguments.skuID#" cfsqltype="cf_sql_varchar"> AS skuID,   
+                locationID, 
+                '#local.accountID#'                                             	AS createdByAccountID,
+                '#local.accountID#'                                             	AS modifiedByAccountID,
+                now()                                                               AS createdDateTime, 
+                now()                                                               AS modifiedDateTime
+            FROM SwLocation 
+            WHERE parentLocationID IS NULL
+		</cfquery>
+	</cffunction>
+	
+	
+	<cffunction name="updateStockCalculatedProperties">
+		<cfargument name="skuID" type="string" >
+		<cfargument name="productID" type="string" >
+		
+		<cfquery name="local.updatestock" >
+			INSERT IGNORE INTO swentityqueue (entityQueueID, baseObject, baseID, processMethod, createdDateTime, modifiedDateTime, tryCount)
+			SELECT 
+				stock.stockID entityQueueID,
+				'Stock' baseObject, 
+				stock.stockID baseID, 
+				'processStock_updateCalculatedProperties' processMethod,
+				NOW() createdDateTime,
+				NOW() modifiedDateTime,
+				0 tryCount
+			FROM swStock stock
+			INNER JOIN swSku sku ON stock.skuID = sku.skuID
+			INNER JOIN swProduct product ON sku.productID = product.productID
+			WHERE
+				sku.activeFlag = 1 AND product.activeFlag = 1
+			<cfif structKeyExists(arguments, 'skuID')>
+				AND sku.skuID = <cfqueryparam value="#arguments.skuID#" cfsqltype="cf_sql_varchar" >
+			</cfif>
+			<cfif structKeyExists(arguments, 'productID')>
+				AND product.productID = <cfqueryparam value="#arguments.productID#" cfsqltype="cf_sql_varchar" >
+			</cfif>
+		</cfquery>
+	</cffunction>
 		
 
 	<cfscript>
@@ -500,6 +549,17 @@ Notes:
 			
 			return ormExecuteQuery(hql, params);
 		}
+		
+		public any function getStockIDBySkuIDAndLocationID(required string skuID, required string locationID){
+    		var sql = 'SELECT stockID FROM swStock WHERE skuID = :skuID AND locationID = :locationID ';
+    		var params = {
+    		    'skuID' : arguments.skuID,
+    		    'locationID' : arguments.locationID
+    		};
+    		
+    		var result = queryExecute(sql, params);
+    		return result['stockID'];
+    	}
 	
 	</cfscript>
 </cfcomponent>
