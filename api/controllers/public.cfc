@@ -81,7 +81,6 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
         var publicService = getService('PublicService');
 
         if ( structKeyExists(arguments.rc, "context")  ) {
-            
             if ( arguments.rc.context == "getCart"){
                 publicService.invokeMethod("getCartData", {data=arguments.rc});
             }else if ( arguments.rc.context == "getAccount"){
@@ -89,50 +88,60 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
             }else if (  arguments.rc.context != "get"){
                 publicService.invokeMethod("#arguments.rc.context#", {data=arguments.rc});
             }
-            
         } 
         
     }
 
     public any function post( required struct rc ) {
+        
         param name="arguments.rc.context" default="save";
+        
         var publicService = getService('PublicService');
+    
+    
+        if( ["getCart", "getAccount"].findNoCase( arguments.rc.context ) ){
+            return this.get(arguments.rc);
+        } 
+        
+        if( arguments.rc.context == "process" ){
+            return publicService.doProcess(arguments.rc);
+        } 
+        
 
-        if (arguments.rc.context != "get" && arguments.rc.context == "process"){
-            publicService.doProcess(arguments.rc);
-        }else if (arguments.rc.context == "getCart"){
-            arguments.rc.context = "getCartData";
-            this.get(arguments.rc);
-        }else if(arguments.rc.context == "getAccount"){
-            arguments.rc.context = "getAccountData";
-            this.get(arguments.rc);
-        }else if ( StructKeyExists(arguments.rc, "context") && arguments.rc.context != "get"){
-            
-            var actions = [];
-            if (arguments.rc.context contains ","){
-                actions = listToArray(arguments.rc.context);
-            }
-            
-            if (!arrayLen(actions)){
-                publicService.invokeMethod( "#arguments.rc.context#", {data=arguments.rc} );
-            } else {
+        var actions = arguments.rc.context.listToArray();
+        
+        if( actions.len() == 1 ){
+            return publicService.invokeMethod( "#arguments.rc.context#", {data=arguments.rc} );
+        } 
                 
-                //iterate through all the actions calling the method.
-                for (var eachAction in actions){
-                    //Make sure there are no errors if we have multiple.
-                    if ( 
-                        !arguments.rc.$["#getDao('hibachiDao').getApplicationValue('applicationKey')#"].cart().hasErrors() && 
-                        !arguments.rc.$["#getDao('hibachiDao').getApplicationValue('applicationKey')#"].account().hasErrors()
-                    ){
-                        getHibachiScope().flushORMSession();
-                        publicService.invokeMethod("#eachAction#", {data=arguments['rc']});
-                    } else {
-                        return; //return here to push errors to the form that errored.
-                    }
+        var hibachiScope = arguments.rc.$.hibachi;
+        //iterate through all the actions calling the method.
+        for ( var eachAction in actions ){
+            
+            publicService.invokeMethod("#eachAction#", {data=arguments['rc']});
+            
+            var cart = hibachiScope.cart();
+            var account = hibachiScope.account();
+            
+            //Make sure there are no errors if we have multiple.
+            if(cart.hasErrors() || account.hasErrors() ){
+                var errors = {
+                    'cartErrors': cart.getErrors(),
+                    'accountErrors': account.getErrors()
                 }
+            
+                if( isNull(arguments.rc.ajaxResponse['errors']) ){
+                    arguments.rc.ajaxResponse['errors'] = {};
+                }
+                
+                arguments.rc.ajaxResponse['errors'].apend(errors);
+                
+                hibachiScope.addActionResult("public:"&eachAction, true);
+                
+                break; // do not execute next action; 
+            } else {
+                hibachiScope.flushORMSession(); // flush the ORM to persist changes from this action;
             }
-        }else{
-            this.get(arguments.rc);
         }
     }
     
