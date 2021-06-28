@@ -1,10 +1,12 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 
+import { ObserverService } from "../../core/core.module";
+import { LocalStorageService } from "../../core/services/localstorageservice";
+import { CollectionService } from "../../collection/services/collectionservice";
+
 class SWListingSearchController {
-    private selectedSearchColumn;
-    private selectedSearchFilter;
-    public searchFilterPropertyIdentifier;
+
     private filterPropertiesList;
     private collectionConfig;
     private paginator;
@@ -14,72 +16,135 @@ class SWListingSearchController {
     private filtersClosed:boolean=true;
     private showToggleFilters:boolean;
     private showToggleDisplayOptions:boolean;
-    public showSearchFilterDropDown:boolean;
+    private showAutoRefresh:boolean;
     private newFilterPosition;
     private itemInUse;
     private getCollection;
     private listingId;
-    
-    
     public swListingDisplay:any;
+    
     public searchableOptions;
-    public searchableFilterOptions;
+    public searchableColumns:any[];
+    private selectedSearchColumn;
+   
+    private selectedSearchFilter;
+    public selectedWildCardPosition;
+    public limitCountTotal;
+    
     public swListingControls:any;
-    public hasPersonalCollections:boolean=false;
+    public hasPersonalCollections = false;
     public personalCollections:any;
     public selectedPersonalCollection:any;
-    public collectionNameSaveIsOpen:boolean=false;
+    public collectionNameSaveIsOpen = false;
     public printTemplateOptions:any[];
     public personalCollectionIdentifier:string;
+    
+    
+    //Auto-refresh
+    private autoRefreshIntervalReference = null;
+    
+    public defaultSearchColumn: any;
 
+    public autoRefreshConfig : any  = {
+        'autoRefreshInterval' : 30, // seconds --> for timeout x1000
+        'autoRefreshEnabled' : false // if this is set the Listing-Display will refresh itself automatically; at the given `autoRefreshInterval`;
+    };
+    
+    
     //@ngInject
     constructor(
+        public $scope,
         public $rootScope,
+        public $timeout,
+        public $interval : ng.IIntervalService,
         public $hibachi,
         public metadataService,
         public listingService,
-        public collectionService,
-        public observerService,
-        public localStorageService,
+        public collectionService : CollectionService,
+        public observerService : ObserverService,
+        public localStorageService : LocalStorageService,
         public appConfig
     ) {
        
     }
+    
+    public searchableFilterOptions = [
+            {
+                title:'Last 1 Month',
+                value:'lastOneMonth',
+            },
+            {
+                title:'Last 2 Months',
+                value:'lastTwoMonths',
+            },
+            {
+                title:'Last 3 Months',
+                value:'lastThreeMonths',
+            },
+            {
+                title:'Last 6 Months',
+                value:'lastSixMonths',
+            },
+            {
+                title:'1 Year Ago',
+                value:'lastOneYear',
+            },
+            {
+                title:'All Time',
+                value:'allRecords',
+            }
+        ];
+        
+    public wildCardPositionOptions = [
+        {
+            title:'Starts with',
+            value:'right'
+        },
+        {
+            title:'Ends with',
+            value:'left'
+        },
+        {
+            title:'Match Anywhere',
+            value:'both'
+        },
+        {
+            title:'Exact Match',
+            value:'exact'
+        }
+    ];
 
     public $onInit=()=>{
         if(angular.isDefined(this.swListingDisplay.personalCollectionIdentifier)){
             this.personalCollectionIdentifier = this.swListingDisplay.personalCollectionIdentifier;
         }
-       
-        if(angular.isUndefined(this.showSearchFilterDropDown)){
-            this.showSearchFilterDropDown = false;
+        this.limitCountTotal = this.swListingDisplay.collectionConfig.limitCountTotal;//Fetching initial val from config
+        //snapshot searchable options in the beginning
+        this.searchableOptions = angular.copy(this.collectionConfig.columns);
+        
+        this.searchableColumns = [];
+        for(var i = 0; i < this.searchableOptions.length; i++){
+            if(this.searchableOptions[i].isSearchable){
+                this.searchableColumns.push(this.searchableOptions[i].propertyIdentifier);
+            }
+        }
+
+        
+        if(angular.isDefined(this.swListingDisplay.collectionConfig.listingSearchConfig)){
+            this.configureListingSearchConfigControls(this.swListingDisplay.collectionConfig.listingSearchConfig);
+        }
+
+        this.selectedSearchColumn={title:'All'};
+        
+        if(this.defaultSearchColumn){
+            this.selectedSearchColumn = this.searchableOptions
+                                                .find(column => column.propertyIdentifier === this.collectionConfig.baseEntityAlias+'.'+this.defaultSearchColumn);
+        }
+
+        if(!this.selectedSearchColumn){
+            this.selectedSearchColumn = { title : 'All' };
         }
         
-        //snapshot searchable options in the beginning
-        this.searchableOptions = angular.copy(this.swListingDisplay.collectionConfig.columns);
-        
-        this.searchableFilterOptions = [
-            {
-                title:'Last 3 Months',
-                value:new Date().setMonth(new Date().getMonth()-3)
-            },
-            {
-                title:'Last 6 Months',
-                value:new Date().setMonth(new Date().getMonth()-6)
-            },
-            {
-                title:'1 Year Ago',
-                value:new Date().setMonth(new Date().getMonth()-12)
-            },
-            {
-                title:'All Time',
-                value:'All'
-            }
-        ];
-        
-        this.selectSearchFilter(this.searchableFilterOptions[0]);
-        this.selectedSearchColumn={title:'All'};
-
         this.configureSearchableColumns(this.selectedSearchColumn);
 
         if(this.swListingControls.showPrintOptions){
@@ -104,13 +169,58 @@ class SWListingSearchController {
                 }
             );
         }
+        
+       if(this.showAutoRefresh) {
+            // on init --> check to set time-out intervals
+            let savedAutoRefreshConfig = this.localStorageService.getItem('selectedAutoRefreshConfigs')?.[this.swListingDisplay.personalCollectionKey] as any;
+            
+            if( savedAutoRefreshConfig ){
+                this.autoRefreshConfig = savedAutoRefreshConfig;
+            }
+            
+            if( savedAutoRefreshConfig?.autoRefreshEnabled){
+                this.setupAutoRefreshTimeout();
+            }
+        }
     }
     
-    public selectSearchFilter = (filter?)=>{
-        this.selectedSearchFilter = filter;
-        if(this.swListingDisplay.searchText){
-            this.search();
+    public configureListingSearchConfigControls(searchConfig?) {
+        if(!searchConfig) searchConfig = this.swListingDisplay.collectionConfig.listingSearchConfig;
+        if(!searchConfig) return;
+        if(angular.isDefined(searchConfig.selectedSearchFilterCode)){
+             this.selectedSearchFilter = this.searchableFilterOptions
+                                            .find(item => item.value === searchConfig.selectedSearchFilterCode );
         }
+
+        if(angular.isDefined(searchConfig.wildCardPosition)){
+             this.selectedWildCardPosition = this.wildCardPositionOptions
+                                                .find(item => item.value === searchConfig.wildCardPosition );
+        }
+        
+    }
+    
+    public changeSearchFilter = (filter)=>{
+        if(this.swListingDisplay.collectionConfig.listingSearchConfig.selectedSearchFilterCode !== filter.value){
+            this.selectedSearchFilter = filter; 
+            this.updateListingSearchConfig({
+                selectedSearchFilterCode : filter.value       
+            });
+        }
+    }
+    
+    public changeWildCardPoition = (position)=>{
+        if(this.swListingDisplay.collectionConfig.listingSearchConfig.wildCardPosition !== position.value){
+            this.selectedWildCardPosition = position;
+            this.updateListingSearchConfig({
+                wildCardPosition : position.value      
+            });
+        }
+    }
+
+    private updateListingSearchConfig(config?) {
+        var newListingSearchConfig = { ...this.swListingDisplay.collectionConfig.listingSearchConfig, ...config };
+        this.swListingDisplay.collectionConfig.listingSearchConfig = newListingSearchConfig;//sets the value on listingsearchconfig
+        this.observerService.notifyById('swPaginationAction',this.listingId, {type:'setCurrentPage', payload:1});//refreshes the listing
     }
 
     public selectSearchColumn = (column?)=>{
@@ -120,7 +230,7 @@ class SWListingSearchController {
             this.search();
         }
     };
-
+    
     public selectPersonalCollection = (personalCollection?) =>{
         if(!this.localStorageService.hasItem('selectedPersonalCollection')){
             this.localStorageService.setItem('selectedPersonalCollection','{}');
@@ -152,8 +262,10 @@ class SWListingSearchController {
         this.$hibachi.saveEntity(
             'Collection',
             personalCollection.collectionID,
-            {},
-            'softDelete'
+            {
+                'softDeleteFlag':true
+            },
+            'save'
         ).then((data)=>{
             if(this.localStorageService.hasItem('selectedPersonalCollection')){
                 const selectedPersonalCollection = angular.fromJson(this.localStorageService.getItem('selectedPersonalCollection'));
@@ -169,7 +281,67 @@ class SWListingSearchController {
             this.getPersonalCollections();
         });
     }
-
+    
+    public onRefresh = () => {
+        //notify - Refresh - Listing
+        this.observerService.notifyById( 'refreshListingDisplay', this.listingId , null); // this.swListingDisplay.refreshListingDisplay();
+    }
+    
+    public onToggleAutoRefereshEnabled = () => {
+        
+        if( !this.autoRefreshConfig.autoRefreshEnabled ){
+            this.autoRefreshConfig.autoRefreshEnabled = true;
+        } 
+        else {
+            this.autoRefreshConfig.autoRefreshEnabled = false;
+        }
+        
+        // update local-storage
+        this.saveSelectedAutoRefreshConfig(this.swListingDisplay.personalCollectionKey, this.autoRefreshConfig);
+        
+        
+        if( !this.autoRefreshConfig.autoRefreshEnabled ){
+            // set-timeouts
+            this.setupAutoRefreshTimeout();
+        } 
+        else {
+            // unset-timeouts
+            this.clearAutoRefreshTimeout();
+        }
+    }
+    
+    public onSaveAutoRefereshConfig = () => {
+        
+        // update local-storage --> save autoRefreshConfig
+        this.saveSelectedAutoRefreshConfig(this.swListingDisplay.personalCollectionKey, this.autoRefreshConfig);
+        // update-timeputs
+        this.setupAutoRefreshTimeout();
+    }
+    
+    private saveSelectedAutoRefreshConfig = ( cacheKey: string, config) => {
+	    let selectedAutoRefreshConfigs = this.localStorageService.getItem('selectedAutoRefreshConfigs') || {};
+	    selectedAutoRefreshConfigs[ cacheKey ] = angular.copy(config);
+	    this.localStorageService.setItem('selectedAutoRefreshConfigs', selectedAutoRefreshConfigs );
+    }
+    
+    private setupAutoRefreshTimeout = () => {
+        //clear old timeouts if any
+        this.clearAutoRefreshTimeout();
+        
+        let thisAutoRefreshConfig =  this.localStorageService.getItem('selectedAutoRefreshConfigs')?.[this.swListingDisplay.personalCollectionKey] as any;
+        
+        if( thisAutoRefreshConfig?.autoRefreshEnabled ){
+            this.autoRefreshIntervalReference = this.$interval(this.onRefresh, thisAutoRefreshConfig.autoRefreshInterval*1000);
+        }
+    }
+    
+    private clearAutoRefreshTimeout = () => {
+        // remove interval
+        this.$interval.cancel(this.autoRefreshIntervalReference);
+        this.autoRefreshIntervalReference = null;
+    }
+    
+    
     public savePersonalCollection=(collectionName?)=>{
         if(
             this.localStorageService.hasItem('selectedPersonalCollection') &&
@@ -181,14 +353,11 @@ class SWListingSearchController {
             var selectedPersonalCollection = angular.fromJson(this.localStorageService.getItem('selectedPersonalCollection'));
             if(selectedPersonalCollection[this.swListingDisplay.personalCollectionKey]){
 
-                this.$hibachi.saveEntity(
-                    'Collection',
-                    selectedPersonalCollection[this.swListingDisplay.personalCollectionKey].collectionID,
+                this.$hibachi.savePersonalCollection(
                     {
-                        'accountOwner.accountID':this.$rootScope.slatwall.account.accountID,
+                        'entityID':selectedPersonalCollection[this.swListingDisplay.personalCollectionKey].collectionID,
                         'collectionConfig':this.swListingDisplay.collectionConfig.collectionConfigString
-                    },
-                    'save'
+                    }
                 ).then((data)=>{
 
                 });
@@ -200,20 +369,14 @@ class SWListingSearchController {
                 'collectionConfig':this.swListingDisplay.collectionConfig.collectionConfigString,
                 'collectionName':collectionName,
                 'collectionDescription':this.personalCollectionIdentifier,
-                'collectionObject':this.swListingDisplay.collectionConfig.baseEntityName,
-                'accountOwner':{
-                    'accountID':this.$rootScope.slatwall.account.accountID
-                }
+                'collectionObject':this.swListingDisplay.collectionConfig.baseEntityName
             }
 
-            this.$hibachi.saveEntity(
-                'Collection',
-                "",
+            this.$hibachi.savePersonalCollection(
                 {
                     'serializedJSONData':angular.toJson(serializedJSONData),
                     'propertyIdentifiersList':'collectionID,collectionName,collectionObject,collectionDescription'
-                },
-                'save'
+                }
             ).then((data)=>{
 
                 if(!this.localStorageService.hasItem('selectedPersonalCollection')){
@@ -241,11 +404,11 @@ class SWListingSearchController {
     public getPersonalCollections = ()=>{
         if(!this.hasPersonalCollections){
             var personalCollectionList = this.collectionConfig.newCollectionConfig('Collection');
-            personalCollectionList.setDisplayProperties('collectionID,collectionName,collectionObject,collectionDescription,softDeleteFlag');
-            personalCollectionList.addFilter('accountOwner.accountID',this.$rootScope.slatwall.account.accountID);
+            personalCollectionList.setDisplayProperties('collectionID,collectionName,collectionObject,collectionDescription');
+            personalCollectionList.addFilter('accountOwner.accountID','${account.accountID}');
             personalCollectionList.addFilter('collectionObject',this.swListingDisplay.baseEntityName);
             personalCollectionList.addFilter('reportFlag',0);
-            personalCollectionList.addFilter('softDeleteFlag',false);
+            personalCollectionList.addFilter('softDeleteFlag',true,"!=");
             if(angular.isDefined(this.personalCollectionIdentifier)){
                 personalCollectionList.addFilter('collectionDescription',this.personalCollectionIdentifier);
             }
@@ -271,48 +434,40 @@ class SWListingSearchController {
         }
 
         this.collectionConfig.setKeywords(this.swListingDisplay.searchText);
-        this.collectionConfig.removeFilterGroupByFilterGroupAlias('searchableFilters');
-        if(this.showSearchFilterDropDown && this.selectedSearchFilter.title!='All'){
-            if(angular.isUndefined(this.searchFilterPropertyIdentifier) || !this.searchFilterPropertyIdentifier.length){
-                this.searchFilterPropertyIdentifier='createdDateTime';
-            }
-            
-            this.collectionConfig.addFilter(this.searchFilterPropertyIdentifier,this.selectedSearchFilter.value,'>',undefined,undefined,undefined,undefined,'searchableFilters');
-        }
+        
         this.swListingDisplay.collectionConfig = this.collectionConfig;
         
-        
+        this.configureSearchableColumns(this.selectedSearchColumn);
+
         this.observerService.notifyById('swPaginationAction',this.listingId, {type:'setCurrentPage', payload:1});
 
     };
 
     private configureSearchableColumns=(column)=>{
-        var searchableColumn = "";
-        
-        //this is the case of specific selection in display drop down
-        if(column.propertyIdentifier){ 
-            searchableColumn = column.propertyIdentifier;
-            //default to All columns
+
+        var searchableColumns = [];
+        if(column.propertyIdentifier){
+            searchableColumns.push(column.propertyIdentifier);
+        }else{
+            searchableColumns = this.searchableColumns;
         }
         
+        if(!searchableColumns.length){
+            return;
+        }
+
         for(var i = 0; i < this.swListingDisplay.collectionConfig.columns.length; i++){
-            if(searchableColumn.length){
-                if(searchableColumn === this.swListingDisplay.collectionConfig.columns[i].propertyIdentifier){
-                    this.swListingDisplay.collectionConfig.columns[i].isSearchable = true;
-                }else{
-                    this.swListingDisplay.collectionConfig.columns[i].isSearchable = false;
-                }
-            }else{
-                var currPropertyIdentifier= this.swListingDisplay.collectionConfig.columns[i].propertyIdentifier;
-                var checkexistingconfig = (this.searchableOptions).filter(function(item) {
-                  return item.propertyIdentifier === currPropertyIdentifier;
-                });
-    
-                if( !checkexistingconfig || ( checkexistingconfig[0] && checkexistingconfig[0].isSearchable==true) )
-                {
-                    this.swListingDisplay.collectionConfig.columns[i].isSearchable = true;
-                }
+            if(searchableColumns.indexOf(this.swListingDisplay.collectionConfig.columns[i].propertyIdentifier) > -1){
+                this.swListingDisplay.collectionConfig.columns[i].isSearchable = true;
             }
+        }
+    }
+
+     public searchByEnterKey = (event)=>{
+        if(event.keyCode == 13) {
+                  this.search();
+                  event.preventDefault();
+                  
         }
     }
 
@@ -321,46 +476,29 @@ class SWListingSearchController {
 
 class SWListingSearch  implements ng.IDirective{
 
-    public templateUrl;
+    public template = require("./listingsearch.html");
     public restrict = 'EA';
+    
     public scope = {};
     public require = {swListingDisplay:"?^swListingDisplay",swListingControls:'?^swListingControls'}
     public bindToController =  {
-        collectionConfig : "<?",
+        collectionConfig : "=",
         paginator : "=?",
         listingId : "@?",
+        showAutoRefresh : "<?",
         showToggleSearch:"=?",
-        searchFilterPropertyIdentifier:"@?",
-        showSearchFilterDropDown:"=?"
+        defaultSearchColumn:"=?"
     };
     public controller = SWListingSearchController;
     public controllerAs = 'swListingSearch';
-
-    //@ngInject
-    constructor(
-        public scopeService,
-        public collectionPartialsPath,
-        public hibachiPathBuilder
-    ){
-        this.templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.collectionPartialsPath) + "listingsearch.html";
-    }
-
+    
     public static Factory(){
-        var directive = (
-            scopeService,
-            listingPartialPath,
-            hibachiPathBuilder
-        )=> new SWListingSearch(
-            scopeService,
-            listingPartialPath,
-            hibachiPathBuilder
-        );
-        directive.$inject = [ 'scopeService', 'listingPartialPath', 'hibachiPathBuilder'];
-        return directive;
+        return /** @ngInject */ ()=> new this()
     }
 
 }
 
 export{
-    SWListingSearch
+    SWListingSearch,
+    SWListingSearchController
 }

@@ -53,7 +53,7 @@ Notes:
 <cfparam name="rc.content" type="any" />
 <cfparam name="rc.processObject" type="any" />
 <cfparam name="rc.edit" type="boolean" />
-<cfif isNull(rc.content) && !isNull(rc.contentID)>
+<cfif (isNull(rc.content) AND !isNull(rc.contentID)) OR (!isNull(rc.content) AND !isNull(rc.contentID) AND rc.content.getNewFlag() )>
 	<cfset rc.content = getHibachiScope().getService('contentService').getContent(rc.contentID)/>
 </cfif>
 
@@ -64,8 +64,8 @@ Notes:
 	
 	<hb:HibachiPropertyRow>
 		<hb:HibachiPropertyList>
-			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="title" edit="#rc.edit#">
-			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="urlTitle" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="title" edit="#rc.edit#" value="#rc.content.getTitle()#">
+			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="urlTitle" edit="#rc.edit#" value="#rc.content.getUrlTitle()#">
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
 	

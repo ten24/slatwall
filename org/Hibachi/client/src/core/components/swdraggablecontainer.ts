@@ -88,13 +88,15 @@ class SWDraggableContainer implements ng.IDirective{
                 element.on('drop', (e)=>{
                     e = e.originalEvent || e;
                     e.preventDefault();
-
+                    
                     if(!this.draggableService.isDropAllowed(e)) return true;
 
                     var record = e.dataTransfer.getData("application/json") || e.dataTransfer.getData("text/plain");
                     var parsedRecord = JSON.parse(record);
 
                     var index =  Array.prototype.indexOf.call(listNode.children, placeholderNode);
+                    parsedRecord['positionChnage'] = index - parsedRecord.draggableStartKey;
+                    
                     if(index < parsedRecord.draggableStartKey){
                         parsedRecord.draggableStartKey++;
                     }
@@ -105,11 +107,12 @@ class SWDraggableContainer implements ng.IDirective{
                             scope.swDraggableContainer.draggableRecords.splice(parsedRecord.draggableStartKey, 1);
                         }, 0
                     );
-
-                    if (angular.isDefined(scope.swDraggableContainer.listingId)){
+                    
+                    
+                    if (scope.swDraggableContainer.dropEventName){
+                        this.observerService.notify(scope.swDraggableContainer.dropEventName, parsedRecord);
+                    } else if (angular.isDefined(scope.swDraggableContainer.listingId)){
                         this.listingService.notifyListingPageRecordsUpdate(scope.swDraggableContainer.listingId);
-                    } else if (angular.isDefined(scope.swDraggableContainer.dropEventName)){
-                        this.observerService.notify(scope.swDraggableContainer.dropEventName);
                     }
 
                     placeholderElement.remove();

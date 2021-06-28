@@ -12,6 +12,7 @@
 			<hb:HibachiPropertyDisplay object="#rc.promotionperiod#" property="enddatetime" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.promotionperiod#" property="maximumusecount" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.promotionperiod#" property="maximumaccountusecount" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.promotionperiod#" property="qualifierLogicalOperatorType" edit="#rc.edit#">
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
 </cfoutput>

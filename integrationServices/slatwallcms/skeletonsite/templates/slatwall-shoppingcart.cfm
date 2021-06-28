@@ -89,7 +89,7 @@ Notes:
             <div class="card-footer">
                 <div class="row">
                     <div class="col-sm-9 pull-left">
-    
+
                     </div>
                     <div class="col-sm-3">
                         <a href="/checkout/" class="btn-block btn btn-success float-right">Checkout</a>
@@ -98,7 +98,7 @@ Notes:
                 </div>
             </div>
         </div>
-    
+
         <div class="row">
             <div class="col-md-5">
                 <!--- Optional Promotion code --->
@@ -109,7 +109,7 @@ Notes:
                 <cfinclude template="inc/orderSummary.cfm" />
             </div>
         </div>
-    
+
         <div class="text-center m-4">
             <a href="/checkout/" class="btn btn-lg btn-success">Continue to Checkout</a>
         </div>
@@ -122,6 +122,6 @@ Notes:
     <div ng-if="slatwall.getRequestByAction('getCart').loading" class="text-center mt-5">
         <i class="center fa fa-5x fa-refresh fa-spin fa-fw"></i>
     </div>
-</div>
+    </div>
 </cfoutput>
 <cfinclude template="_slatwall-footer.cfm" />

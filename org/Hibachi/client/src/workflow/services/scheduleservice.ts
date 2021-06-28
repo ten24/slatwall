@@ -37,8 +37,13 @@ class ScheduleService extends BaseEntityService{
 
     public buildSchedulePreview =(scheduleObject:any, totalOfPreviews:number=10):any=>{
         this.clearSchedulePreview();
+        
         var startTime = new Date(<any>Date.parse(scheduleObject.frequencyStartTime));
-        var endTime = (scheduleObject.frequencyEndTime.trim()) ? new Date(<any>Date.parse(scheduleObject.frequencyEndTime)) : false;
+        
+        var endTime = (scheduleObject.frequencyEndTime && scheduleObject.frequencyEndTime.trim()) 
+                        ? new Date(<any>Date.parse(scheduleObject.frequencyEndTime)) 
+                        : false;
+        
         var now = new Date();
         var startPoint = new Date();
         startPoint.setHours(startTime.getHours());

@@ -1,0 +1,13 @@
+<input type="text"
+       class="form-control"
+       ng-if="swListingDisplayCell.column.type === 'currency'"
+       style="min-width:6em;"
+       sw-currency-formatter
+       ng-keypress="swListingDisplayCell.handleKeyPress($event)"
+       ng-model="swListingDisplayCell.pageRecord[swListingDisplayCell.pageRecordKey]" />
+       
+<input type="{{swListingDisplayCell.column.type}}"
+       class="form-control"
+       ng-if="swListingDisplayCell.column.type !== 'currency'"
+       ng-keypress="swListingDisplayCell.handleKeyPress($event)"
+       ng-model="swListingDisplayCell.pageRecord[swListingDisplayCell.pageRecordKey]" />

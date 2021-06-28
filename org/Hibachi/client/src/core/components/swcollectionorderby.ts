@@ -1,6 +1,7 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 
 class SWCollectionOrderByController{
+    // @ngInject;
     constructor(){}
 }
 
@@ -15,15 +16,7 @@ class SWCollectionOrderBy implements ng.IDirective{
     public template = "";
 
     public static Factory(){
-        var directive:ng.IDirectiveFactory=(
-            scopeService
-        )=>new SWCollectionOrderBy(
-            scopeService
-        );
-        directive.$inject = [
-            'scopeService'
-        ];
-        return directive;
+        return (scopeService)=>new this(scopeService);
     }
 
     //@ngInject

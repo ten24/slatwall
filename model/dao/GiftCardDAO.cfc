@@ -76,5 +76,24 @@ Notes:
 
 		<cfreturn totalLiability />
 	</cffunction>
+	
+	<cffunction name="getExpiredCreditsList" access="public" returntype="query" output="false">
+		
+		<cfquery name="local.expiredCreditsList">
+			SELECT 
+				giftCardID,
+				sum(ifNull(creditAmount,0)) - sum(ifNull(debitAmount,0)) AS netExpiredCredit
+			FROM
+				SwGiftCardTransaction
+			WHERE 
+					expirationDate < <cfqueryparam cfsqltype="cf_sql_timestamp" value="#now()#">
+				OR 
+					debitAmount IS NOT NULL
+			GROUP BY giftCardID
+			HAVING netExpiredCredit > 0
+		</cfquery>
+		
+		<cfreturn local.expiredCreditsList>
+	</cffunction>
 </cfcomponent>
 

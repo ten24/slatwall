@@ -51,17 +51,52 @@ Notes:
 	<cfproperty name="settingService" type="any" />
 
 	<cfscript>
+	
+		public void function deleteStaleData(numeric days = 7){
+			var olderThanDate = dateAdd('d', arguments.days * -1, now()); 
+			
+			getDAO('HibachiDataDAO').deleteStaleData(tableName = 'SwApiLog', olderThanDate = olderThanDate);
+			getDAO('HibachiDataDAO').deleteStaleData(tableName = 'SwWorkflowTriggerHistory', olderThanDate = olderThanDate);
+		}
 		
 		public any function formatValue_currency( required string value, struct formatDetails={} ) {
-			if(structKeyExists(arguments.formatDetails, "currencyCode")) {
-				var currencySymbol = getCurrencySymbolByCurrencyCode(arguments.formatDetails.currencyCode);
-				if(!isNull(currencySymbol)){
-					return currencySymbol & LSNumberFormat(arguments.value, ',.__');
-				}
+			if(!structKeyExists(arguments.formatDetails,'locale')){
+				arguments.formatDetails['locale'] = getHibachiScope().getSession().getRbLocale();
 			}
 
+			if(structKeyExists(arguments.formatDetails, 'currencyCode')) {
+				var currencySymbol = getCurrencySymbolByCurrencyCode(arguments.formatDetails.currencyCode);
+				var formatMask = getCurrencyFormatMaskByCurrencyCode(arguments.formatDetails.currencyCode);
+				
+				if( ( isNull(formatMask) || !len(formatMask) ) && !isNull(currencySymbol)){
+
+					return currencySymbol & LSNumberFormat(arguments.value, ',.__',arguments.formatDetails.locale);
+				}else if (!isNull(formatMask) && len(formatMask)){
+					if(isNull(currencySymbol)){
+						currencySymbol = '';
+					}
+
+					return replaceCurrencyFormatMaskTemplate(currencySymbol,formatMask,arguments.value,arguments.formatDetails.locale);
+				}
+			}
+			if(structKeyExists(arguments.formatDetails, 'locale')){
+				return LSCurrencyFormat(arguments.value, "local", arguments.formatDetails.locale);
+			}
 			// Otherwsie use the global currencyLocal
 			return LSCurrencyFormat(arguments.value, getSettingService().getSettingValue("globalCurrencyType"), getSettingService().getSettingValue("globalCurrencyLocale"));
+		}
+		
+		public any function getCurrencyFormatMaskByCurrencyCode(required string currencyCode){
+			var cacheKey = 'getCurrencyFormatMaskByCurrencyCode#arguments.currencyCode##getHibachiScope().getSession().getRbLocale()#';
+			if(!structKeyExists(variables,cacheKey)){
+				var currency = getService("currencyService").getCurrency( arguments.currencyCode );
+				if(!isNull(currency)){
+					variables[cacheKey] = currency.getFormattedValue('formatMask');
+					return variables[cacheKey];
+				}
+			}else{
+				return variables[cacheKey];
+			}
 		}
 		
 		public any function getCurrencySymbolByCurrencyCode(required string currencyCode){
@@ -73,8 +108,17 @@ Notes:
 					return variables[cacheKey];
 				}
 			}else{
-				variables[cacheKey];
+				return variables[cacheKey];
 			}
+		}
+		
+		public string function replaceCurrencyFormatMaskTemplate(required string currencySymbol,required string formatMask, required numeric value, string locale=''){
+		
+			var formattedValue = LSNumberFormat(arguments.value, ',.__',arguments.locale);
+			var result = arguments.formatMask.replace('$',arguments.currencySymbol)
+			result = result.replace('{9}',formattedValue);
+			return result;
+			
 		}
 
 		public any function formatValue_datetime( required string value, struct formatDetails={} ) {
@@ -93,16 +137,29 @@ Notes:
 			return arguments.value & " " & getSettingService().getSettingValue("globalWeightUnitCode");
 		}
 
-		private string function getEncryptionKeyLocation() {
-			var keyLocation = getSettingService().getSettingValue("globalEncryptionKeyLocation");
-			if(len(keyLocation)) {
-				if(right(keyLocation, 1) eq '/' or right(keyLocation, 1) eq '\') {
-					return keyLocation;
+		public string function getEncryptionKeyLocation() {
+			
+			if( !structkeyExists(variables, "cached_encryptionKeyLocation") ){
+			
+			    var keyLocation = expandPath("/#getApplicationValue('applicationKey')#") & "/custom/system/";
+			    
+				if( getSettingService().getSettingValue("globalEncryptionKeyLocation") NEQ "") {
+					
+					keyLocation = getSettingService().getSettingValue("globalEncryptionKeyLocation");
+					if(right(keyLocation, 1) neq '/' and right(keyLocation, 1) neq '\') {
+						keyLocation = keyLocation & '/';
+					}
+					
+				} else {
+					var defaultPath = expandPath("/#getApplicationValue('applicationKey')#") & "/custom/system/shared/";
+					if(directoryExists(defaultPath)){
+						keyLocation = defaultPath;
+					}
 				}
-
-				return keyLocation & '/';
+				variables.cached_encryptionKeyLocation = keyLocation;
 			}
-			return expandPath('/#getApplicationValue('applicationKey')#/custom/system/');
+			
+			return variables.cached_encryptionKeyLocation;
 		}
 
 		public string function getLegacyEncryptionAlgorithm() {
@@ -618,14 +675,167 @@ Notes:
        }
     }
 
-    public string function replaceStringTemplate(required string template, required any object, boolean formatValues=false, boolean removeMissingKeys=false) {
+	public string function replaceStringTemplate(required string template, required any object, boolean formatValues=false, boolean removeMissingKeys=false, string templateContextPathList) {
 		if(
 			getHibachiScope().onSlatwallCMS()
 		){
 			arguments.removeMissingKeys = true;
 		}
-		return super.replaceStringTemplate(argumentCollection=arguments);
+
+		var returnString = super.replaceStringTemplate(argumentCollection=arguments);
+
+		return replaceFunctionTemplate(returnString);
 	}
+	
+	private array function getFunctionTemplateKeys(required string template){
+		return reMatchNoCase("\!{[^{}]+}",arguments.template);
+	}
+	
+	private array function getStructTemplateKeys(required string template){
+		return reMatchNoCase("\%{[^{(}]+}",arguments.template);
+	}
+	
+	public string function replaceStringTemplateFromStruct(required string template,required struct data){
+		var templateKeys = getStructTemplateKeys(arguments.template);
+		var replacementArray = [];
+		var returnString = arguments.template;
+		
+		for(var i=1; i<=arrayLen(templateKeys); i++) {
+			var replaceDetails = {};
+			replaceDetails.key = templateKeys[i];
+			replaceDetails.value = templateKeys[i];
+
+			var valueKey = replace(replace(templateKeys[i], "%{", ""),"}","");
+			
+			if(structKeyExists(data,valueKey)){
+				replaceDetails.value = data[valueKey];
+				arrayAppend(replacementArray,replaceDetails);
+			}
+			
+		}
+		for(var i=1; i<=arrayLen(replacementArray); i++) {
+			returnString = replace(returnString, replacementArray[i].key, replacementArray[i].value, "all");
+		}
+		if(
+			arguments.template != returnString
+			&& arraylen(getFunctionTemplateKeys(returnString))
+		){
+			returnString = replaceFunctionTemplate(returnString);
+		}
+		return returnString;
+	}
+	
+	public string function replaceFunctionTemplate(required string template){
+		var templateKeys = getFunctionTemplateKeys(arguments.template);
+		var replacementArray = [];
+		var returnString = arguments.template;
+
+		for(var i=1; i<=arrayLen(templateKeys); i++) {
+			var replaceDetails = {};
+			replaceDetails.key = templateKeys[i];
+			replaceDetails.value = templateKeys[i];
+
+			var valueKey = replace(replace(templateKeys[i], "!{", ""),"}","");
+			var method = reMatchNoCase("^[^\(\)]+",valueKey);
+			var methodArgumentsStringArray = reMatchNoCase("\(.+\)",valueKey);
+			
+			if(arrayLen(methodArgumentsStringArray) && arrayLen(method)){
+				method = trim(method[1]);
+				var methodArgumentsString = methodArgumentsStringArray[1];
+				methodArgumentsString = replace(replace(methodArgumentsString,"(",""),")","");
+				var methodArguments = listToArray(methodArgumentsString,',');
+
+				if(arrayLen(methodArguments)){
+					switch(method){
+						case 'subtract':
+							replaceDetails.value = this.subtractItems(methodArguments);
+							break;
+						case 'add':
+							replaceDetails.value = this.addItems(methodArguments);
+							break;
+						case 'multiply':
+							replaceDetails.value = this.multiplyItems(methodArguments);
+							break;
+						case 'divide':
+							replaceDetails.value = this.divideItems(methodArguments);
+							break;
+						case 'dateAdd':
+							if( arrayLen( methodArguments ) >= 3 ){
+								var datePart = trim(methodArguments[1]);
+								var number = methodArguments[2];
+								var date = methodArguments[3];
+								for(var i = 4; i <= arrayLen( methodArguments ); i++){
+									date &= ','&methodArguments[ i ];
+								}
+								if(date == 'now()'){
+									date = now();
+								}
+								replaceDetails.value = dateFormat( dateAdd( datePart, number, date ), 'medium' );
+							}
+							break;
+					}
+				}
+				arrayAppend(replacementArray,replaceDetails);
+			}
+			
+		}
+		for(var i=1; i<=arrayLen(replacementArray); i++) {
+			returnString = replace(returnString, replacementArray[i].key, replacementArray[i].value, "all");
+		}
+		if(
+			arguments.template != returnString
+			&& arraylen(getFunctionTemplateKeys(returnString))
+		){
+			returnString = replaceFunctionTemplate(returnString);
+		}
+		return returnString;
+	}
+	
+	public numeric function addItems(required array items){
+		var total = items[1];
+		for(var i = 2; i <= arrayLen(items); i++){
+			total += items[i];
+		}
+		return total;
+	}
+	
+	public numeric function subtractItems(required array items){
+		var total = items[1];
+		for(var i = 2; i <= arrayLen(items); i++){
+			total -= items[i];
+		}
+		return total;
+	}
+	
+	public numeric function multiplyItems(required array items){
+		var total = items[1];
+		for(var i = 2; i <= arrayLen(items); i++){
+			total *= items[i];
+		}
+		return total;
+	}
+	
+	public any function divideItems(required array items){
+		var total = items[1];
+		for(var i = 2; i <= arrayLen(items); i++){
+			if(items[i] == 0){
+				total = 'Infinity';
+				break;
+			}
+			total /= items[i];
+		}
+		return total;
+	}
+	
+	public string function getFormattedErrorMessage(any integrationName,any errorCode,string fallbackMessage){
+        var errorMsg = getHibachiScope().rbKey('#integrationName#_errorcode_#errorCode#');
+        if(find("missing",errorMsg) > 0){
+            //If error message is not found in RB keys
+             errorMsg = arguments.fallbackMessage;
+        }
+        return errorMsg;
+    }
+	
 	</cfscript>
 
 </cfcomponent>

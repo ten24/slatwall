@@ -1,0 +1,11 @@
+{
+	"properties": {
+		"currencyCode": [
+			{ "contexts": "save", "required": true, "maxLength": 3, "unique": true },
+			{ "contexts": "delete", "method": "isCurrencyNotUsed" }
+			],
+		"currencyName": [{ "contexts": "save", "required": true }],
+		"currencySymbol": [{ "contexts": "save", "required": true }],
+		"currencyRates":[ { "contexts": "delete", "maxCollection": 0 } ]
+	 }
+}

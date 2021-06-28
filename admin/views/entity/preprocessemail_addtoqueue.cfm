@@ -69,6 +69,18 @@ Notes:
 			<input type="hidden" name="LogEmailFlag" value="#rc.email.getLogEmailFlag()#" />
 		</cfif>
 		
+		<cfif not isNull(rc.email.getRelatedObject())>
+			<input type="hidden" name="relatedObject" value="#rc.email.getRelatedObject()#" />
+		</cfif>
+		
+		<cfif not isNull(rc.email.getRelatedObjectID())>
+			<input type="hidden" name="relatedObjectID" value="#rc.email.getRelatedObjectID()#" />
+		</cfif>
+		
+		<cfif not isNull(rc.email.getAccount())>
+			<input type="hidden" name="account.accountID" value="#rc.email.getAccount().getAccountID()#" />
+		</cfif>
+		
 		<hb:HibachiPropertyRow>
 			<hb:HibachiPropertyList>
 				

@@ -335,7 +335,7 @@ Notes:
 	}
 	
 	/** Returns the content given a urlTitle or the default content if no urlTitle is given. */
-    public any function getContentByUrlTitlePath(urlTitlePath){
+    public any function getContentByUrlTitlePath(required string urlTitlePath){
 
         var currentSite = getHibachiScope().getCurrentRequestSite();
 
@@ -350,36 +350,19 @@ Notes:
             return contentEntity;
         }
     }
+    
+
+    /** Returns json representation of the urlTitles provided **/
+	public struct function getStackedContent(required struct urlTitlePathConfiguration, boolean sanitizeOutput = true){
+        return getHibachiScope().getService('siteService').getStackedContent(argumentcollection=arguments)
+    }
 
 	public string function dspForm(
 		required string formCode,
 		string sRedirectUrl="/"
 	){
-		request.context.newFormResponse = getHibachiScope().getService('formService').newFormResponse();
-		request.context.requestedForm = getHibachiScope().getService('formService').getFormByFormCode(arguments.formCode);
-		var currentSite = getHibachiScope().getService('siteService').getCurrentRequestSite();
-		var specificFormTemplateFileName = "form_"  & formCode & ".cfm";
-		var defaultFormTemplateFileName = "slatwall-form.cfm";
-
-		var specificFormTemplateFilePath =  currentSite.getTemplatesPath() & specificFormTemplateFileName;
-		var siteTemplatePath = currentSite.getApp().getAppRootPath() & "/" & currentSite.getSiteCode() & "/templates/";
-		var baseTemplatePath = currentSite.getApp().getAppRootPath() & "/templates/";
-
-		if(fileExists(specificFormTemplateFilePath)){
-			var templatePath = siteTemplatePath & specificFormTemplateFileName;
-		} else if(fileExists(baseTemplatePath & specificFormTemplateFileName)){
-			var templatePath = baseTemplatePath & specificFormTemplateFileName;
-		} else if(fileExists(siteTemplatePath & defaultFormTemplateFileName)){
-			var templatePath = siteTemplatePath & defaultFormTemplateFileName;
-		} else {
-			var templatePath = baseTemplatePath & defaultFormTemplateFileName;
-		}
-
-		savecontent variable="local.formHTML"{
-			include templatePath;
-		};
-
-		return formHtml;
+	
+		return getHibachiScope().getService('siteService').dspForm(argumentcollection=arguments);
 	}
 
 	public string function renderNav(

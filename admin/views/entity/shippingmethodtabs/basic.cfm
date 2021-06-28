@@ -11,6 +11,7 @@
 			<hb:HibachiPropertyDisplay object="#rc.shippingMethod#" property="publishedFlag" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.shippingMethod#" property="shippingMethodName" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.shippingMethod#" property="shippingMethodCode" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.shippingMethod#" property="shippingMethodDescription" edit="#rc.edit#">
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
 </cfoutput>

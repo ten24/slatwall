@@ -1,0 +1,15 @@
+<div ng-if="swAddPromotionOrderItemsBySku.promotionSkus">
+    <sw-listing-display data-collection-config='swAddPromotionOrderItemsBySku.addSkuCollection'
+                        data-has-action-bar="false"
+                        data-using-personel-collection='false'
+                        data-record-add-event="addOrderItem"
+                        data-listing-columns="swAddPromotionOrderItemsBySku.skuColumns"
+                        data-show-filters="false"
+                        data-show-simple-listing-controls="true"
+                        data-currency-code="{{swAddPromotionOrderItemsBySku.currencyCode}}">
+    </sw-listing-display>
+    
+</div>
+<div ng-if="!swAddPromotionOrderItemsBySku.promotionSkus">
+    <span ng-bind="swAddPromotionOrderItemsBySku.rbkeyService.rbKey('entity.sku.nopromotionalskusavailable')"></span>
+</div>

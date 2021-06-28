@@ -1,0 +1,41 @@
+{
+  "name": "time-out-based-retry",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A timeout based retry lib",
+  "scripts": {
+    "check": "tsc --noEmit",
+    "check:watch": "npm run check -- --watch",
+    "build": "tsc",
+    "watch": "npm run build -- --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/actions/node12-template.git"
+  },
+  "keywords": [
+    "retry",
+    "node",
+    "timeout"
+  ],
+  "author": "Nitin Yadav <nitin.yadav@ten24web.com>",
+  "main": "lib/bundle.js",
+  "types": "lib/types/index.d.ts",
+  "dependencies": {},
+  "devDependencies": {
+    "@babel/core": "^7.7.4",
+    "@babel/plugin-proposal-class-properties": "^7.7.4",
+    "@babel/plugin-proposal-object-rest-spread": "^7.7.4",
+    "@babel/preset-env": "^7.7.6",
+    "@babel/preset-typescript": "^7.7.4",
+    "@types/node": "^12.12.17",
+    "babel-loader": "^8.0.6",
+    "fork-ts-checker-webpack-plugin": "^3.1.1",
+    "typescript": "^3.7.2",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.10"
+  },
+  "resolutions": {
+    "terser": "3.14.1"
+  }
+}

@@ -26,11 +26,7 @@
 	<div class="invoice-temp">
 	    <div class="invoice-intro">
 			<div style="width: 100%; text-align:center;">
-				<cfif cgi.server_name CONTAINS "ten24dev">
-				
-					<!---Clieny header/image goes here--->
-					
-				</cfif>
+				<!---Clieny header/image goes here--->
 			</div>
 	    </div>
 

@@ -7,6 +7,7 @@ import {SWOrderItem} from "./components/sworderitem";
 import {SWOiShippingLabelStamp} from "./components/swoishippinglabelstamp";
 import {SWOrderItemDetailStamp} from "./components/sworderitemdetailstamp";
 import {SWOrderItems} from "./components/sworderitems";
+import {SWReturnOrderItems} from "./components/swreturnorderitems";
  import {SWResizedImage} from "./components/swresizedimage";
 
 
@@ -22,6 +23,7 @@ var orderitemmodule = angular.module('hibachi.orderitem', [coremodule.name])
 .directive('swoishippinglabelstamp',SWOiShippingLabelStamp.Factory())
 .directive('swOrderItemDetailStamp',SWOrderItemDetailStamp.Factory())
 .directive('swOrderItems',SWOrderItems.Factory())
+.directive('swReturnOrderItems', SWReturnOrderItems.Factory())
 .directive('swresizedimage',SWResizedImage.Factory())
 //constants
 .constant('orderItemPartialsPath','orderitem/components/')

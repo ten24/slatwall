@@ -62,24 +62,9 @@ class SWCollectionConfig implements ng.IDirective{
     `
 
     public static Factory(){
-        var directive:ng.IDirectiveFactory=(
-            collectionConfigService,
-            listingService, 
-            scopeService,
-            $q
-        )=>new SWCollectionConfig(
-            collectionConfigService,
-            listingService, 
-            scopeService,
-            $q
-        );
-        directive.$inject = [
-            'collectionConfigService',
-            'listingService',
-            'scopeService',
-            '$q'
-        ];
-        return directive;
+        return /** @ngInject; */ ( collectionConfigService, listingService, scopeService, $q ) => {
+            return new this( collectionConfigService, listingService, scopeService, $q ); 
+        }
     }
     
     // @ngInject
@@ -180,15 +165,18 @@ class SWCollectionConfig implements ng.IDirective{
                             && angular.isDefined(parentDirective[scope.swCollectionConfig.multiCollectionConfigProperty])
                         ){
                             parentDirective[scope.swCollectionConfig.multiCollectionConfigProperty].push(newCollectionConfig); 
-                        } else if(angular.isDefined(parentDirective[scope.swCollectionConfig.collectionConfigProperty])) {
+                        } 
+                        else if( !parentDirective[scope.swCollectionConfig.collectionConfigProperty] ){
                             parentDirective[scope.swCollectionConfig.collectionConfigProperty] = newCollectionConfig;
-                        } else { 
+                        } 
+                        else { 
                             throw("swCollectionConfig could not locate a collection config property to bind it's collection to");
                         } 
+                        
                         if(angular.isDefined(parentDirective[scope.swCollectionConfig.parentDeferredProperty])){
                             parentDirective[scope.swCollectionConfig.parentDeferredProperty].resolve();
                         } else {
-                            //throw("SWCollectionConfig cannot resolve rule");
+                            throw("SWCollectionConfig cannot resolve rule");
                         }
                     } 
                 },(reason)=>{

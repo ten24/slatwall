@@ -1,7 +1,23 @@
 {
-	"properties":{
-		"setupName":			[{"contexts":"save","required":true}],
-		"location":				[{"contexts":"save","required":true}],
-		"maxQuantity":			[{"contexts":"save","required":true,"dataType":"numeric","minValue":0,"gteProperty":"minQuantity"}]
+	"properties": {
+		"setupName": [{ "contexts": "save", "required": true }],
+		"location": [{ "contexts": "save", "required": true }],
+		"minQuantity": [
+			{
+				"contexts": "save",
+				"required": true,
+				"dataType": "numeric",
+				"lteProperty": "maxQuantity"
+			}
+		],
+		"maxQuantity": [
+			{
+				"contexts": "save",
+				"required": true,
+				"dataType": "numeric",
+				"minValue": 0,
+				"gteProperty": "minQuantity"
+			}
+		]
 	}
 }

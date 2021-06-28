@@ -46,7 +46,8 @@
 Notes:
 
 --->
-<cfcomponent extends="HibachiDAO">
+<cfcomponent extends="HibachiDAO" accessors=true >
+    <cfproperty name="SettingService" type="any" />
 	
 	<cfscript>
 		 
@@ -154,27 +155,21 @@ Notes:
 		public array function getQDOO(required string productID, string productRemoteID){
 			var q = new Query();
 			var sql = "SELECT 
-						coalesce(sum(orderdeliveryitem.quantity), 0) as quantity, 
-						sku.skuID as skuID, 
-						stock.stockID as stockID, 
-						location.locationID as locationID, 
-						location.locationIDPath as locationIDPath 
-						
-						FROM SwOrderItem orderitem 
-							left outer join SwOrderDeliveryItem orderdeliveryitem on orderitem.orderItemID=orderdeliveryitem.orderItemID 
-							left outer join SwStock stock on orderitem.stockID=stock.stockID 
-							left outer join SwLocation location on stock.locationID=location.locationID 
-							left outer join SwSku sku on orderitem.skuID=sku.skuID 
-							inner join SwOrder ord 
-							inner join SwType type 
-							inner join SwType othertype 
-						WHERE orderitem.orderID=ord.orderID 
-							and ord.orderStatusTypeID=type.typeID 
-							and orderitem.orderItemTypeID=othertype.typeID 
-							and (type.systemCode not in ('ostNotPlaced' , 'ostClosed' , 'ostCanceled')) 
-							and othertype.systemCode='oitSale' 
-							and sku.productID=:productID 
-						GROUP BY sku.skuID, stock.stockID ,location.locationID ,location.locationIDPath
+					    coalesce(sum(orderdeliveryitem.quantity), 0) as quantity, 
+					    orderitem.skuID as skuID, 
+					    stock.stockID as stockID, 
+					    stock.locationID as locationID,
+					    location.locationIDPath as locationIDPath
+					    FROM SwOrderItem orderitem 
+					        inner join SwOrder ord on orderitem.orderID=ord.orderID  
+					        inner join SwSku sku on orderitem.skuID=sku.skuID 
+					        left join SwOrderDeliveryItem orderdeliveryitem on orderitem.orderItemID=orderdeliveryitem.orderItemID 
+					        left join SwStock stock on orderdeliveryitem.stockID=stock.stockID
+					        left join SwLocation location on stock.locationID=location.locationID 
+					    WHERE sku.productID=:productID 
+					        and ord.orderStatusTypeID not in ('2c9180866b4d105e016b4e2666760029','444df2b8b98441f8e8fc6b5b4266548c','444df2b498de93b4b33001593e96f4be','444df2b90f62f72711eb5b3c90848e7e')
+					        and orderitem.orderItemTypeID='444df2e9a6622ad1614ea75cd5b982ce' 
+					    GROUP BY orderitem.skuID, stock.stockID, stock.locationID, location.locationIDPath
 						  	 ";
 			q.addParam(name="productID", value="#arguments.productID#", cfsqltype="CF_SQL_VARCHAR");	
 			q.setSQL(sql);
@@ -204,33 +199,15 @@ Notes:
 			
 			var QDOOHashMap = {};
 			
-			//This variable will store the total QDOO and QOO by skuID
-			var skuTotalsHashMap = {};
-			
 			for(var i=1;i <= arrayLen(QDOO);i++){
-				
-				if ( structKeyExists(QDOO[i], 'stockID')){
-					QDOOHashMap["#QDOO[i]['stockID']#"] = QDOO[i]; 
+				if ( structKeyExists(QDOO[i], 'stockID') && len( QDOO[i]['stockID'] )){
+					QDOOHashMap[QDOO[i]['stockID']] = QDOO[i]; 
 				} else {
-					QDOOHashMap["#QDOO[i]['skuID']#"] = QDOO[i]; 
+					QDOOHashMap[QDOO[i]['skuID']] = QDOO[i]; 
 				}
-				
-				if ( !structKeyExists(skuTotalsHashMap, "#QDOO[i]['skuID']#") ){
-					skuTotalsHashMap["#QDOO[i]['skuID']#"]['totalQDOO'] = 0;
-					skuTotalsHashMap["#QDOO[i]['skuID']#"]['totalQOO'] = 0;
-				}
-				
-				skuTotalsHashMap["#QDOO[i]['skuID']#"]['totalQDOO'] += QDOO[i]['QDOO'];
-				
 			}
 			
 			var QOO = getQOO(productID=arguments.productID);
-			
-			for(var item in QOO){ 
-				if(structKeyExists(skuTotalsHashMap,item['skuID'])){
-					skuTotalsHashMap[item['skuID']]['totalQOO'] += item['QOO'];
-				}
-			}
 			
 			for(var QOOData in QOO){
 				var record = {};
@@ -252,13 +229,13 @@ Notes:
 				}
 				var quantityReceived = 0;
 				
-				if( structKeyExists(QOOData, 'stockID' ) && structKeyExists(QDOOHashMap,"#QOOData['stockID']#")){
-					quantityReceived = QDOOHashMap['#QOOData['stockID']#']['QDOO'];
+				if( structKeyExists(QOOData, 'stockID' ) && structKeyExists(QDOOHashMap, QOOData['stockID'] )){
+					quantityReceived = QDOOHashMap[ QOOData['stockID'] ]['QDOO'];
 						
 					record['QNDOO'] = QOOData['QOO'] - quantityReceived;
-				}else if( structKeyExists(skuTotalsHashMap,'#QOOData['skuID']#') ){
+				}else if( structKeyExists(QDOOHashMap, QOOData['skuID'] ) ){
 					
-					record['QNDOO'] = skuTotalsHashMap["#QOOData['skuID']#"]['totalQOO'] - skuTotalsHashMap["#QOOData['skuID']#"]['totalQDOO'];
+					record['QNDOO'] = QOOData['QOO'] - QDOOHashMap[ QOOData['skuID'] ]['QDOO'];
 				}
 				
 				arrayAppend(QNDOO,record);
@@ -831,6 +808,139 @@ Notes:
 		</cfquery>
 		
 		<cfreturn local.query.qoq />
+	</cffunction>
+	
+	<cffunction name="manageOpenOrderItem" returntype="void" access="public">
+	
+	    <cfif NOT this.getSettingService().getSettingValue('skuTrackInventoryFlag') >
+	        <cfreturn/>
+	    </cfif>
+	    
+		<cfargument name="actionType" type="string" required="true"/>
+		<cfargument name="orderID" type="string" required="false"/>
+		<cfargument name="orderItemID" type="string" required="false"/>
+		<cfargument name="skuID" type="string" required="false"/>
+		<cfargument name="quantityDelivered" type="numeric" required="false"/>
+		
+		<cfset var rs = "" />
+		<cfswitch expression="#arguments.actionType#">
+			<cfcase value="add">
+				<cfquery name="rs">
+					INSERT INTO SwOpenOrderItem (openOrderItemID,
+                               orderID,
+                               orderItemID,
+                               productID,
+                               skuID,
+                               stockID,
+                               locationID,
+                               quantity,
+                               quantityDelivered)
+
+					SELECT 
+					    LOWER(REPLACE(CAST(UUID() as char character set utf8),'-','')),
+					    SwOrderItem.orderID,
+					    SwOrderItem.orderItemID,
+					    SwSku.productID, 
+					    SwSku.skuID, 
+					    SwStock.stockID, 
+					    SwStock.locationID,
+					    SwOrderItem.quantity,
+					    0
+											
+					    FROM SwOrderItem
+					        INNER JOIN SwOrder ON SwOrderItem.orderID = SwOrder.orderID
+					        INNER JOIN SwSku ON SwOrderItem.skuID = SwSku.skuID
+					        INNER JOIN SwLocationSite ON SwOrder.orderCreatedSiteID = SwLocationSite.siteID
+					        LEFT JOIN SwStock ON SwSku.skuID = SwStock.skuID AND SwStock.locationID = SwLocationSite.locationID
+					
+						WHERE 
+						<cfif structKeyExists(arguments, "orderItemID")>
+							SwOrderItem.orderItemID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderItemID#" />
+						<cfelse>
+							SwOrder.orderID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderID#" />
+						</cfif>
+						AND SwOrderItem.orderItemTypeID='444df2e9a6622ad1614ea75cd5b982ce' 
+						
+					UNION
+					
+					SELECT 
+					    LOWER(REPLACE(CAST(UUID() as char character set utf8),'-','')),
+					    SwOrderItem.orderID,
+					    SwOrderItem.orderItemID,
+					    SwSku.productID, 
+					    SwSku.skuID, 
+					    SwStock.stockID, 
+					    SwStock.locationID,
+					    SwOrderItem.quantity*SwOrderItemSkuBundle.quantity,
+					    0
+											
+					    FROM SwOrderItemSkuBundle
+                            INNER JOIN SwOrderItem ON SwOrderItemSkuBundle.orderItemID = SwOrderItem.orderItemID
+					        INNER JOIN SwOrder ON SwOrderItem.orderID = SwOrder.orderID
+					        INNER JOIN SwSku ON SwOrderItemSkuBundle.skuID = SwSku.skuID
+					        INNER JOIN SwLocationSite ON SwOrder.orderCreatedSiteID = SwLocationSite.siteID
+					        LEFT JOIN SwStock ON SwSku.skuID = SwStock.skuID AND SwStock.locationID = SwLocationSite.locationID
+					
+						WHERE 
+						<cfif structKeyExists(arguments, "orderItemID")>
+							SwOrderItem.orderItemID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderItemID#" />
+						<cfelse>
+							SwOrder.orderID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderID#" />
+						</cfif>
+						AND SwOrderItem.orderItemTypeID='444df2e9a6622ad1614ea75cd5b982ce' 
+				</cfquery>
+			</cfcase>
+			<cfcase value="update">
+				<cfquery name="rs">
+					UPDATE SwOpenOrderItem ooi
+						INNER JOIN SwOrderItem oi ON ooi.orderItemID = oi.orderItemID AND ooi.skuID = oi.skuID
+					SET ooi.quantityDelivered = ooi.quantityDelivered + <cfqueryparam cfsqltype="cf_sql_numeric" value="#arguments.quantityDelivered#" />
+					WHERE oi.orderItemID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderItemID#" />
+					;
+					UPDATE SwOpenOrderItem ooi
+						INNER JOIN SwOrderItem oi ON ooi.orderItemID = oi.orderItemID AND ooi.skuID <> oi.skuID
+						INNER JOIN SwOrderItemSkuBundle oisb ON oi.orderItemID = oisb.orderItemID
+					SET ooi.quantityDelivered = ooi.quantityDelivered + (oisb.quantity * <cfqueryparam cfsqltype="cf_sql_numeric" value="#arguments.quantityDelivered#" />)
+					WHERE oi.orderItemID =  <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderItemID#" />
+				</cfquery>
+			</cfcase>
+			<cfcase value="delete">
+				<cfquery name="rs">
+					DELETE FROM SwOpenOrderItem
+					WHERE 
+					<cfif structKeyExists(arguments, "orderItemID")>
+						orderItemID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderItemID#" />
+					<cfelse>
+						orderID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderID#" />
+					</cfif>
+				</cfquery>
+			</cfcase>
+			<cfcase value="updateItemQuantity">
+				<cfquery name="rs">
+					UPDATE SwOpenOrderItem ooi
+						INNER JOIN SwOrderItem oi ON ooi.orderItemID = oi.orderItemID AND ooi.skuID = oi.skuID
+					SET ooi.quantity = oi.quantity
+					WHERE 
+					<cfif structKeyExists(arguments, "skuID")>
+						oi.skuID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.skuID#" />
+					<cfelse>
+						oi.orderItemID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderItemID#" />
+					</cfif>
+					;
+					UPDATE SwOpenOrderItem ooi
+						INNER JOIN SwOrderItem oi ON ooi.orderItemID = oi.orderItemID AND ooi.skuID <> oi.skuID
+                        INNER JOIN SwOrderItemSkuBundle oisb ON oi.orderItemID = oisb.orderItemID
+					SET ooi.quantity = oi.quantity*oisb.quantity
+					WHERE 
+					<cfif structKeyExists(arguments, "skuID")>
+						oi.skuID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.skuID#" />
+					<cfelse>
+						oi.orderItemID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderItemID#" />
+					</cfif>
+
+				</cfquery>
+			</cfcase>
+		</cfswitch>
 	</cffunction>
 
 </cfcomponent>

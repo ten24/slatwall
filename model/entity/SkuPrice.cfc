@@ -46,7 +46,7 @@
 Notes:
 
 */
-component entityname="SlatwallSkuPrice" table="SwSkuPrice" persistent=true accessors=true output=false extends="HibachiEntity" hb_serviceName="skuService" hb_permission="this" {
+component entityname="SlatwallSkuPrice" table="SwSkuPrice" persistent=true accessors=true output=false extends="HibachiEntity" hb_serviceName="SkuPriceService" hb_permission="this" {
 
 	// Persistent Properties
 	property name="skuPriceID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -57,6 +57,7 @@ component entityname="SlatwallSkuPrice" table="SwSkuPrice" persistent=true acces
 	property name="listPrice" ormtype="big_decimal" hb_formatType="currency";
 	property name="renewalPrice" ormtype="big_decimal" hb_formatType="currency";
 	property name="expiresDateTime" ormtype="timestamp";
+	property name="activeFlag" ormtype="boolean" default=1;
 
 	// Calculated Properties
 
@@ -68,7 +69,8 @@ component entityname="SlatwallSkuPrice" table="SwSkuPrice" persistent=true acces
 	property name="promotionReward" cfc="PromotionReward" fieldtype="many-to-one" fkcolumn="promotionRewardID";
 
 	// Remote properties
-	property name="remoteID" ormtype="string";
+	property name="remoteID" ormtype="string" hb_populateEnabled="private";
+	property name="importRemoteID" hb_populateEnabled="private" ormtype="string" hint="Used via data-importer as a unique-key to find records for upsert";
 
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
@@ -79,7 +81,8 @@ component entityname="SlatwallSkuPrice" table="SwSkuPrice" persistent=true acces
 	// Non-Persistent Properties
 	property name="hasValidQuantityConfiguration" persistent="false"; 
  	
- 	public boolean function hasValidQuantityConfiguration(){
+
+	public boolean function hasValidQuantityConfiguration(){
  		if(!(isNull(this.getMinQuantity()) && isNull(this.getMaxQuantity()))){ 
 			if(isNull(this.getMinQuantity()) || isNull(this.getMaxQuantity())){ 
 				return false; 
@@ -89,6 +92,19 @@ component entityname="SlatwallSkuPrice" table="SwSkuPrice" persistent=true acces
 		}
  		return true; 
  	} 
+ 	
+ 	public boolean function isDefaultSkuPrice(){
+ 		return isNull(getMinQuantity()) 
+ 			&& isNull(getMaxQuantity()) 
+ 			&& isNull(getPriceGroup())
+ 			&& isNull(getPromotionReward())
+ 			&& (getSku().getCurrencyCode() == getCurrencyCode())
+ 		;
+ 	}
+ 	
+ 	public boolean function isNotDefaultSkuPrice(){
+ 		return !isDefaultSkuPrice();
+ 	}
  	
  	public any function getPriceGroupOptions(){
 		var options = getPropertyOptions("priceGroup");
@@ -107,6 +123,15 @@ component entityname="SlatwallSkuPrice" table="SwSkuPrice" persistent=true acces
 		}
 	}
 	
+	// ================== START: Overridden Methods ========================
+	
+	public any function getDefaultCollectionProperties(){
+		var includesList = getService("SkuPriceService").getDefaultCollectionPropertiesList();
+		return super.getDefaultCollectionProperties(includesList,"");
+	}
+	
+	// ================== END: Overridden Methods ==========================
+	
 	// =================== START: ORM Event Hooks  =========================	
 	public void function preUpdate(struct oldData) {
 		
@@ -116,8 +141,14 @@ component entityname="SlatwallSkuPrice" table="SwSkuPrice" persistent=true acces
 			}
 		}
 		
+		if( this.isDefaultSkuPrice() ) {
+			var sku = this.getSku();
+			sku.setPrice(this.getPrice());
+			sku = getService("SkuService").saveSku(sku);
+		}
+		
 		super.preUpdate(arguments.oldData);
 	}
     
-	// ===================  END:  ORM Event Hooks  =========================
+	// ===================  END:  ORM Event Hooks  =========================	
 }

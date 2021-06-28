@@ -1,6 +1,8 @@
 {
-	"properties":{
-		"location":			[{"contexts":"save","method":"getLocationIsLeafNode"}],
-		"averageCost":		[{"contexts":"save","dataType":"numeric"}]
+	"properties": {
+		"location": [{ "contexts": "save", "method": "getLocationIsLeafNode" }],
+		"averageCost": [{ "contexts": "save", "dataType": "numeric" }],
+		"minQuantity": [{ "contexts": "save", "dataType": "numeric" }],
+		"maxQuantity": [{ "contexts": "save", "dataType": "numeric" }]
 	}
 }

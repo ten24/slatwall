@@ -75,18 +75,18 @@ Notes:
 		</cfif>
 	</cffunction>
 	
+	<cffunction name="getTypeByTypeCode" output="false" access="public">
+		<cfargument name="typeCode" type="string" required="true" >
+		
+		<cfreturn ormExecuteQuery("SELECT atype FROM SlatwallType atype WHERE atype.typeCode = ? ORDER BY sortOrder ASC", [arguments.typeCode], true) />
+	</cffunction>
+	
 	<cffunction name="getTypeOptionsBySystemCode" output="false" access="public">
 		<cfargument name="systemCode" type="string" required="true" >
 		
 		<cfset var options = ormExecuteQuery("SELECT atype FROM SlatwallType atype WHERE atype.systemCode = ?", [arguments.systemCode]) />
 		
 		<cfreturn options />
-	</cffunction>
-	
-	<cffunction name="getTypeByTypeCode" output="false" access="public">
-		<cfargument name="typeCode" type="string" required="true" >
-
-		<cfreturn ormExecuteQuery("SELECT atype FROM SlatwallType atype WHERE atype.typeCode = ? ORDER BY sortOrder ASC", [arguments.typeCode], true) />
 	</cffunction>
 	
 </cfcomponent>

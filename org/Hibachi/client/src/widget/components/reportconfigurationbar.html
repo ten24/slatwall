@@ -49,12 +49,13 @@
                             <p class="input-group s-datepicker">
                                 <label>Start Date</label>
                                 <input class="form-control" 
-                                    datepicker-popup="MMM dd, yyyy" 
+                                    datepicker-popup="MMM dd yyyy" 
                                     close-text="Close" 
                                     type="text"
                                     is-open="swReportConfigurationBar.openedCalendarStart" 
-                                    ng-change="swReportConfigurationBar.updateCustomPeriod()"
                                     ng-model="swReportConfigurationBar.customReportStartDateTime"
+                                    max-date="swReportConfigurationBar.maxDateTime"
+
                                     />
                                 <span class="input-group-btn" >
                                 <button type="button" class="btn btn-default btn-sm btn-cal" ng-click="swReportConfigurationBar.openCalendarStart($event)"><i class="glyphicon glyphicon-calendar"></i></button>
@@ -65,16 +66,23 @@
                             <p class="input-group s-datepicker">
                                 <label>End Date</label>
                                 <input class="form-control" 
-                                    datepicker-popup="MMM dd, yyyy" 
+                                    datepicker-popup="MMM dd yyyy" 
                                     close-text="Close" 
                                     type="text"
                                     is-open="swReportConfigurationBar.openedCalendarEnd" 
-                                    ng-change="swReportConfigurationBar.updateCustomPeriod()"
                                     ng-model="swReportConfigurationBar.customReporEndDateTime"
+                                    max-date="swReportConfigurationBar.maxDateTime"
+                                    min-date="swReportConfigurationBar.customReportStartDateTime"
+
                                     />
                                 <span class="input-group-btn" >
                                 <button type="button" class="btn btn-default btn-sm btn-cal" ng-click="swReportConfigurationBar.openCalendarEnd($event)"><i class="glyphicon glyphicon-calendar"></i></button>
                                 </span>
+                            </p>
+                        </div>
+                        <div class="col-cal">
+                            <p class="input-group s-datepicker">
+                                <button type="botton" class="btn btn-default btn-sm btn-cal" ng-click="swReportConfigurationBar.updateCustomPeriod()">Submit</button>
                             </p>
                         </div>
                     </div>

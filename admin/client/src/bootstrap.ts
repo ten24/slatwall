@@ -7,9 +7,21 @@ import {slatwalladminmodule} from "./slatwall/slatwalladmin.module";
 //custom bootstrapper
 class bootstrapper extends BaseBootStrapper{
     public myApplication;
+    
     constructor(){
-        var angular:any = super(slatwalladminmodule.name);
-        angular.bootstrap()
+        var bootstraper:any = super(slatwalladminmodule.name);
+
+        if(__DEBUG_MODE__){
+            bootstraper.loading( () => {
+                console.log("Boostraping Slatwall-Admin-module STARTED, will resolve dependencies(config, rb-keys)");
+            })
+            .done( () => {
+                console.log("Bootstraping Slatwall-Admin-module COMPLETED");
+            })
+        }
+        
+        // strictDI ==> true/false, should be set to true to test if we can mangle the js
+        bootstraper.bootstrap(false);
     }
 
 

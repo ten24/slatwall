@@ -1,9 +1,15 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
+const actionCallerTemplateString = require("./actioncaller.html");
 
 class SWActionCallerController{
     public type:string;
+    public displayConfirm:boolean;
     public confirm:any;
+    public display:boolean;
+    public modal:boolean;
+    public event:string;
+    public payload:any;
     public action:string;
     public actionItem:string;
     public title:string;
@@ -14,9 +20,9 @@ class SWActionCallerController{
     public text:string;
     public disabled:boolean;
     public actionItemEntityName:string;
-    public hibachiPathBuilder:any;
-    
+
     public eventListeners:any;
+    public eventListenerId:string;
     public actionUrl:string;
     public queryString:string;
     public isAngularRoute:boolean;
@@ -26,6 +32,7 @@ class SWActionCallerController{
     public actionAuthenticated:boolean;
     //@ngInject
     constructor(
+        private $rootScope,
         private $scope,
         private $element,
         private $templateRequest:ng.ITemplateRequestService,
@@ -37,23 +44,11 @@ class SWActionCallerController{
         private $hibachi,
         private rbkeyService,
         private hibachiAuthenticationService,
-        hibachiPathBuilder
         
     ){
-        this.$scope = $scope;
-        this.$element = $element;
-        this.$timeout = $timeout;
-        this.$templateRequest = $templateRequest;
-        this.$compile = $compile;
-        this.rbkeyService = rbkeyService;
-        this.$hibachi = $hibachi;
-        this.utilityService = utilityService;
-        this.hibachiPathBuilder = hibachiPathBuilder;
-        this.hibachiAuthenticationService = hibachiAuthenticationService;
-
-        this.$templateRequest(this.hibachiPathBuilder.buildPartialsPath(corePartialsPath)+"actioncaller.html").then((html)=>{
+        this.$templateRequest('actionCallerTemplateString').then((html)=>{
             var template = angular.element(html);
-            this.$element.parent().append(template);
+            this.$element.parent().prepend(template);
             $compile(template)($scope);
             //need to perform init after promise completes
             //this.init();
@@ -63,68 +58,86 @@ class SWActionCallerController{
     }
     
     public $onInit = ():void =>{
-        this.actionAuthenticated=this.hibachiAuthenticationService.authenticateActionByAccount(this.action);
+        
+        if(angular.isDefined(this.action)){
+            this.actionAuthenticated= true;
+// 			var unBind = this.$rootScope.$watch('slatwall.role',(newValue,oldValue)=>{
+// 				if(newValue){
+// 					this.actionAuthenticated=this.hibachiAuthenticationService.authenticateActionByAccount(this.action);
+// 					unBind();
+// 				}
+// 			});
+        }
+
 
         //Check if is NOT a ngRouter
         if(angular.isUndefined(this.isAngularRoute)){
             this.isAngularRoute = this.utilityService.isAngularRoute();
         }
-        if(!this.isAngularRoute){
+        
+        if(this.event != null && this.event.length){
+            this.type = 'event';//no action url needed
+        } else if(!this.isAngularRoute){
             this.actionUrl= this.$hibachi.buildUrl(this.action,this.queryString);
         }else{
             this.actionUrl = '#!/entity/'+this.action+'/'+this.queryString.split('=')[1];
         }
-
-//            this.class = this.utilityService.replaceAll(this.utilityService.replaceAll(this.getAction(),':',''),'.','') + ' ' + this.class;
+    
+        if(angular.isUndefined(this.display)){
+            this.display = true;
+        }
+        
+        if(angular.isUndefined(this.displayConfirm)){
+            this.displayConfirm = false;
+        }
+        
         this.type = this.type || 'link';
+        
         if(angular.isDefined(this.titleRbKey)){
             this.title = this.rbkeyService.getRBKey(this.titleRbKey);
         }
+        
         if(angular.isUndefined(this.text)){
             this.text = this.title;
         }
 
-            if (this.type == "button"){
-                //handle submit.
-                /** in order to attach the correct controller to local vm, we need a watch to bind */
-                var unbindWatcher = this.$scope.$watch(() => { return this.formController; }, (newValue, oldValue) => {
-                    if (newValue !== undefined){
-                        this.formController = newValue;
+        if (this.type == "button"){
+            //handle submit.
+            /** in order to attach the correct controller to local vm, we need a watch to bind */
+            var unbindWatcher = this.$scope.$watch(() => { return this.formController; }, (newValue, oldValue) => {
+                if (newValue !== undefined){
+                    this.formController = newValue;
 
-                    }
+                }
 
-                    unbindWatcher();
-                });
+                unbindWatcher();
+            });
 
-            }
-//            this.actionItem = this.getActionItem();
-//            this.actionItemEntityName = this.getActionItemEntityName();
-//            this.text = this.getText();
-//            if(this.getDisabled()){
-//                this.getDisabledText();
-//            }else if(this.getConfirm()){
-//                this.getConfirmText();
-//            }
-//
-//            if(this.modalFullWidth && !this.getDisabled()){
-//                this.class = this.class + " modalload-fullwidth";
-//            }
-//
-//            if(this.modal && !this.getDisabled() && !this.modalFullWidth){
-//                this.class = this.class + " modalload";
-//            }
+        }
 
-        /*need authentication lookup by api to disable
-        <cfif not attributes.hibachiScope.authenticateAction(action=attributes.action)>
-            <cfset attributes.class &= " disabled" />
-        </cfif>
-        */
         if(this.eventListeners){
             for(var key in this.eventListeners){
-                this.observerService.attach(this.eventListeners[key], key)
+                let callback = this.eventListeners[key];
+                // if you want to use an internal method passed into this directive as a string
+                if(typeof callback !== "function"){ 
+                    callback = this[this.eventListeners[key]];
+                }
+                // in case you want to attach by id
+                if(this.eventListenerId){
+                    this.observerService.attach(callback, key, this.eventListenerId);
+                    this.$scope.$on('$destroy',()=>{
+                        this.observerService.detachById(this.eventListenerId);
+                    });
+                    continue;
+                }
+                this.observerService.attach(callback, key);
             }
         }
 
+    }
+    
+    public emit = () =>{
+        this.observerService.notify(this.event, this.payload);
     }
 
     public submit = () => {
@@ -240,6 +253,18 @@ class SWActionCallerController{
             return false;
         }
     }
+    
+    public setDisabled = (disableFlag:boolean) =>{
+        this.disabled = disableFlag;
+    }
+    
+    public setDisplayTrue = () =>{
+        this.display = true;
+    }
+    
+    public setDisplayFalse = () =>{
+        this.display = false;
+    }
 
     public getDisabledText = ():string =>{
         if(this.getDisabled()){
@@ -283,9 +308,14 @@ class SWActionCallerController{
 
 class SWActionCaller implements ng.IDirective{
     public restrict:string = 'EA';
+    
     public scope:any={};
     public bindToController:any={
-        action:"@",
+        action:"@?",
+        display:"<?",
+        displayConfirm:"=?",
+        event:"@?",
+        payload: "=",
         text:"@",
         type:"@",
         queryString:"@",
@@ -303,37 +333,26 @@ class SWActionCaller implements ng.IDirective{
         modalFullWidth:"=",
         id:"@",
         isAngularRoute:"=?",
-        eventListeners:'=?'
+        eventListeners:'=?',
+        eventListenerId:'@?'
     };
     public require={formController:"^?swForm",form:"^?form"};
+    
     public controller=SWActionCallerController;
     public controllerAs="swActionCaller";
-    public templateUrl;
-    public static Factory():ng.IDirectiveFactory{
-        var directive:ng.IDirectiveFactory = (
-            partialsPath,
-            utiltiyService,
-            $hibachi
-        ) => new SWActionCaller(
-            partialsPath,
-            utiltiyService,
-            $hibachi
-        );
-        directive.$inject = [
-            'partialsPath',
-            'utilityService',
-            '$hibachi'
-        ];
-        return directive;
-    }
+    
+    // @ngInject;
+    constructor(private $templateCache: ng.ITemplateCacheService){}
 
-    constructor(
-        public partialsPath,
-        public utiltiyService,
-        public $hibachi
-        ){
-    }
-
+	public static Factory(){
+		return /** @ngInject; */ ($templateCache) => {
+		    if( !$templateCache.get('actionCallerTemplateString') ){
+		        $templateCache.put('actionCallerTemplateString', actionCallerTemplateString);
+		    }
+		    return new this($templateCache);
+		};
+	}
+	
     public link:ng.IDirectiveLinkFn = (scope:any, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
         if (angular.isDefined(scope.swActionCaller.formController)){
              scope.formController = scope.swActionCaller.formController;

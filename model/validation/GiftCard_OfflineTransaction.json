@@ -1,11 +1,10 @@
 {
-    "conditions":{
-        "debit" : {
-            "transactionType" : {"eq":"debit"}
-        }
-    },
-    "properties":{
-        "amount" : [{"dataType":"numeric", "gt":0},
-                    {"conditions":"debit", "lteProperty":"giftCardBalanceAmount"}]
-    }
+	"conditions": {
+		"debit": {
+			"transactionType": { "eq": "debit" }
+		}
+	},
+	"properties": {
+		"amount": [{ "dataType": "numeric", "gt": 0 }, { "conditions": "debit" }]
+	}
 }

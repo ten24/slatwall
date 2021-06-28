@@ -39,7 +39,9 @@ class SWDisplayItemAggregate{
                 selectedPropertyChanged:"&"
 
             },
-            templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"displayitemaggregate.html",
+            
+            template: require("./displayitemaggregate.html"),
+            
             link: function(scope, element,attrs,displayOptionsController){
                 scope.showDisplayItem = false;
                 scope.aggregate ={};
@@ -61,7 +63,7 @@ class SWDisplayItemAggregate{
                         scope.aggregate.currentObject = scope.selectedProperty.cfc;
                     }
                 };
-                
+
 
                 scope.selectedDisplayOptionChanged = function(selectedDisplayOption){
                     var breadCrumb = {

@@ -58,11 +58,12 @@ component displayname="Promotion Period" entityname="SlatwallPromotionPeriod" ta
 	
 	// Related Object Properties (many-to-one)
 	property name="promotion" cfc="Promotion" fieldtype="many-to-one" fkcolumn="promotionID" fetch="join";
+	property name="qualifierLogicalOperatorType" cfc="Type" fieldtype="many-to-one" fkcolumn="qualifierLogicalOperatorTypeID" hb_optionsSmartListData="f:parentType.systemCode=qualifierLogicalOperatorType" fetch="join";
 	
 	// Related Object Properties (one-to-many)   
 	property name="promotionRewards" singularname="promotionReward" cfc="PromotionReward" fieldtype="one-to-many" fkcolumn="promotionPeriodID" cascade="all-delete-orphan" inverse="true";
 	property name="promotionQualifiers" singularname="promotionQualifier" cfc="PromotionQualifier" fieldtype="one-to-many" fkcolumn="promotionPeriodID" cascade="all-delete-orphan" inverse="true";
-	
+
 	// Remote Properties
 	property name="remoteID" ormtype="string";
 	
@@ -75,6 +76,17 @@ component displayname="Promotion Period" entityname="SlatwallPromotionPeriod" ta
  	// Non-persistent properties
 	property name="currentFlag" type="boolean" persistent="false"; 
  	property name="isDeletableFlag" type="boolean" persistent="false"; 
+ 	
+ 	public any function getQualifierLogicalOperatorType(){
+ 		if(!structKeyExists(variables,'qualifierLogicalOperatorType')){
+ 			variables.qualifierLogicalOperatorType = getService('TypeService').getTypeBySystemCode('qlotOr');
+ 		}
+ 		return variables.qualifierLogicalOperatorType;
+ 	}
+ 	
+ 	public string function getQualifierLogicalOperator(){
+ 		return getQualifierLogicalOperatorType().getTypeName();
+ 	}
  	
  	public boolean function getIsDeletableFlag(){
  		if (getCurrentFlag() == true && getPromotion().getPromotionAppliedOrdersCount() > 0){

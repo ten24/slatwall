@@ -1,8 +1,12 @@
 {
-	"properties":{
-		"account":			[{"contexts":"save","required":true}]
+	"properties": {
+		"account": [{ "contexts": "save", "required": true }],
+		"address": [
+				{ "contexts": "delete", "method": "isNotDefaultAccountShippingAddress" },
+				{ "contexts": "delete", "method": "addressHasNoAssociatedScheduleOrderTemplate" }
+			]
 	},
-	"populatedPropertyValidation":{
-	    "address":[{"validate":"full"}]
+	"populatedPropertyValidation": {
+		"address": [{ "validate": "full" }]
 	}
 }

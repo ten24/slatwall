@@ -10,6 +10,7 @@
 			<hb:HibachiPropertyDisplay object="#rc.Brand#" property="activeFlag" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.Brand#" property="brandName" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.Brand#" property="brandWebsite" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.Brand#" property="brandDescription" edit="#rc.edit#">
 			<cfif not rc.brand.isNew()>
 				<hb:HibachiPropertyDisplay object="#rc.Brand#" property="urlTitle" edit="#rc.edit#">
 			</cfif>

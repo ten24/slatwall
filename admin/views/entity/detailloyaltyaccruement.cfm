@@ -70,13 +70,37 @@ Notes:
 		
 		
 			<hb:HibachiEntityDetailGroup object="#rc.loyaltyAccruement#">
-				<hb:HibachiEntityDetailItem view="admin:entity/loyaltyAccruementtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+			
+				<hb:HibachiEntityDetailItem view="admin:entity/loyaltyAccruementtabs/basic" lazyLoad="false" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+
+				<cfif rc.loyaltyAccruement.getPointType() == 'pointsPerCurrencyUnit' >
+					
+					<hb:HibachiEntityDetailItem view="admin:entity/loyaltyAccruementtabs/pointspercurrencyunit" />
+							
+				</cfif>
+				
+							
+				<cfif rc.loyaltyAccruement.getAccruementType() == 'giftCard' >
+					
+					<hb:HibachiEntityDetailItem view="admin:entity/loyaltyAccruementtabs/giftcardvaluebycurrency" />
+			
+				</cfif>
+				
+				<cfif rc.loyaltyAccruement.getAccruementType() == 'promotion' >
+					
+					<hb:HibachiEntityDetailItem view="admin:entity/loyaltyAccruementtabs/promotionEligibleCurrencies" />
+			
+				</cfif>
+
+
 				<cfif not listFindNoCase("orderClosed,enrollment", rc.loyaltyAccruement.getAccruementType())>
+					<hb:HibachiEntityDetailItem view="admin:entity/loyaltyAccruementtabs/optionalTargetAccountConfig" />
 					<hb:HibachiEntityDetailItem view="admin:entity/loyaltyAccruementtabs/producttypes" />
 					<hb:HibachiEntityDetailItem view="admin:entity/loyaltyAccruementtabs/products" />
 					<hb:HibachiEntityDetailItem view="admin:entity/loyaltyAccruementtabs/skus" />
 					<hb:HibachiEntityDetailItem view="admin:entity/loyaltyAccruementtabs/brands" />
 				</cfif>
+			
 			</hb:HibachiEntityDetailGroup>
 		
 	</hb:HibachiEntityDetailForm>

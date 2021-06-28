@@ -65,6 +65,29 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		return returnList;
 	}
+
+	public any function clearOrderFulfillment(required any orderFulfillment, struct data = {}){
+		arguments.orderFulfillment.setFulfillmentCharge(0);
+		arguments.orderFulfillment.setHandlingFee(0);
+		arguments.orderFulfillment.setFulfillmentMethodOptionsCacheKey(javacast('null',''));
+		arguments.orderFulfillment.setEstimatedDeliveryDateTime(javacast('null',''));
+		arguments.orderFulfillment.setEstimatedFulfillmentDateTime(javacast('null',''));
+		arguments.orderFulfillment.setEstimatedShippingDate(javacast('null',''));
+		arguments.orderFulfillment.setPickupDate(javacast('null',''));
+		arguments.orderFulfillment.setAccountAddress(javacast('null',''));
+		arguments.orderFulfillment.setShippingAddress(javacast('null',''));
+		arguments.orderFulfillment.setShippingMethod(javacast('null',''));
+		arguments.orderFulfillment.setPickupLocation(javacast('null',''));
+		arguments.orderFulfillment.setHandlingFeeTaxCategory(javacast('null',''));
+
+		if(orderFulfillment.hasFulfillmentShippingMethodOption()){
+			for(var option in orderFulfillment.getFulfillmentShippingMethodOptions()){
+				orderFulfillment.removeFulfillmentShippingMethodOption(option);
+			}
+		}
+
+		return arguments.orderFulfillment
+	}
 	
 	// =====================  END: Logical Methods ============================
 	
