@@ -51,7 +51,6 @@ component displayname="Brand" entityname="SlatwallBrand" table="SwBrand" persist
 	// Persistent Properties
 	property name="brandID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="activeFlag" ormtype="boolean" hint="As Brands Get Old, They would be marked as Not Active";
-	property name="publishedFlag" ormtype="boolean";
 	property name="urlTitle" ormtype="string" unique="true" hint="This is the name that is used in the URL string";
 	property name="brandName" ormtype="string" hint="This is the common name that the brand goes by.";
 	property name="brandDescription" ormtype="string" length="4000" hb_formFieldType="wysiwyg" description="General description of the brand.";

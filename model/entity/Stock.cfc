@@ -151,7 +151,7 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 
 	// average cost validation
 	public any function getAverageCost(){
-		IsNull(variables.averageCost) ? 0 : variables.averageCost
+	   return IsNull(variables.averageCost) ? 0 : variables.averageCost
 	}
 
 
