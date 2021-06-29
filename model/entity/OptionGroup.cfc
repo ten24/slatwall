@@ -58,9 +58,6 @@ component displayname="Option Group" entityname="SlatwallOptionGroup" table="SwO
 	property name="sortOrder" ormtype="integer" required="true";
 	property name="globalFlag" ormtype="boolean" default="1";
 
-	// Remote properties
-	property name="remoteID" ormtype="string";
-
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";

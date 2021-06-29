@@ -614,7 +614,7 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 			"searchFilterPropertyIdentifier" = arguments.searchFilterPropertyIdentifier,
 			"showSearchFilterDropDown" = arguments.showSearchFilterDropDown,
 			"ignoreSearchFilters" = arguments.ignoreSearchFilters,
-			"selectedSearchFilterCode" = arguments.selectedSearchFilterCode,
+			"selectedSearchFilterCode" = arguments.selectedSearchFilterCode
 		};
 		return listingSearchConfig;
 	}

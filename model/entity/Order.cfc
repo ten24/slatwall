@@ -876,20 +876,20 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	public any function getDynamicChargeOrderPayment(any orderPayment) {
 			
 		var orderPayments = getOrderPayments();  
-		for(var orderPayment in orderPayments) {
+		for(var currentOrderPayment in orderPayments) {
 			
 			//don't consider a passed orderPayment as the dynamic 
 			if( structKeyExists(arguments, 'orderPayment') &&
-				arguments.orderPayment.getOrderPaymentID() == orderPayment.getOrderPaymentID() 
+				arguments.orderPayment.getOrderPaymentID() == currentOrderPayment.getOrderPaymentID() 
 			){
 				continue; 	
 			} 
 			
-			if(orderPayment.getDynamicAmountFlag() &&
-			   orderPayment.getStatusCode() == 'opstActive' &&
-			   orderPayment.getOrderPaymentType().getSystemCode() == 'optCharge'
+			if(currentOrderPayment.getDynamicAmountFlag() &&
+			   currentOrderPayment.getStatusCode() == 'opstActive' &&
+			   currentOrderPayment.getOrderPaymentType().getSystemCode() == 'optCharge'
 			){
-				return orderPayment;
+				return currentOrderPayment;
 			} 
 		}
 	}

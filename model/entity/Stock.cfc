@@ -151,7 +151,7 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 
 	// average cost validation
 	public any function getAverageCost(){
-	   return IsNull(variables.averageCost) ? 0 : variables.averageCost
+	   return IsNull(variables.averageCost) ? 0 : variables.averageCost;
 	}
 
 
@@ -329,7 +329,7 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
  			
 			var parentStockCollection = getService('skuService').getStockCollectionList();
 			parentStockCollection.addFilter('sku.bundledSkus.bundledSku.skuID',this.getSku().getSkuID());
-			parentStockCollection.addFilter('location.locationID',this.getLocation().getLocationID())
+			parentStockCollection.addFilter('location.locationID',this.getLocation().getLocationID());
 			parentStockCollection.setDisplayProperties('stockID');
 			var parentStockRecords = parentStockCollection.getRecords();
 

@@ -403,14 +403,14 @@ component displayname="OrderTemplate" entityname="SlatwallOrderTemplate" table="
 	
 	//Email Template Helpers
 	public string function getOrderTemplateItemDetailsHTML(){
-		var html = "<ul>";
+		var html = '<ul>';
 
 		var columnConfig = {
 			'arguments': {
 				'currencyCode': this.getCurrencyCode(),
 				'accountID': this.getAccount().getAccountID()
 			}
-		}
+		};
 
 		var orderTemplateItemCollection = this.getOrderTemplateItemsCollectionList();
 		orderTemplateItemCollection.setDisplayProperties('sku.skuCode, sku.skuDefinition, sku.priceByCurrencyCode, quantity', columnConfig);

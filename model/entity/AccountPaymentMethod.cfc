@@ -147,7 +147,7 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 		
 		//saved as 1,2, or 3 for example 
 		if (len(expirationMonth) == 1){
-		   expirationMonth = val("0#expirationMonth#") 
+		   expirationMonth = val("0#expirationMonth#");
 		}
 		
 		//saved as 19,20,or 21 for example insteadof 2019,2020
