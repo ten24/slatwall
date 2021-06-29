@@ -162,10 +162,12 @@ Notes:
 									<hb:HibachiActionCaller action="admin:entity.listproducttype" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listbrand" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listsku" type="list">
+
 									<li class="divider"></li>
 									<hb:HibachiActionCaller action="admin:entity.listoptiongroup" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listsubscriptionterm" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listsubscriptionbenefit" type="list">
+
 								</hb:HibachiDividerHider>
 							</hb:HibachiActionCallerDropdown>
 							<hb:HibachiActionCallerDropdown title="#$.slatwall.rbKey('admin.default.orders_nav')#" img="#request.slatwallScope.getBaseURL()#/assets/images/icon-orders.svg"  type="nav">
@@ -195,6 +197,7 @@ Notes:
 									<hb:HibachiActionCaller action="admin:entity.listsubscriptionusage" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listpermissiongroup" type="list">
 									<li class="divider"></li>
+
 									<hb:HibachiActionCaller action="admin:entity.listledgeraccount" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listvendor" type="list">
 								</hb:HibachiDividerHider>
@@ -285,6 +288,7 @@ Notes:
 										<hb:HibachiActionCaller action="admin:entity.listpaymentterm" type="list">
 										<hb:HibachiActionCaller action="admin:entity.listprinttemplate" type="list">
 										<hb:HibachiActionCaller action="admin:entity.listroundingrule" type="list">
+
 										<hb:HibachiActionCaller action="admin:entity.listtaxcategory" type="list">
 										<hb:HibachiActionCaller action="admin:entity.listterm" type="list">
 										<hb:HibachiActionCaller action="admin:entity.listtype" type="list">
