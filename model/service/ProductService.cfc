@@ -1636,6 +1636,7 @@ component extends="HibachiService" accessors="true" {
                     logicalOperator='OR'
         );
         productTypeCollectionList.addFilter(
+
                     propertyIdentifier='products.skus.skuCode', 
                     value='%#arguments.keyword#%', 
                     comparisonOperator='LIKE', 

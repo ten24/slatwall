@@ -96,6 +96,7 @@ Notes:
 		
 		<cfreturn rs.recordCount gt 0 />
 	</cffunction>
+
 	
 	<cffunction name="getSettingRecordBySettingRelationships" output="false">
 		<cfargument name="settingName" type="string" required="true" />

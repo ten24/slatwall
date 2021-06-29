@@ -81,6 +81,7 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
         var publicService = getService('PublicService');
 
         if ( structKeyExists(arguments.rc, "context")  ) {
+
             if ( arguments.rc.context == "getCart"){
                 publicService.invokeMethod("getCartData", {data=arguments.rc});
             }else if ( arguments.rc.context == "getAccount"){
@@ -88,6 +89,7 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
             }else if (  arguments.rc.context != "get"){
                 publicService.invokeMethod("#arguments.rc.context#", {data=arguments.rc});
             }
+
         } 
         
     }
@@ -142,6 +144,7 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
             } else {
                 hibachiScope.flushORMSession(); // flush the ORM to persist changes from this action;
             }
+
         }
     }
     
