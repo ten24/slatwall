@@ -15,8 +15,8 @@
 			<!--- Estimated Shipping Date --->
 			<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" property="estimatedShippingDate" edit="#rc.edit#">
 				
-			<!--- Email --->
-			<cfif rc.orderFulfillment.getFulfillmentMethod().getFulfillmentMethodType() eq "email">
+			<!--- Auto --->
+			<cfif rc.orderFulfillment.getFulfillmentMethod().getFulfillmentMethodType() eq "auto">
 				<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" property="emailAddress" edit="#rc.edit#">
 
 			<!--- Pickup --->
@@ -25,6 +25,8 @@
 
 			<!--- Shipping --->
 			<cfelseif rc.orderFulfillment.getFulfillmentMethod().getFulfillmentMethodType() eq "shipping">
+			    <hb:HibachiPropertyDisplay object="#rc.orderFulfillment.getShippingAddress()#" property="emailAddress">
+
 				<cfif rc.edit eq "true">
 					<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" property="shippingAddress" hint="#$.slatwall.rbkey('entity.orderfulfillment.shippingaddress.hint')#" edit="false">
 					<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" property="verifiedShippingAddressFlag" edit="false">
@@ -35,6 +37,7 @@
 					<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" property="shippingAddress" edit="#rc.edit#">	
 					<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" property="verifiedShippingAddressFlag" edit="false">
 				</cfif>
+				
 				
 				<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" property="shippingMethod" edit="#rc.edit#">
 				<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" valueOptions="#rc.orderFulfillment.getShippingIntegrationOptions()#" property="shippingIntegration" edit="#rc.edit#">
@@ -53,10 +56,6 @@
 					<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" property="saveAccountAddressFlag" fieldtype="yesno" edit="#rc.edit#"></hb:HibachiPropertyDisplay>
 				</cfif>
 			</cfif>
-
-			<cfif rc.orderFulfillment.getFulfillmentMethod().getFulfillmentMethodType() eq "auto">
-				<!--- TODO: Add Fulfill From Location --->
-			</cfif>
 		</hb:HibachiPropertyList>
 		<hb:HibachiPropertyList divClass="col-md-6">
 
@@ -72,6 +71,7 @@
 				<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" property="subtotalAfterDiscountsWithTax" edit="false" displayType="table">
 				<hb:HibachiPropertyTableBreak header="#$.slatwall.rbkey('admin.entity.detailOrderFulfillment.fulfillment_totals')#" />
 				<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" property="fulfillmentCharge" edit="false" displayType="table">
+				<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" property="handlingFee" edit="false" displayType="table">
 				<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" property="discountAmount" edit="false" displayType="table">
 				<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" property="chargeTaxAmount" edit="false" displayType="table">
 				<hb:HibachiPropertyTableBreak header="" />

@@ -1,0 +1,9 @@
+{
+  "properties": {
+    "minimumItemQuantity": [{ "contexts": "save", "dataType": "numeric" }],
+    "maximumItemQuantity": [{ "contexts": "save", "dataType": "numeric" }],
+    "minimumItemPrice": [{ "contexts": "save", "dataType": "numeric" }],
+    "maximumItemPrice": [{ "contexts": "save", "dataType": "numeric" }],
+    "cacheDuration": [{ "contexts": "save", "dataType": "numeric" }]
+  }
+}

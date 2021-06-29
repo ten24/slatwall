@@ -68,7 +68,7 @@ component displayname="Fulfillment Method" entityname="SlatwallFulfillmentMethod
 	property name="promotionQualifiers" singularname="promotionQualifier" cfc="PromotionQualifier" type="array" fieldtype="many-to-many" linktable="SwPromoQualFulfillmentMethod" fkcolumn="fulfillmentMethodID" inversejoincolumn="promotionQualifierID" inverse="true";
 
 	// Remote Properties
-	property name="remoteID" ormtype="string";
+    property name="remoteID" hb_populateEnabled="private" ormtype="string" hint="Only used when integrated with a remote system";
 
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";

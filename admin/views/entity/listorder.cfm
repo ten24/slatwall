@@ -88,9 +88,10 @@ Notes:
 	<cfif rc.slatAction eq "admin:entity.listorder">
 		<cfset displayPropertyList &= "orderOpenDateTime,"/>
 		<cfset searchFilterPropertyIdentifier = "orderOpenDateTime"/>
-		
-	<cfelse>
 	</cfif>
+	<cfset rc.orderCollectionList.setCollectionObjectListingSearchConfig({
+		searchFilterPropertyIdentifier="#searchFilterPropertyIdentifier#"
+	})/>
 	<cfset displayPropertyList &= 'createdDateTime,calculatedTotal'/>
 
 	<cfset rc.orderCollectionList.setDisplayProperties(
@@ -107,6 +108,11 @@ Notes:
 		isVisible=false,
 		isSearchable=false,
 		isDeletable=false
+	})/>	
+	<cfset rc.orderCollectionlist.addDisplayProperty(displayProperty='currencyCode',columnConfig={
+		isVisible=false,
+		isSearchable=false,
+		isDeletable=false
 	})/>
 	<!--- Searchables --->
 	<cfif rc.slatAction eq "admin:entity.listorder">
@@ -118,17 +124,17 @@ Notes:
 	
 	</cfif>
 	
-	<cfset rc.orderCollectionlist.addDisplayProperty(displayProperty='account.firstName',columnConfig={
+	<cfset rc.orderCollectionlist.addDisplayProperty(displayProperty='account.company',columnConfig={
 		isVisible=true,
 		isSearchable=true,
 		isDeletable=true
-	})/>
+	},prepend=true)/>
 	<cfset rc.orderCollectionlist.addDisplayProperty(displayProperty='account.lastName',columnConfig={
 		isVisible=true,
 		isSearchable=true,
 		isDeletable=true
-	})/>
-	<cfset rc.orderCollectionlist.addDisplayProperty(displayProperty='account.company',columnConfig={
+	},prepend=true)/>
+	<cfset rc.orderCollectionlist.addDisplayProperty(displayProperty='account.firstName',columnConfig={
 		isVisible=true,
 		isSearchable=true,
 		isDeletable=true
@@ -139,8 +145,6 @@ Notes:
 	<hb:HibachiListingDisplay 
 		collectionList="#rc.orderCollectionlist#"
 		usingPersonalCollection="true"
-		showSearchFilterDropDown="true"
-		searchFilterPropertyIdentifier="#searchFilterPropertyIdentifier#"
 		personalCollectionKey='#request.context.entityactiondetails.itemname#'
 		recordEditAction="admin:entity.edit#lcase(rc.orderCollectionlist.getCollectionObject())#"
 		recordDetailAction="admin:entity.detail#lcase(rc.orderCollectionlist.getCollectionObject())#"

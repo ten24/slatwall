@@ -3,28 +3,27 @@
     <div class="alert alert-error" ng-show="swListingReport.hasMetric==false">You must have an aggregate column to render the report</div>
     
     <div class="flex flex-space-between">
-        <div class="col ">
-            <div class="flex flex-col-left ">
+        <div class="col">
+            <div class="flex flex-col-left">
     	
-            	<div class="col mBorder">
+            	<div class="col">
             		<div style="margin-bottom:5px;">
             		    <label>Dimensions</label>
             			<select 
-            			    class="form-control"
-                            ng-model="swListingReport.selectedPeriodColumn" 
-                            ng-options="periodColumn as periodColumn.displayPropertyIdentifier group by !periodColumn.ormtype ? 'Related Data' : undefined
-                                for periodColumn in swListingReport.periodColumns
-                                 | orderBy:['displayPropertyIdentifier'] track by periodColumn.propertyIdentifier
+                      ng-model="swListingReport.selectedPeriodColumn" 
+                      ng-options="periodColumn as periodColumn.displayPropertyIdentifier group by !periodColumn.ormtype ? 'Related Data' : undefined
+                                        for periodColumn in swListingReport.periodColumns
+                                         | orderBy:['displayPropertyIdentifier'] track by periodColumn.propertyIdentifier
                             "
                             ng-change="swListingReport.selectPeriodColumn(swListingReport.selectedPeriodColumn)"
                         >
                     
                   </select>
-            			<a href="##" ng-click="swListingReport.popObjectPath()" class="btn-text"><i class="fas fa-undo"></i> Reset</a>
+            			<a href="##" ng-click="swListingReport.popObjectPath()" class="btn-text">Back</a>
             		</div>
             	</div>
             	
-        		<div class="col mBorder">
+        		<div class="col">
         		
         			<div class="flex flex-cal">
             			<div class="col-cal">
@@ -64,14 +63,12 @@
                                     <button type="button" class="btn btn-default btn-sm btn-cal" ng-click="swListingReport.openCalendarEnd($event)"><i class="glyphicon glyphicon-calendar"></i></button>
                                 </span>
                             </p>
-                            <a href="##" id="hibachi-report-enable-compare" class="btn-text pull-right"><i class="fas fa-exchange-alt"></i> Compare Dates</a>
-
+                            <a href="##" id="hibachi-report-enable-compare" class="btn-text pull-right">+ Compare Dates</a>
                         </div>
                         
                         <input type="hidden" name="reportCompareFlag" value="0">
                 		<div id="hibachi-report-compare-date" class="hide flex compare">
-                		   <span class="icon-wrapper"><i class="fas fa-exchange-alt"></i> </span> 
-                		    <span><i class="fa fa-arrows-h" style="margin-top: 30px;font-size: 17px;"></i></span>
+                		    <span><i class="fa fa-arrows-h" style="margin-top: 30px;padding-left: 10px;font-size: 17px;"></i></span>
                 			<div class="col-cal">
                                 <p class="input-group s-datepicker">
                                     <label>Start Date</label>
@@ -109,12 +106,7 @@
                                         <button type="button" class="btn btn-default btn-sm btn-cal" ng-click="swListingReport.openCalendarEndCompare($event)"><i class="glyphicon glyphicon-calendar"></i></button>
                                     </span>
                                 </p>
-                                     <a href="##" id="hibachi-report-disable-compare" class="btn-text pull-right"> <i class="fas fa-times"></i></a>
                             </div>
-                            
-                		</div>
-                		<div>
-                		   <button type="button" ng-click="swListingReport.updatePeriod()" class="btn btn-default btn-sm btn-cal small-ml refresh" ><i class="glyphicon glyphicon-refresh"></i></button>
                 		</div>
                     </div><!-- end of .flex-cal -->
                     
@@ -126,7 +118,7 @@
         <div class="col">
             <div class="flex flex-col-right">
             	
-            	<div class="col mPush-down">
+            	<div class="col">
                     <!--- <select 
             		    ng-model="swListingReport.selectedPeriodInterval"
             			ng-options="periodInterval as periodInterval.value for periodInterval in swListingReport.periodIntervals track by periodInterval.value"
@@ -142,24 +134,16 @@
                       <button type="button" ng-click="swListingReport.selectPeriodInterval('week')" ng-class="{'active':swListingReport.selectedPeriodInterval.value==='week'}" class="btn btn-default">Week</button>
                       <button type="button" ng-click="swListingReport.selectPeriodInterval('month')" ng-class="{'active':swListingReport.selectedPeriodInterval.value==='month'}" class="btn btn-default">Month</button>
                       <button type="button" ng-click="swListingReport.selectPeriodInterval('year')" ng-class="{'active':swListingReport.selectedPeriodInterval.value==='year'}" class="btn btn-default">Year</button>
+                      <button type="button" ng-click="swListingReport.updatePeriod()"  class="btn btn-default">Refresh</button>
                     </div>
                 </div><!-- end of .col -->
                 
-
-                <div class="col save-callout" ng-if="swListingReport.reportChanged">
-                    <div class ="Malert alert alert-warning">
-                           <span><i class="fas fa-exclamation-triangle save-icon Mfade-in"></i><span>Report Changed 
-                    </div>
-                </div>
-
-                
             	<div class="col save-btn" ng-if="!swListingReport.collectionId || swListingReport.createdByAccountID === $root.slatwall.account.accountID">
             	    <span class="input-group-btn s-action" ng-click="swListingReport.saveReportCollection()">
-            	         
                         <button ng-if="$root.slatwall.account.accountID" class="btn btn-sm dropdown-toggle btn-primary"
                             type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                         >
-                        <i class="fas fa-save"></i> Save
+                            Save <i class="fas fa-save"></i>
                         </button>
                         
                         <ul class="dropdown-menu pull-right" ng-show="swListingReport.collectionNameSaveIsOpen">
@@ -175,7 +159,6 @@
                                         font-size: 12px;
                                         padding: 0px 5px;"
                                     >
-                                   
                                     <a class="btn btn-xs btn-success s-action-btn"
                                         ng-click="swListingReport.saveReportCollection(swListingReport.collectionName)">
                                         save
@@ -190,22 +173,21 @@
     	</div><!-- end of .col -->
     </div><!-- end of .flex -->
     
-    <div id="get-started-report" class="hide" ng-hide="swListingReport.hasMetric==true">
+    <div id="get-started-report" ng-hide="swListingReport.hasMetric==true">
         <button type="button" class="close" aria-label="Close" ng-click="swListingReport.removeInfoWIndow($event);" >
           <span aria-hidden="true">&times;</span>
         </button>
-         <div class="text">
-            <h2>Create Your {{swListingReport.collectionConfig.baseEntityName}} Report</h2>
+        <div class="text">
+            <h2>Create Your Orders Report</h2>
             <ol>
                 <li>Select your <em>Report Dimensions</em>.</li>
                 <li>Use the <em>Display Options</em> to customize the date in your report and graph.</li>
             </ol>
         </div>
     </div>
-   
-    	<div id="chartContainer">
-            <canvas id="myChart" class="myChart" width="2400" height="600" ng-show="swListingReport.reportingData"></canvas>
-            <canvas id="myChartCompare" class="myChart" width="2400" height="600" ng-show="swListingReport.compareReportingData"></canvas>
 
+	<div id="chartContainer">
+        <canvas id="myChart" class="myChart" width="2400" height="600" ng-show="swListingReport.reportingData"></canvas>
+        <canvas id="myChartCompare" class="myChart" width="2400" height="600" ng-show="swListingReport.compareReportingData"></canvas>
     </div>
 </div>

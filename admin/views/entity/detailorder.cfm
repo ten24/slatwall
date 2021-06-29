@@ -84,6 +84,23 @@ Notes:
 			<hb:HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="placeOnHold" type="list" modal="true" />
 			<hb:HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="takeOffHold" type="list" modal="true" />
 			<hb:HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="cancelOrder" type="list" modal="true" />
+			<cfif listFindNoCase('otSalesOrder,otExchangeOrder',rc.order.getOrderType().getSystemCode()) >
+				<hb:HibachiProcessCaller action="admin:entity.processOrder" entity="#rc.order#" processContext="retryPayment" type="list" />
+			</cfif>
+			<cfif (rc.order.getOrderType().getSystemCode() eq "otReturnOrder"
+						AND rc.order.getOrderStatusType().getTypeCode() eq 'rmaReceived')
+				>
+				<hb:HibachiProcessCaller action="admin:entity.processOrder" entity="#rc.order#" processContext="approveReturn" type="list"/>
+			</cfif>
+				
+			<cfif 
+				( rc.order.getOrderType().getSystemCode() eq 'otReturnOrder'
+					AND rc.order.getOrderStatusType().getTypeCode() eq 'rmaApproved'
+				) OR rc.order.getOrderType().getSystemCode() eq 'otRefundOrder'
+			>
+				<hb:HibachiProcessCaller action="admin:entity.processOrder" entity="#rc.order#" processContext="releaseCredits" type="list"/>
+			</cfif>
+
 			<hb:HibachiProcessCaller action="admin:entity.processOrder" entity="#rc.order#" processContext="updateStatus" type="list" />
 			<hb:HibachiProcessCaller action="admin:entity.processOrder" entity="#rc.order#" processContext="updateOrderAmounts" type="list" />
 			
@@ -93,7 +110,10 @@ Notes:
 			</cfif>
 			
 			<!--- Create Return --->
-			<hb:HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="createReturn" type="list" modal="true" />
+			<hb:HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="createReturn" queryString="orderTypeCode=otReturnOrder" type="list" text="#getHibachiScope().rbKey('admin.entity.createreturnorder_nav.return')#" />
+			<hb:HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="createReturn" queryString="orderTypeCode=otExchangeOrder" type="list" text="#getHibachiScope().rbKey('admin.entity.createreturnorder_nav.exchange')#" />
+			<hb:HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="createReturn" queryString="orderTypeCode=otReplacementOrder" type="list" text="#getHibachiScope().rbKey('admin.entity.createreturnorder_nav.replacement')#" />
+			<hb:HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="createReturn" queryString="orderTypeCode=otRefundOrder" type="list" text="#getHibachiScope().rbKey('admin.entity.createreturnorder_nav.refund')#" />
 
 			<li class="divider"></li>
 
@@ -121,7 +141,7 @@ Notes:
 			<hb:HibachiEntityDetailItem view="admin:entity/ordertabs/orderpayments" count="#rc.order.getOrderPaymentsCount()#" />
 
 			<!--- Fulfillment / Delivery --->
-			<cfif rc.order.getOrderType().getSystemCode() eq "otSalesOrder" or rc.order.getOrderType().getSystemCode() eq "otExchangeOrder">
+			<cfif ListFindNoCase("otSalesOrder,otExchangeOrder,otReplacementOrder",rc.order.getOrderType().getSystemCode())>
 				<hb:HibachiEntityDetailItem view="admin:entity/ordertabs/orderfulfillments" count="#rc.order.getOrderFulfillmentsCount()#" />
 				<hb:HibachiEntityDetailItem view="admin:entity/ordertabs/orderdeliveries" count="#rc.order.getOrderDeliveriesCount()#" />
 			</cfif>
@@ -134,6 +154,9 @@ Notes:
 
 			<!--- Promotions --->
 			<hb:HibachiEntityDetailItem view="admin:entity/ordertabs/promotions" count="#arrayLen(rc.order.getAllAppliedPromotions())#" />
+			
+				<!--- Promotion Rewards --->
+			<hb:HibachiEntityDetailItem view="admin:entity/ordertabs/promotionrewards" />
 
 			<!--- Referencing Orders --->
 			<cfif rc.order.getReferencingOrdersCount()>
@@ -144,7 +167,10 @@ Notes:
 			<cfif not isNull(rc.order.getAccount()) and not rc.order.getAccount().getNewFlag()>
 				<hb:HibachiEntityDetailItem view="admin:entity/ordertabs/accountdetails" />
 			</cfif>
-
+			
+			<!--- Order Status History --->
+			<hb:HibachiEntityDetailItem view="admin:entity/ordertabs/orderstatushistory" />
+			
 			<!--- Custom Attributes --->
 			<cfloop array="#rc.order.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
 				<swa:SlatwallAdminTabCustomAttributes object="#rc.order#" attributeSet="#attributeSet#" />

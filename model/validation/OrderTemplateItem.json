@@ -1,0 +1,7 @@
+{
+	"conditions": {},
+	"properties": {
+		"sku": [{ "contexts": "save", "required": true }],
+		"quantity": [{ "contexts": "save", "required": true }]
+	}
+}

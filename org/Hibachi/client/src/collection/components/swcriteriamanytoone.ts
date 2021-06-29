@@ -37,7 +37,8 @@ class SWCriteriaManyToOne{
 	){
 		return {
 			restrict: 'E',
-			templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+'criteriamanytoone.html',
+			template: require('./criteriamanytoone.html'),
+			
 			link: function(scope, element, attrs){
 				var getManyToOneOptions = function(){
 			    	var manyToOneOptions = {

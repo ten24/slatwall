@@ -58,6 +58,9 @@ component displayname="Category" entityname="SlatwallCategory" table="SwCategory
 	property name="urlTitlePath" ormtype="string" length="4000";
 	property name="restrictAccessFlag" ormtype="boolean";
 	property name="allowProductAssignmentFlag" ormtype="boolean";
+	property name="publishedFlag" ormtype="boolean";
+	property name="activeFlag" ormtype="boolean" hint="As Category Get Old, They would be marked as Not Active";
+
 	
 	// CMS Properties
 	property name="cmsCategoryID" ormtype="string" index="RI_CMSCATEGORYID";
@@ -84,9 +87,6 @@ component displayname="Category" entityname="SlatwallCategory" table="SwCategory
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Non-Persistent Properties
-
-
-
 	
 	// ============ START: Non-Persistent Property Methods =================
 	

@@ -16,8 +16,7 @@ class SWGiftCardHistoryController{
         var totalDebit:number = 0; 
         
         var transactionConfig = this.collectionConfigService.newCollectionConfig('GiftCardTransaction');
-        
-        transactionConfig.setDisplayProperties("giftCardTransactionID, creditAmount, debitAmount, createdDateTime, giftCard.giftCardID, orderPayment.order.orderID, orderPayment.order.orderNumber, orderPayment.order.orderOpenDateTime", "id,credit,debit,created,giftcardID,ordernumber,orderdatetime");
+        transactionConfig.setDisplayProperties("giftCardTransactionID, creditAmount, debitAmount, createdDateTime, giftCard.giftCardID, orderPayment.order.orderID, orderPayment.order.orderNumber, orderPayment.order.orderOpenDateTime,reasonForAdjustment,adjustedByAccount.calculatedFullName", "id,credit,debit,created,giftcardID,ordernumber,orderdatetime,reasonForAdjustment,adjustedBy");
         transactionConfig.addFilter('giftCard.giftCardID', this.giftCard.giftCardID);
         transactionConfig.setAllRecords(true);
         transactionConfig.setOrderBy("createdDateTime|DESC");
@@ -41,7 +40,7 @@ class SWGiftCardHistoryController{
                 this.bouncedEmails = response.records; 
 
                 transactionConfig.getEntity().then((response)=>{
-                    this.transactions = response.records; 
+                    this.transactions = response.records;
                     var initialCreditIndex = this.transactions.length-1;
                     var initialBalance = this.transactions[initialCreditIndex].creditAmount; 
                     var currentBalance = initialBalance; 
@@ -63,13 +62,13 @@ class SWGiftCardHistoryController{
                         var tempCurrentBalance = currentBalance - totalDebit; 
                     
                         transaction.balance = tempCurrentBalance;
-                        
+
                         if(i == initialCreditIndex){            
                             
                             var activeCard = {
                                 activated: true, 
                                 debit:false,
-                                activeAt: transaction.orderPayment_order_orderOpenDateTime,
+                                activeAt: new Date(transaction.orderPayment_order_orderOpenDateTime),
                                 balance: initialBalance
                             }
                             
@@ -105,6 +104,7 @@ class SWGiftCardHistoryController{
     
         orderConfig.getEntity().then((response)=>{
             this.order = response.records[0];
+			this.order.orderOpenDateTime = new Date(this.order.orderOpenDateTime);
         }); 
     }
 }

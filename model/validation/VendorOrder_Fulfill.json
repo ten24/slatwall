@@ -1,5 +1,7 @@
 {
-	"properties":{
-		"vendorOrderItems":						[{"contexts":"fulfill","minCollection":1,"method":"validateVendorOrderItemsQuantities"}]
+	"properties": {
+		"vendorOrderItems": [
+			{ "contexts": "fulfill", "minCollection": 1, "method": "validateVendorOrderItemsQuantities" }
+		]
 	}
-} 
+}

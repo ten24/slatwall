@@ -42,9 +42,7 @@
     
     If you modify this program, you may extend this exception to your version 
     of the program, but you are not obligated to do so.
-
 Notes:
-
 */
 
 component accessors="true" output="false" displayname="PayFlowPro" implements="Slatwall.integrationServices.PaymentInterface" extends="Slatwall.integrationServices.BasePayment" {
@@ -86,7 +84,7 @@ component accessors="true" output="false" displayname="PayFlowPro" implements="S
 		var requestData = "";
 		requestData = "TENDER=C&VERBOSITY=#variables.verbosity#";
 		
-		requestData = listAppend(requestData,getLoginNVP(),"&");
+		requestData = listAppend(requestData,getLoginNVP(requestBean),"&");
 		requestData = listAppend(requestData,getPaymentNVP(requestBean),"&");
 		requestData = listAppend(requestData,getCustomerNVP(requestBean),"&");
 		
@@ -112,12 +110,12 @@ component accessors="true" output="false" displayname="PayFlowPro" implements="S
 		return requestData;
 	}
 
-	private string function getLoginNVP(){
+	private string function getLoginNVP(required any requestBean){
 		var loginData = [];
-		arrayAppend(loginData,"USER=#setting('userName')#");
-		arrayAppend(loginData,"PARTNER=#setting('partnerID')#");
-		arrayAppend(loginData,"VENDOR=#setting('vendorID')#");
-		arrayAppend(loginData,"PWD=#setting('password')#");
+		arrayAppend(loginData,"USER=#setting(settingName='userName', requestBean=arguments.requestBean)#");
+		arrayAppend(loginData,"PARTNER=#setting(settingName='partnerID', requestBean=arguments.requestBean)#");
+		arrayAppend(loginData,"VENDOR=#setting(settingName='vendorID', requestBean=arguments.requestBean)#");
+		arrayAppend(loginData,"PWD=#setting(settingName='password', requestBean=arguments.requestBean)#");
 		return arrayToList(loginData,"&");
 	}
 	

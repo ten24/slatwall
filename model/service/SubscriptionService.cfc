@@ -185,28 +185,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 	}
 	
-	/**
-     * Function to get list of subscription usage for user
-     * @param accountID optional
-     * @param pageRecordsShow optional
-     * @param currentPage optional
-     * return struct of subscriptionsUsageOnAccount and total count
-     **/
-	public any function getSubscriptionsUsageOnAccount(required any account, struct data={}) {
-        param name="arguments.data.currentPage" default=1;
-        param name="arguments.data.pageRecordsShow" default= getHibachiScope().setting('GLOBALAPIPAGESHOWLIMIT');
-        
-		var subscriptionUsageList = this.getSubscriptionUsageBenefitAccountCollectionList();
-		subscriptionUsageList.addFilter( 'account.accountID', arguments.account.getAccountID() );
-		subscriptionUsageList.setPageRecordsShow(arguments.data.pageRecordsShow);
-		subscriptionUsageList.setCurrentPageDeclaration(arguments.data.currentPage); 
-		
-		return { 
-			"subscriptionsUsageOnAccount":  subscriptionUsageList.getPageRecords(), 
-			"recordsCount": subscriptionUsageList.getRecordsCount() 
-		};
-	}
-	
+
 	public any function getSubscriptionOrderItemByOrderItem(required any orderItem){
 		return getSubscriptionDAO().getSubscriptionOrderItemByOrderItemID(arguments.orderItem.getOrderItemID());
 	}
@@ -462,6 +441,61 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 		}
 	}
+	
+	/**
+     * Function to get list of subscription usage for user
+     * @param accountID optional
+     * @param pageRecordsShow optional
+     * @param currentPage optional
+     * return struct of subscriptionsUsageOnAccount and total count
+     **/
+	public any function getSubscriptionsUsageOnAccount(required any account, struct data={}) {
+        param name="arguments.data.currentPage" default=1;
+        param name="arguments.data.pageRecordsShow" default=getHibachiScope().setting('GLOBALAPIPAGESHOWLIMIT');
+        
+		var subscriptionUsageList = this.getSubscriptionUsageCollectionList();
+
+		subscriptionUsageList.addDisplayProperty("account.calculatedFullName");
+		subscriptionUsageList.addDisplayProperty("subscriptionUsageID");
+		subscriptionUsageList.addDisplayProperty("autoRenewFlag");
+		subscriptionUsageList.addDisplayProperty("autoPayFlag");
+		subscriptionUsageList.addDisplayProperty("initialTerm.termName");
+		subscriptionUsageList.addDisplayProperty("accountPaymentMethod.accountPaymentMethodID");
+		subscriptionUsageList.addDisplayProperty("expirationDate");
+		subscriptionUsageList.addDisplayProperty("gracePeriodTerm.termName");
+		subscriptionUsageList.addDisplayProperty("nextBillDate");
+		subscriptionUsageList.addDisplayProperty("nextReminderEmailDate");
+		subscriptionUsageList.addDisplayProperty("renewalSku.skuID");
+		subscriptionUsageList.addDisplayProperty("renewalTerm.termName");
+
+		subscriptionUsageList.addFilter( 'account.accountID', arguments.account.getAccountID() );
+		subscriptionUsageList.setPageRecordsShow(arguments.data.pageRecordsShow);
+		subscriptionUsageList.setCurrentPageDeclaration(arguments.data.currentPage);
+ 
+		var subscriptionUsageRecords = subscriptionUsageList.getPageRecords(formatRecords=false);
+
+		// get subscription delivery and order itemdata
+		for (var i=1; i<= arrayLen(subscriptionUsageRecords); i++) {
+			// subscription deliveries
+			var subDeliveryCollection = this.getSubscriptionOrderDeliveryItemCollectionList();
+			subDeliveryCollection.setDisplayProperties("createdDateTime,quantity,subscriptionOrderItem.orderItem.calculatedExtendedPrice,earned");
+			subDeliveryCollection.addFilter("subscriptionOrderItem.subscriptionUsage.subscriptionUsageID", subscriptionUsageRecords[i]['subscriptionUsageID']);
+
+			subscriptionUsageRecords[i]['subscriptionDeliveries'] = subDeliveryCollection.getRecords(formatRecords=false);
+
+			// subscription order items
+			var subOrderItemCollection = this.getSubscriptionOrderItemCollectionList();
+			subOrderItemCollection.setDisplayProperties("subscriptionOrderItemID,orderItem.order.orderNumber,orderItem.sku.product.productName,orderItem.sku.skuCode,subscriptionOrderItemType.systemCode");
+			subOrderItemCollection.addFilter("subscriptionUsage.subscriptionUsageID", subscriptionUsageRecords[i]['subscriptionUsageID']);
+
+			subscriptionUsageRecords[i]['subscriptionOrderItems'] = subOrderItemCollection.getRecords(formatRecords=false);
+		}
+
+		return { 
+		    "data": subscriptionUsageRecords, 
+		    "recordsCount": subscriptionUsageList.getRecordsCount() 
+		};
+	}
 
 
 	// ===================== START: Logical Methods ===========================
@@ -671,7 +705,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				arguments.subscriptionUsage.setFirstReminderEmailDateBasedOnNextBillDate();
 
 				//set as new
-				order.setOrderStatusType(getService('SettingService').getTypeBySystemCode("ostNew"));
+				getOrderService().updateOrderStatusBySystemCode(order, "ostProcessing");
 
 				//create orderid and close
 				order.confirmOrderNumberOpenDateCloseDatePaymentAmount();
@@ -784,7 +818,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			subscriptionUsage.setNextReminderEmailDate( javaCast("null", "") );
 
 			// Setup the next Reminder email
-			if( len(arguments.subscriptionUsage.setting('subscriptionUsageRenewalReminderDays')) ) {
+			if( !isNull(subscriptionUsage.getExpirationDate()) && len(arguments.subscriptionUsage.setting('subscriptionUsageRenewalReminderDays')) ) {
 
 				// Loop over each of the days looking for the next one
 				for(var nextReminderDay in listToArray(subscriptionUsage.setting('subscriptionUsageRenewalReminderDays'))) {
@@ -802,6 +836,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					}
 				}
 
+			} else {
+				arguments.subscriptionUsage.addError('sendRenewalReminder', rbkey('admin.entity.processsubscriptionusage.sendRenewalReminder_failure'));
 			}
 
 

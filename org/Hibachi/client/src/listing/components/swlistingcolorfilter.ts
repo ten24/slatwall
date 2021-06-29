@@ -27,21 +27,13 @@ class SWListingColorFilter implements ng.IDirective{
     };
     public controller=SWListingColorFilterController;
     public controllerAs="swListingColorFilter";
+    
     public static Factory(){
-        var directive:ng.IDirectiveFactory=(
-            utilityService
-        )=>new SWListingColorFilter(
-            utilityService
-        );
-        directive.$inject = [
-            'utilityService'
-        ];
-        return directive;
+        return /** @ngInject */ (utilityService) => new this(utilityService);
     }
 
-    constructor(private utilityService){
-
-    }
+    // @ngInject
+    constructor(private utilityService){}
 
     public link:ng.IDirectiveLinkFn = (scope: any, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
 

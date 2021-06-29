@@ -62,6 +62,7 @@ component entityname="SlatwallPaymentTransaction" table="SwPaymentTransaction" p
 	property name="amountAuthorized" notnull="true" dbdefault="0" ormtype="big_decimal" hb_formatType="currency";
 	property name="amountReceived" notnull="true" dbdefault="0" ormtype="big_decimal" hb_formatType="currency";
 	property name="amountCredited" notnull="true" dbdefault="0" ormtype="big_decimal" hb_formatType="currency";
+	property name="amountRefunded" ormtype="big_decimal"; // Used to track refunds on a per-transaction basis 
 	property name="currencyCode" ormtype="string" length="3";
 	property name="securityCodeMatchFlag" ormtype="boolean";
 	property name="avsCode" ormtype="string";				// @hint this is whatever the avs code was that got returned
@@ -121,6 +122,13 @@ component entityname="SlatwallPaymentTransaction" table="SwPaymentTransaction" p
 		}else{
 			return '';
 		}
+	}
+	
+	public numeric function getAmountRefunded(){
+		if(!structKeyExists(variables,'amountRefunded')){
+			variables.amountRefunded = 0;
+		}
+		return variables.amountRefunded;
 	}
 
 	// ============ START: Non-Persistent Property Methods =================

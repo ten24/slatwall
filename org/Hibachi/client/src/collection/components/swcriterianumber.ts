@@ -21,7 +21,8 @@ class SWCriteriaNumber{
 	){
 		return {
 			restrict: 'E',
-			templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+'criterianumber.html',
+			template: require('./criterianumber.html'),
+			
 			link: function(scope, element, attrs){
 				var getNumberOptions = function(type){
 					if(angular.isUndefined(type)){
@@ -194,11 +195,12 @@ class SWCriteriaNumber{
     			}
 		    	
 		    	scope.calculateCriteriaFilterPropertyValue = function(selectedFilterProperty) {
-		    		
-		    	    if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)) {
+		    	
+		    	    if(angular.isDefined(selectedFilterProperty.value)) {
 		    	    	
-						selectedFilterProperty.criteriaValue = selectedFilterProperty.selectedCriteriaType.value;
-
+						selectedFilterProperty.criteriaValue = selectedFilterProperty.value;
+						selectedFilterProperty.criteriaRangeStart = selectedFilterProperty.value;
+						
 		    		} else if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.type) && selectedFilterProperty.selectedCriteriaType.type === 'range') {
 						
 						if( !isNaN(parseInt(selectedFilterProperty.criteriaRangeStart)) && !isNaN(parseInt(selectedFilterProperty.criteriaRangeEnd))) {
@@ -223,9 +225,8 @@ class SWCriteriaNumber{
 						}
 
 		    		} else {
-                        selectedFilterProperty.criteriaValue = selectedFilterProperty.criteriaRangeStart || selectedFilterProperty.value;
+                        selectedFilterProperty.criteriaValue = selectedFilterProperty.criteriaRangeStart;
 						selectedFilterProperty.selectedCriteriaType.showCriteriaStart = true;
-						selectedFilterProperty.criteriaRangeStart = selectedFilterProperty.criteriaValue;
 					}
 					
 					scope.filterItem.value = selectedFilterProperty.criteriaValue;
@@ -233,6 +234,7 @@ class SWCriteriaNumber{
 
 
 			    scope.$watch('selectedFilterProperty', function(selectedFilterProperty) {
+
 					if(angular.isDefined(selectedFilterProperty)){
 						
 		    			angular.forEach(scope.conditionOptions, function(conditionOption){

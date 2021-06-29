@@ -72,6 +72,12 @@ Notes:
 		isSearchable=false,
 		isDeletable=false
 	})/>
+	
+	<cfset orderpaymentCollectionList.addDisplayProperty( displayProperty='currencyCode', columnConfig={
+		isVisible=false,
+		isSearchable=false,
+		isDeletable=false
+	})/>
 
     <hb:HibachiListingDisplay 
     		collectionList="#orderpaymentCollectionList#"

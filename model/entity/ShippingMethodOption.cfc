@@ -78,6 +78,7 @@ component entityname="SlatwallShippingMethodOption" table="SwShippingMethodOptio
 	property name="discountAmountDetails" persistent="false";
 	property name="totalChargeAfterDiscount" persistent="false" hb_formatType="currency";
 
+
 	public struct function getDiscountAmountDetails() {
 		if(!structKeyExists(variables, "discountAmountDetails")) {
 			variables.discountAmountDetails = getService("promotionService").getShippingMethodOptionsDiscountAmountDetails(shippingMethodOption=this);
@@ -94,6 +95,14 @@ return getService('HibachiUtilityService').precisionCalculate(getTotalCharge() -
 	}
 
 	// ============ START: Non-Persistent Property Methods =================
+
+	public string function getCurrencyCode(){
+		if(structKeyExists(variables, 'currencyCode')){
+			return variables.currencyCode;
+		}else if(!isNull(this.getOrderFulfillment()) && !isNull(this.getOrderFulfillment().getOrder())){
+			return this.getOrderFulfillment().getOrder().getCurrencyCode();
+		}
+	}
 
 	// ============  END:  Non-Persistent Property Methods =================
 
@@ -137,11 +146,15 @@ return getService('HibachiUtilityService').precisionCalculate(getTotalCharge() -
 	// ================== START: Overridden Methods ========================
 
 	public any function getSimpleRepresentation() {
-
 		var shippingMethodName = nullReplace(getShippingMethodRate().getShippingMethod().getShippingMethodName(), "");
-		var totalChargeAfterDiscount = nullReplace(getFormattedValue("totalChargeAfterDiscount"),"");
-
-		return '#shippingMethodName# - #totalChargeAfterDiscount#';
+		if(structKeyExists(arguments,'forAudit') && arguments.forAudit == true){
+				return shippingMethodName;
+		}
+		if(getService("SettingService").getSettingValue("shippingMethodIncludePriceFlag")){
+			var totalChargeAfterDiscount = nullReplace(getFormattedValue("totalChargeAfterDiscount"),"");
+			return '#shippingMethodName# - #totalChargeAfterDiscount#';
+		}
+		return shippingMethodName;
 	}
 
 	// ==================  END:  Overridden Methods ========================

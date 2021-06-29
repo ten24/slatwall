@@ -46,21 +46,21 @@
 Notes:
 
 */
-component displayname="Brand" entityname="SlatwallBrand" table="SwBrand" persistent=true output=false accessors=true extends="HibachiEntity" cacheuse="transactional" hb_serviceName="brandService" hb_permission="this" {
+component displayname="Brand" entityname="SlatwallBrand" table="SwBrand" persistent=true output=false accessors=true extends="HibachiEntity" cacheuse="transactional" hb_serviceName="brandService" hb_permission="this" hb_processContexts="uploadBrandLogo,deleteBrandLogo" {
 	
 	// Persistent Properties
 	property name="brandID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="activeFlag" ormtype="boolean" hint="As Brands Get Old, They would be marked as Not Active";
-	property name="publishedFlag" ormtype="boolean";
 	property name="urlTitle" ormtype="string" unique="true" hint="This is the name that is used in the URL string";
 	property name="brandName" ormtype="string" hint="This is the common name that the brand goes by.";
+	property name="brandDescription" ormtype="string" length="4000" hb_formFieldType="wysiwyg" description="General description of the brand.";
 	property name="brandWebsite" ormtype="string" hint="This is the Website of the brand";
+	property name="brandFeatured" ormtype="boolean" hb_formatType="yesno" default="0";
+	property name="imageFile" ormtype="string" length="250";
 	
 	// Related Object Properties (one-to-many)
 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" type="array" fieldtype="one-to-many" fkcolumn="brandID" cascade="all-delete-orphan" inverse="true";
 	property name="products" singularname="product" cfc="Product" type="array" fieldtype="one-to-many" fkcolumn="brandID" inverse="true";
-	
-	// Related Object Properties (many-to-many - owner)
 	
 	// Related Object Properties (many-to-many - inverse)
 	property name="promotionRewards" hb_populateEnabled="false" singularname="promotionReward" cfc="PromotionReward" fieldtype="many-to-many" linktable="SwPromoRewardBrand" fkcolumn="brandID" inversejoincolumn="promotionRewardID" inverse="true";
@@ -75,14 +75,14 @@ component displayname="Brand" entityname="SlatwallBrand" table="SwBrand" persist
 	property name="physicals" hb_populateEnabled="false" singularname="physical" cfc="Physical" type="array" fieldtype="many-to-many" linktable="SwPhysicalBrand" fkcolumn="brandID" inversejoincolumn="physicalID" inverse="true";
 	
 	// Remote properties
-	property name="remoteID" ormtype="string";
+	property name="remoteID" ormtype="string" hb_populateEnabled="private";
+	property name="importRemoteID" hb_populateEnabled="private" ormtype="string" hint="Used via data-importer as a unique-key to find records for upsert";
 	
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
-	
 	
 	// ============ START: Non-Persistent Property Methods =================
 	
@@ -187,7 +187,6 @@ component displayname="Brand" entityname="SlatwallBrand" table="SwBrand" persist
 	public void function removeLoyaltyRedemptionExclusion(required any loyaltyRedemptionExclusion) {
 		arguments.loyaltyRedemptionExclusion.removebrand( this );
 	}
-	
 	// =============  END:  Bidirectional Helper Methods ===================
 	
 	// ================== START: Overridden Methods ========================

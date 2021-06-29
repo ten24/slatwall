@@ -65,11 +65,17 @@ Notes:
 	</hb:HibachiEntityActionBar>
 	
 	<cfset promotionCollectionList = getHibachiScope().getService('promotionService').getPromotionCollectionList()>
-	<cfset serchableDisplayProperties = "promotionName,createdDateTime,modifiedDateTime,activeFlag,currentFlag"/>
+	<cfset serchableDisplayProperties = "promotionName,createdDateTime,modifiedDateTime,activeFlag"/>
 	<cfset promotionCollectionList.setDisplayProperties(serchableDisplayProperties, {
 		isVisible=true,
 		isSearchable=true,
 		isDeletable=true
+	})/>
+	
+	<cfset promotionCollectionList.addDisplayProperty(displayProperty='priority', columnConfig={
+		isVisible=true,
+		isSearchable=false,
+		isDeletable=false
 	})/>
 	
 	<cfset promotionCollectionList.addDisplayProperty(displayProperty='promotionID', columnConfig={

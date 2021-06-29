@@ -68,12 +68,17 @@ class AlertService implements IAlertService{
         var alerts = [];
         if(messages && messages.length){
             for(var message in messages){
+                if (messages[message].messageType == "error" && messages[message].message == "Pre Process Displayed Flag must be equal to 1"){
+                    //skip this type of message as its just used to display the modal.
+                    continue;
+                }
+                
                 var alert = new Alert(messages[message].message, messages[message].messageType);
                 alerts.push(alert);
                 if(alert.type === 'success' || alert.type === 'error'){
                     this.$timeout(()=> {
                         alert.fade = true;
-                    }, 3500);
+                    }, 4500);
                     alert.dismissable = false;
                 }else{
                     alert.fade = false;

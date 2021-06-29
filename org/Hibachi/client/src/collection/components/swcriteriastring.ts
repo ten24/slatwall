@@ -21,7 +21,8 @@ class SWCriteriaString{
 	){
 		return {
 			restrict: 'E',
-			templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+'criteriastring.html',
+			template: require('./criteriastring.html'),
+			
 			link: function(scope, element, attrs){
 				var getStringOptions = function(type){
 					if(angular.isUndefined(type)){

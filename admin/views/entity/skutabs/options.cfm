@@ -49,7 +49,7 @@ Notes:
 <cfimport prefix="swa" taglib="../../../../tags" />
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
-<cfparam name="rc.sku" type="any" />
+<cfparam name="rc.product" type="any" default="#rc.sku.getProduct()#">
 
 <cfoutput>
 	<hb:HibachiPropertyList>
@@ -61,7 +61,7 @@ Notes:
 		<cfset optionIsEditable = !arraylen(optionInUseCollectionList.getRecords()) || (arraylen(optionInUseCollectionList.getRecords()) && !optionInUseCollectionList.getRecords()[1]['orderItemsCount'])/>
 		
 		<cfif optionIsEditable && rc.edit>
-			<div sw-add-option-group option-groups="#!StructKeyExists(rc,'product') ? '' : '#rc.product.getOptionGroupsAsList()#'#" product-id="#!StructKeyExists(rc,'product') ? '' : '#rc.product.getProductID()#'#" sku-id="#rc.sku.getSkuID()#"></div>
+			<div sw-add-option-group option-groups="'#rc.product.getOptionGroupsAsList()#'" product-id="#rc.product.getProductID()#" sku-id="#rc.sku.getSkuID()#"></div>
 		<cfelse>
 			<cfloop array="#rc.sku.getOptions()#" index="option">
 				<hb:HibachiFieldDisplay title="#option.getOptionGroup().getOptionGroupName()#" value="#option.getOptionName()#" edit="false">

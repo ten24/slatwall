@@ -11,9 +11,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	        StructKeyExists(arguments.rc.apiResponse.content, "collectionObject") &&
 	        arguments.rc.apiResponse.content.collectionObject== "Product"
 	    ) {
-	        arguments.rc.apiResponse.content.pageRecords = getService("productService").appendImagesToProduct(arguments.rc.apiResponse.content.pageRecords);
+	        arguments.rc.apiResponse.content.pageRecords = getService("productService").appendImagesToProducts(arguments.rc.apiResponse.content.pageRecords);
 	        
-	        arguments.rc.apiResponse.content.pageRecords = getService("productService").appendCategoriesAndOptionsToProduct(arguments.rc.apiResponse.content.pageRecords);
+	        // arguments.rc.apiResponse.content.pageRecords = getService("productService").appendCategoriesToProduct(arguments.rc.apiResponse.content.pageRecords);
 	    }
 	    
 	    //Append Settings value when SKU is accessed for specific product

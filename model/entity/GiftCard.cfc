@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCard" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="giftCardService" {
+component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCard" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="giftCardService" hb_permission="this"  {
 
 	// Persistent Properties
 	property name="giftCardID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -59,6 +59,7 @@ component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCar
     property name="activeFlag" ormtype="boolean";
     property name="issuedDate" ormtype="timestamp";
     property name="currencyCode" ormtype="string" length="3";
+
     //Calculated Properties
     property name="calculatedBalanceAmount" ormtype="big_decimal" hb_formatType="currency";
 
@@ -67,12 +68,16 @@ component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCar
 
 	// Related Object Properties (many-to-one)
 	property name="originalOrderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="originalOrderItemID" cascade="all";
+	property name="Sku" cfc="Sku" fieldtype="many-to-one" fkcolumn="SkuID" cascade="all";
 	property name="giftCardExpirationTerm" cfc="Term" fieldtype="many-to-one" fkcolumn="giftCardExpirationTermID" cascade="all";
+	property name="creditExpirationTerm" cfc="Term" fieldtype="many-to-one" fkcolumn="creditExpirationTermID" cascade="all";
+	property name="order" cfc="Order" fieldtype="many-to-one" fkcolumn="OrderID";
 	property name="ownerAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="ownerAccountID";
     property name="orderItemGiftRecipient" cfc="OrderItemGiftRecipient" fieldtype="many-to-one" fkcolumn="orderItemGiftRecipientID" inverse="true" cascade="all";
 
 	// Related Object Properties (one-to-many)
 	property name="giftCardTransactions" singularname="giftCardTransaction" cfc="GiftCardTransaction" fieldtype="one-to-many" fkcolumn="giftCardID" inverse="true" cascade="all-delete-orphan";
+	property name="orderTemplateAppliedGiftCards" singularname="orderTemplateAppliedGiftCard" cfc="OrderTemplateAppliedGiftCard" fieldtype="one-to-many" fkcolumn="giftCardID";
 
 	// Related Object Properties (many-to-many)
 
@@ -85,13 +90,37 @@ component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCar
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
-
 	// Non-Persistent Properties
+	property name="price" persistent="false";
+
 	public any function getOrder(){
+		if(structKeyExists(variables,"order")){
+			return variables.order;
+		}
 		if(!isNull(this.getOriginalOrderItem())){
 			return this.getOriginalOrderItem().getOrder();
-		} else {
-			return false;
+		}
+	}
+	
+	public numeric function getPrice(){
+		
+		if(structKeyExists(variables,'originalOrderItem')){
+			return variables.originalOrderItem.getPrice();
+		}
+		
+		if(structKeyExists(variables,'sku')){
+			return variables.sku.getPrice();
+		}
+	}
+	
+	public any function getSku(){
+		if(
+			!structKeyExists(variables,"sku") && structKeyExists(variables,"originalOrderItem")
+		){
+			variables.sku = this.getOriginalOrderItem().getSku();
+			return variables.sku;
+		} else if(structKeyExists(variables,"sku")){
+			return variables.sku;
 		}
 	}
 
@@ -171,6 +200,9 @@ component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCar
 		}
 	}
 	public void function removeOriginalOrderItem(any orderItem) {
+		if(!structKeyExists(variables,"originalOrderItem")){
+			return;
+		}
 		if(!structKeyExists(arguments, "orderItem")) {
 			arguments.orderItem = variables.originalOrderItem;
 		}
@@ -183,7 +215,6 @@ component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCar
 
 	// Owner Account (many-to-one)
 	public void function setOwnerAccount(required any ownerAccount) {
-
 		variables.ownerAccount = arguments.ownerAccount;
 		if(isNew() or !arguments.ownerAccount.hasGiftCard( this )) {
 			arrayAppend(arguments.ownerAccount.getGiftCards(), this);

@@ -179,7 +179,7 @@ component entityname="SlatwallInventoryAnalysis" table="SwInventoryAnalysis" out
 			var QNDOOData = getDao('inventoryDao').getQNDOO(productID=productID);
 			var QNDOO = 0;
 			for(var QNDOODatum in QNDOOData){
-				if(QNDOODatum['skuID']==thisSkuDetails['skuID']){
+				if(structKeyExists(QNDOODatum, 'QNDOO') && QNDOODatum['skuID']==thisSkuDetails['skuID']){
 					QNDOO = QNDOODatum['QNDOO'];
 					break;
 				}
@@ -188,7 +188,7 @@ component entityname="SlatwallInventoryAnalysis" table="SwInventoryAnalysis" out
 			var QNDORVOData = getDao('inventoryDao').getQNDORVO(productID=productID);
 			var QNDORVO = 0;
 			for(var QNDORVODatum in QNDORVOData){
-				if(QNDORVODatum['skuID']==thisSkuDetails['skuID']){
+				if(structKeyExists(QNDORVODatum, 'QNDORVO') && QNDORVODatum['skuID']==thisSkuDetails['skuID']){
 					QNDORVO = QNDORVODatum['QNDORVO'];
 					break;
 				}
@@ -197,7 +197,7 @@ component entityname="SlatwallInventoryAnalysis" table="SwInventoryAnalysis" out
 			var QNDOSAData = getDao('inventoryDao').getQNDOSA(productID=productID);
 			var QNDOSA = 0;
 			for(var QNDOSADatum in QNDOSAData){
-				if(QNDOSADatum['skuID']==thisSkuDetails['skuID']){
+				if(structKeyExists(QNDOSADatum, 'QNDOSA') && QNDOSADatum['skuID']==thisSkuDetails['skuID']){
 					QNDOSA = QNDOSADatum['QNDOSA'];
 					break;
 				}
@@ -209,7 +209,7 @@ component entityname="SlatwallInventoryAnalysis" table="SwInventoryAnalysis" out
 			var QNROROData = getDao('inventoryDao').getQNRORO(productID=productID);
 			var QNRORO = 0;
 			for(var QNRORODatum in QNROROData){
-				if(QNRORODatum['skuID']==thisSkuDetails['skuID']){
+				if(structKeyExists(QNRORODatum, 'QNRORO') && QNRORODatum['skuID']==thisSkuDetails['skuID']){
 					QNRORO = QNRORODatum['QNRORO'];
 					break;
 				}
@@ -217,7 +217,7 @@ component entityname="SlatwallInventoryAnalysis" table="SwInventoryAnalysis" out
 			var QNROVOData = getDao('inventoryDao').getQNROVO(productID=productID);
 			var QNROVO = 0;
 			for(var QNROVODatum in QNROVOData){
-				if(QNROVODatum['skuID']==thisSkuDetails['skuID']){
+				if(structKeyExists(QNROVODatum, 'QNROVO') && QNROVODatum['skuID']==thisSkuDetails['skuID']){
 					QNROVO = QNROVODatum['QNROVO'];
 					break;
 				}
@@ -225,7 +225,7 @@ component entityname="SlatwallInventoryAnalysis" table="SwInventoryAnalysis" out
 			var QNROSAData = getDao('inventoryDao').getQNROSA(productID=productID);
 			var QNROSA = 0;
 			for(var QNROSADatum in QNROSAData){
-				if(QNROSADatum['skuID']==thisSkuDetails['skuID']){
+				if(structKeyExists(QNROSADatum, 'QNROSA') && QNROSADatum['skuID']==thisSkuDetails['skuID']){
 					QNROSA = QNROSADatum['QNROSA'];
 					break;
 				}
@@ -237,7 +237,7 @@ component entityname="SlatwallInventoryAnalysis" table="SwInventoryAnalysis" out
 			var QOHData = getDao('inventoryDAO').getQOH(productID=productID);
 			var QOH = 0;
 			for(var QOHdatum in QOHData){
-				if(QOHdatum['skuID']==thisSkuDetails['skuID']){
+				if(structKeyExists(QOHdatum, 'QOH') && QOHdatum['skuID']==thisSkuDetails['skuID']){
 					QOH = QOHdatum['QOH'];
 					break;
 				}

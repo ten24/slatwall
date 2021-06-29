@@ -14,11 +14,12 @@ class SWGiftCardOrderInfoController{
 
 		var orderConfig = this.collectionConfigService.newCollectionConfig('Order');
 		orderConfig.setDisplayProperties("orderID, orderNumber, orderOpenDateTime, orderOrigin.orderOriginName, account.firstName, account.lastName");
-		orderConfig.addFilter('orderID', this.giftCard.originalOrderItem_order_orderID);
+		orderConfig.addFilter('orderID', this.giftCard.order_orderID);
 		orderConfig.setAllRecords(true);
 
 		orderConfig.getEntity().then((response)=>{
 			this.order = response.records[0];
+			this.order.orderOpenDateTime = new Date(this.order.orderOpenDateTime);
 		});
 	}
 }
