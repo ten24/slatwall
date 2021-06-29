@@ -242,39 +242,6 @@ Notes:
 									<cfif $.slatwall.authenticateAction(action='admin:entity.listworkflow')>
 										<hb:HibachiActionCaller queryString="ng##!/entity/Workflow" text="#$.slatwall.rbKey('admin.entity.listworkflow')#" type="list">
 									</cfif>
-									<hb:HibachiActionCaller action="admin:entity.listbatch" type="list">
-									<hb:HibachiActionCaller action="admin:entity.listentityqueue" type="list">
-									<hb:HibachiActionCaller action="admin:entity.listimportermapping" type="list">
-									<hb:HibachiActionCaller action="admin:report.revenuerecognitionreport" type="list">
-									<hb:HibachiActionCaller action="admin:report.earnedrevenuereport" type="list">
-									<hb:HibachiActionCaller action="admin:report.deferredrevenuereport" type="list">
-									<hb:HibachiActionCaller action="admin:report.subscriptionOrdersReport" type="list">
-									<hb:HibachiActionCaller action="admin:report.cancelledOrdersReport" type="list">
-								</hb:HibachiDividerHider>
-							</hb:HibachiActionCallerDropdown>
-							<hb:HibachiActionCallerDropdown title="#$.slatwall.rbKey('admin.default.marketing_nav')#" img="#request.slatwallScope.getBaseURL()#/assets/images/icon-marketing.svg" menuitemclass="border" type="nav">
-								<hb:HibachiDividerHider>
-									<hb:HibachiActionCaller action="admin:entity.listpromotion" type="list">
-									<hb:HibachiActionCaller action="admin:entity.listpricegroup" type="list">
-									<cfif $.slatwall.authenticateAction(action='admin:entity.listcontent')>
-										<hb:HibachiActionCaller queryString="ng##!/entity/Content" text="#$.slatwall.rbKey('admin.entity.listcontent')#" type="list">
-									</cfif>
-									<hb:HibachiActionCaller action="admin:entity.listcategory" type="list">
-									<hb:HibachiActionCaller action="admin:entity.listform" type="list">
-									<hb:HibachiActionCaller action="admin:entity.listsite" type="list">
-									<hb:HibachiActionCaller action="admin:entity.listemailtemplate" type="list">
-									<hb:HibachiActionCaller action="admin:entity.listproductreview" type="list">
-									<hb:HibachiActionCaller action="admin:entity.listloyalty" type="list">
-									<hb:HibachiActionCaller action="admin:entity.listloyaltyterm" type="list">
-								</hb:HibachiDividerHider>
-							</hb:HibachiActionCallerDropdown>
-							<hb:HibachiActionCallerDropdown title="#$.slatwall.rbKey('admin.default.telligence_nav')#" img="#request.slatwallScope.getBaseURL()#/assets/images/icon-telligence.svg" menuitemclass="border" type="nav">
-								<hb:HibachiDividerHider>
-									<hb:HibachiActionCaller action="admin:report" type="list">
-									<hb:HibachiActionCaller action="admin:entity.listcollection" type="list">
-									<cfif $.slatwall.authenticateAction(action='admin:entity.listworkflow')>
-										<hb:HibachiActionCaller queryString="ng##!/entity/Workflow" text="#$.slatwall.rbKey('admin.entity.listworkflow')#" type="list">
-									</cfif>
 									<hb:HibachiActionCaller action="admin:report.revenuerecognitionreport" type="list">
 									<hb:HibachiActionCaller action="admin:report.subscriptionOrdersReport" type="list">
 									<hb:HibachiActionCaller action="admin:report.cancelledOrdersReport" type="list">

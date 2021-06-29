@@ -3179,6 +3179,1391 @@ component  accessors="true" output="false"
             this.addErrors(arguments.data, account.getErrors() );
         }
     }
+ 
+
+   
+	public void function getOrderTemplates(required any data){ 
+        param name="arguments.data.pageRecordsShow" default=5;
+        param name="arguments.data.currentPage" default=1;
+        param name="arguments.data.orderTemplateID" default="";
+		param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; 
+		param name="arguments.data.optionalProperties" default="";
+
+		arguments.data['ajaxResponse']['orderTemplates'] = getOrderService().getOrderTemplatesForAccount(arguments.data); 
+	}
+	
+	public void function getOrderTemplateItems(required any data){
+        param name="arguments.data.pageRecordsShow" default=5;
+        param name="arguments.data.currentPage" default=1;
+        param name="arguments.data.orderTemplateID" default="";
+		param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; // defaults to - "ottSchedule", we should use system-code
+
+		arguments.data['ajaxResponse']['orderTemplateItems'] = getOrderService().getOrderTemplateItemsForAccount(arguments.data);  
+	} 
+	
+	
+	public void function getOrderTemplateDetails(required any data){
+        param name="arguments.data.pageRecordsShow" default=5;
+        param name="arguments.data.currentPage" default=1;
+        param name="arguments.data.orderTemplateId" default="";
+		param name="arguments.data.orderTemplateTypeID" default="2c948084697d51bd01697d5725650006"; 
+		param name="arguments.data.optionalProperties" type="string" default="";  //putting here for documentation purpous only
+				
+		arguments.data['ajaxResponse']['orderTemplate'] = getOrderService().getOrderTemplateDetailsForAccount(arguments.data);  
+	}
+	
+	private void function setOrderTemplateAjaxResponse(required any data) {
+	    
+		var orderTemplateCollection = getOrderService().getOrderTemplatesCollectionForAccount(argumentCollection = arguments); 
+	    orderTemplateCollection.addFilter("orderTemplateID", arguments.data.orderTemplateID); // limit to our order-template
+	    var orderTemplates = orderTemplateCollection.getPageRecords(); 
+ 		arguments.data['ajaxResponse']['orderTemplate'] = arrayLen(orderTemplates) ? orderTemplates[1] : []; // there should be only one record;  
+	}
+	
+	
+	
+	public void function updateOrderTemplateShippingAndBilling(required any data){
+	    param name="arguments.data.orderTemplateID" default="";
+	
+     	var orderTemplate = getOrderService().getOrderTemplateAndEnforceOwnerAccount(argumentCollection = arguments);
+		if( isNull(orderTemplate) ) {
+			return; 
+		}
+		
+		orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'updateShipping'); 
+        var processObject = orderTemplate.getProcessObject('UpdateShipping');
+        orderTemplate.addErrors( processObject.getErrors() );
+        getHibachiScope().addActionResult( "public:updateOrderTemplateShipping", orderTemplate.hasErrors() );
+        
+        if(!orderTemplate.hasErrors() && !getHibachiScope().getORMHasErrors() && !processObject.hasErrors() ) {
+            getHibachiScope().flushORMSession(); //flushing to make new data availble
+        }
+        
+		orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'updateBilling'); 
+        processObject = orderTemplate.getProcessObject('UpdateBilling');
+        orderTemplate.addErrors( processObject.getErrors() );
+        getHibachiScope().addActionResult( "public:updateOrderTemplateBilling", orderTemplate.hasErrors() );
+
+        if(!orderTemplate.hasErrors() && !getHibachiScope().getORMHasErrors() && !processObject.hasErrors() ) {
+    		getHibachiScope().flushORMSession(); //flushing to make new data availble
+        }
+        
+        getService('OrderService').getOrderTemplateOrderDetails(orderTemplate);
+
+        getOrderTemplateDetails(argumentCollection=arguments);
+        addErrors(arguments.data, orderTemplate.getErrors());
+        
+	}
+
+
+ 	public void function updateOrderTemplateShipping(required any data){ 
+        param name="arguments.data.orderTemplateID" default="";
+	
+     	var orderTemplate = getOrderService().getOrderTemplateAndEnforceOwnerAccount(argumentCollection = arguments);
+		if( isNull(orderTemplate) ) {
+			return; 
+		}
+	    
+ 		orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'updateShipping'); 
+        getHibachiScope().addActionResult( "public:orderTemplate.updateShipping", orderTemplate.hasErrors() );
+            
+        if(!orderTemplate.hasErrors() && !getHibachiScope().getORMHasErrors()) {
+            
+            orderTemplate.clearProcessObject("updateShipping");
+            getHibachiScope().flushORMSession(); //flushing to make new data availble
+    		
+    		setOrderTemplateAjaxResponse(argumentCollection = arguments);
+     		
+     		//if there's a new account address
+     		if(StructKeyExists(arguments.data, "newAccountAddress")) {
+     		    arguments.data['ajaxResponse']['newAccountAddress'] = orderTemplate.getShippingAccountAddress().getStructRepresentation();
+     		}
+     		
+        } else {
+            var processObject = orderTemplate.getProcessObject('UpdateShipping');
+            if(processObject.hasErrors()){
+                addErrors(arguments.data, processObject.getErrors());
+            }else{
+                addErrors(arguments.data, orderTemplate.getErrors());
+            }
+        }
+ 	}   
+ 	
+ 	
+ 	public void function updateOrderTemplateBilling(required any data){ 
+        param name="arguments.data.orderTemplateID" default="";
+	
+     	var orderTemplate = getOrderService().getOrderTemplateAndEnforceOwnerAccount(argumentCollection = arguments);
+		if( isNull(orderTemplate) ) {
+			return; 
+		}
+	    
+ 		orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'updateBilling'); 
+        getHibachiScope().addActionResult( "public:orderTemplate.updateBilling", orderTemplate.hasErrors() );
+            
+        if(!orderTemplate.hasErrors() && !getHibachiScope().getORMHasErrors()) {
+            
+            orderTemplate.clearProcessObject("updateBilling");
+            getHibachiScope().flushORMSession(); //flushing to make new data availble
+    		
+    		setOrderTemplateAjaxResponse(argumentCollection = arguments);
+     		
+     		//if there's a new account address
+     		if(StructKeyExists(arguments.data, "newAccountAddress")) {
+     		    arguments.data['ajaxResponse']['newAccountAddress'] = orderTemplate.getBillingAccountAddress().getStructRepresentation();
+     		}
+     		
+     			//if there's a new account address
+     		if(StructKeyExists(arguments.data, "newAccountPaymentMethod")) {
+     		    arguments.data['ajaxResponse']['newAccountPaymentMethod'] = orderTemplate.getAccountPaymentMethod().getStructRepresentation();
+     		}
+     		
+        } else {
+            ArrayAppend(arguments.data.messages, orderTemplate.getErrors(), true);
+        }
+ 	}   
+
+ 	
+ 	public void function activateOrderTemplate(required any data) { 
+        param name="arguments.data.orderTemplateID" default="";
+	
+     	var orderTemplate = getOrderService().getOrderTemplateAndEnforceOwnerAccount(argumentCollection = arguments);
+		if( isNull(orderTemplate) ) {
+			return;
+		}
+		
+ 		orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'activate'); 
+        getHibachiScope().addActionResult( "public:orderTemplate.activate", orderTemplate.hasErrors() );
+            
+        if(!orderTemplate.hasErrors() && !getHibachiScope().getORMHasErrors()) {
+            
+            orderTemplate.clearProcessObject("activate");
+            getHibachiScope().flushORMSession(); //TODO.......check?  flushing to make new data availble
+            setOrderTemplateAjaxResponse(argumentCollection = arguments);
+            
+        } else {
+            ArrayAppend(arguments.data.messages, orderTemplate.getErrors(), true);
+        }
+ 	} 
+ 	
+
+ 	public void function cancelOrderTemplate(required any data) { 
+        param name="arguments.data.orderTemplateID" default="";
+	
+     	var orderTemplate = getOrderService().getOrderTemplateAndEnforceOwnerAccount(argumentCollection = arguments);
+		if( isNull(orderTemplate) ) {
+			return;
+		}
+	    
+ 		orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'cancel'); 
+        getHibachiScope().addActionResult( "public:orderTemplate.cancel", orderTemplate.hasErrors() );
+        
+        if(!orderTemplate.hasErrors() && !getHibachiScope().getORMHasErrors()) {
+            
+            orderTemplate.clearProcessObject("cancel");
+            getHibachiScope().flushORMSession(); //flushing to make new data availble
+    		setOrderTemplateAjaxResponse(argumentCollection = arguments);
+        
+        } else {
+            ArrayAppend(arguments.data.messages, orderTemplate.getErrors(), true);
+        }
+ 	}   
+ 	
+ 	
+ 	public any function updateOrderTemplateSchedule( required any data ){
+        param name="arguments.data.orderTemplateID" default="";
+	
+     	var orderTemplate = getOrderService().getOrderTemplateAndEnforceOwnerAccount(argumentCollection = arguments);
+		if( isNull(orderTemplate) ) {
+			return;
+		}
+	    
+ 		orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'updateSchedule'); 
+        getHibachiScope().addActionResult( "public:orderTemplate.updateSchedule", orderTemplate.hasErrors() );
+            
+        if(!orderTemplate.hasErrors() && !getHibachiScope().getORMHasErrors()) {
+            
+            orderTemplate.clearProcessObject("updateSchedule");
+            getHibachiScope().flushORMSession(); //flushing to make new data availble
+    		setOrderTemplateAjaxResponse(argumentCollection = arguments);
+        
+        } else {
+            ArrayAppend(arguments.data.messages, orderTemplate.getErrors(), true);
+        }
+ 	} 
+	
+	
+	public any function updateOrderTemplateFrequency( required any data ){
+        param name="arguments.data.orderTemplateID" default="";
+	
+     	var orderTemplate = getOrderService().getOrderTemplateAndEnforceOwnerAccount(argumentCollection = arguments);
+		if( isNull(orderTemplate) ) {
+			return;
+		}
+	    
+ 		orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'updateFrequency'); 
+        getHibachiScope().addActionResult( "public:orderTemplate.updateFrequency", orderTemplate.hasErrors() );
+            
+        if(orderTemplate.hasErrors() && getHibachiScope().getORMHasErrors()) {
+            ArrayAppend(arguments.data.messages, orderTemplate.getErrors(), true);
+            return;
+        }
+        orderTemplate.clearProcessObject("updateFrequency");
+     
+	} 
+	
+	public any function getAccountGiftCards( required struct data) {
+        param name="arguments.data.pageRecordsShow" default=5;
+        param name="arguments.data.currentPage" default=1;
+        
+        var giftCardCollectionList = getGiftCardService().getGiftCardCollectionList();    
+        
+        giftCardCollectionList.setPageRecordsShow(arguments.data.pageRecordsShow);
+		giftCardCollectionList.setCurrentPageDeclaration(arguments.data.currentPage); 
+		giftCardCollectionList.addFilter('ownerAccount.accountID', getHibachiScope().getAccount().getAccountID());
+	
+
+		arguments.data['ajaxResponse']['giftCards'] = giftCardCollectionList.getPageRecords();  
+	
+	}
+	
+	public any function applyGiftCardToOrderTemplate( required struct data ){
+        param name="arguments.data.orderTemplateID" default="";
+	
+     	var orderTemplate = getOrderService().getOrderTemplateAndEnforceOwnerAccount(argumentCollection = arguments);
+		if( isNull(orderTemplate) ) {
+			return;
+		}
+	    
+ 		orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'applyGiftCard'); 
+        getHibachiScope().addActionResult( "public:orderTemplate.applyGiftCard", orderTemplate.hasErrors() );
+        
+        var processObject = orderTemplate.getProcessObjects()['applyGiftCard'];
+        if( processObject.hasErrors() ){
+            ArrayAppend(arguments.data.messages, processObject.getErrors(), true);
+            return;
+        }
+        
+        if( orderTemplate.hasErrors() ){
+            ArrayAppend(arguments.data.messages, orderTemplate.getErrors(), true);
+            return;
+        }    
+            
+        if( !getHibachiScope().getORMHasErrors()) {
+            
+            orderTemplate.clearProcessObject("applyGiftCard");
+            getHibachiScope().flushORMSession(); //flushing to make new data availble
+        	setOrderTemplateAjaxResponse(argumentCollection = arguments);
+        }
+	}
+	
+	public any function getOrderTemplatePromotionSkuCollectionConfig( required any data ){
+        param name="arguments.data.orderTemplateID" default="";
+	
+     	var orderTemplate = getOrderService().getOrderTemplateAndEnforceOwnerAccount(argumentCollection = arguments);
+		if( isNull(orderTemplate) ) {
+			return;
+		}
+		
+        arguments.data['ajaxResponse']['orderTemplatePromotionSkuCollectionConfig'] = orderTemplate.getPromotionalRewardSkuCollectionConfig();
+	}
+	
+	public any function getOrderTemplatePromotionSkus( required any data ){
+        param name="arguments.data.orderTemplateID" default="";
+        param name="arguments.data.pageRecordsShow" default=10;
+        param name="arguments.data.currentPage" default=1;
+        
+     	var orderTemplate = getOrderService().getOrderTemplateAndEnforceOwnerAccount(argumentCollection = arguments);
+		if( isNull(orderTemplate) ) {
+			return;
+		}
+		
+		if(!StructKeyExists(arguments.data, 'orderTemplatePromotionSkuCollectionConfig')){
+	        var promotionsCollectionConfig =  orderTemplate.getPromotionalFreeRewardSkuCollectionConfig();
+	        promotionsCollectionConfig['pageRecordsShow'] = arguments.data.pageRecordsShow;
+	        promotionsCollectionConfig['currentPage'] = arguments.data.currentPage;
+	        arguments.data.orderTemplatePromotionSkuCollectionConfig = promotionsCollectionConfig;
+		}
+	    
+	    var promotionsCollectionList = this.getSkuService().getSkuCollectionList();
+	    promotionsCollectionList.setCollectionConfigStruct(arguments.data.orderTemplatePromotionSkuCollectionConfig);
+        
+        arguments.data['ajaxResponse']['orderTemplatePromotionSkus'] = promotionsCollectionList.getPageRecords(); 
+	}
+	
+	private void function setOrderTemplateItemAjaxResponse(required any data) {
+	    
+		var orderTemplateItemCollection = getOrderService().getOrderTemplateItemCollectionForAccount(argumentCollection = arguments); 
+	    orderTemplateItemCollection.addFilter("orderTemplateItemID", arguments.data.orderTemplateItemID); // filter with our-order-template-item
+	    
+ 		arguments.data['ajaxResponse']['orderTemplateItem'] = orderTemplateItemCollection.getPageRecords()[1]; // there should be only one record;  
+	}
+	
+	/**
+	 * Wishlist API - get all wishlist Items
+	 * createWishlist
+     * getWishlist
+	 * getWishlistItems
+	 * addWishlistItem
+	 * removeWishlistItem
+	 * */
+	public any function createWishlist(required any data) {
+        param name="arguments.data.orderTemplateName" default="";
+        param name="arguments.data.currencyCode" default="USD";
+        param name="arguments.data.siteID" default="";
+        
+        if( !this.getHibachiScope().getLoggedInFlag() ){
+            arguments.data.ajaxResponse['error'] = this.getHibachiScope().rbKey('validate.loggedInUser.wishlist');
+        }
+
+        arguments.data['orderTemplateTypeID'] = "2c9280846b712d47016b75464e800014"; // type-id for wishlist
+        arguments.data['accountID'] = this.getHibachiScope().getAccount().getAccountID(); 
+        
+        var orderTemplate = this.getOrderService().newOrderTemplate();
+ 		orderTemplate = this.getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'createWishlist'); 
+ 		
+ 		var processObject = orderTemplate.getProcessObject('createWishlist');
+ 		if( processObject.hasErrors() ){
+ 		    orderTemplate.addErrors( processObject.getErrors() );
+ 		} else {
+            arguments.data['ajaxResponse']['orderTemplateID'] = orderTemplate.getOrderTemplateID();
+ 		}
+ 		
+        this.addErrors(arguments.data, orderTemplate.getErrors());
+        this.getHibachiScope().addActionResult( "public:orderTemplate.createWishlist", orderTemplate.hasErrors() );
+        
+        return orderTemplate; // addItemAndCreateWishlist uses it
+    }
+    
+    public any function addItemAndCreateWishlist( required struct data ){
+        var orderTemplate = this.createWishlist(argumentCollection= arguments);
+
+        if( !orderTemplate.hasErrors() ){
+            this.getHibachiScope().flushORMSession();
+            
+            arguments.data['orderTemplateID'] = orderTemplate.getOrderTemplateID();
+            this.addWishlistItem(arguments.data)
+        }
+
+        this.addErrors(arguments.data, orderTemplate.getErrors());
+        this.getHibachiScope().addActionResult("public:orderTemplate.addItemAndCreateWishlist", orderTemplate.hasErrors() );
+    }
+	
+	public void function getWishlist(required any data) {
+	    
+	    if( !(getHibachiScope().getLoggedInFlag()) ) {
+            arguments.data.ajaxResponse['error'] = getHibachiScope().rbKey('validate.loggedInUser.wishlist');
+        }
+        var wishlist = getOrderService().getAccountWishlists(getHibachiScope().getAccount().getAccountID());
+        arguments.data.ajaxResponse["accountWishlistProducts"] = wishlist;
+        getHibachiScope().addActionResult( "public:order.getWishlist", false);
+    }
+    
+    public void function getWishlistItems(required any data) {
+        if( !(getHibachiScope().getLoggedInFlag()) ) {
+            arguments.data.ajaxResponse['error'] = getHibachiScope().rbKey('validate.loggedInUser.wishlist');
+        }
+        var wishlistItems = getOrderService().getAccountWishlistsProducts(getHibachiScope().getAccount().getAccountID());
+        arguments.data.ajaxResponse["accountWishlistProducts"] = wishlistItems;
+        getHibachiScope().addActionResult( "public:order.getWishlistItems", false);
+    }
+	
+	public void function addWishlistItem(required any data) {
+        param name="arguments.data.orderTemplateID" default="";
+        param name="arguments.data.skuID" default="";
+        
+        if( !(getHibachiScope().getLoggedInFlag()) ) {
+            arguments.data.ajaxResponse['error'] = getHibachiScope().rbKey('validate.loggedInUser.wishlist');
+        }
+        
+        var orderTemplate = getOrderService().getOrderTemplateAndEnforceOwnerAccount(argumentCollection = arguments);
+		
+		//create wishlist if not found with OrderTemplateID
+		if( isNull(orderTemplate) || isNull( arguments.data.orderTemplateID)) {
+		    arguments.data.messages = [];
+			var orderTemplate = getOrderService().newOrderTemplate();
+			arguments.data.orderTemplateName = "My Wish List, Created on " & dateFormat(now(), "long");
+		}
+	    
+ 		orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'addWishlistItem');
+ 		
+ 		var processObject = orderTemplate.getProcessObject('addWishlistItem');
+ 		if( processObject.hasErrors() ){
+ 		    orderTemplate.addErrors( processObject.getErrors() );
+ 		}
+ 		
+        getHibachiScope().addActionResult( "public:orderTemplate.addWishlistItem", orderTemplate.hasErrors() );
+            
+        if(orderTemplate.hasErrors()) {
+            ArrayAppend(arguments.data.messages, orderTemplate.getErrors(), true);
+        }
+    }
+	
+	public void function removeWishlistItem(required any data) {
+        param name="arguments.data.orderTemplateID" default="";
+        param name="arguments.data.removalSkuID" default="";
+        
+        if( !(getHibachiScope().getLoggedInFlag()) ) {
+            arguments.data.ajaxResponse['error'] = getHibachiScope().rbKey('validate.loggedInUser.wishlist');
+        }
+        
+        var orderTemplate = getOrderService().getOrderTemplateAndEnforceOwnerAccount(argumentCollection = arguments);
+		if( isNull(orderTemplate) ) {
+			return;
+		}
+		
+ 		orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'removeWishlistItem'); 
+ 		
+ 		var processObject = orderTemplate.getProcessObject('removeWishlistItem');
+ 		if( processObject.hasErrors() ){
+ 		    orderTemplate.addErrors( processObject.getErrors() );
+ 		}
+ 		
+        getHibachiScope().addActionResult( "public:orderTemplate.removeWishlistItem", orderTemplate.hasErrors() );
+            
+        if(orderTemplate.hasErrors()) {
+            ArrayAppend(arguments.data.messages, orderTemplate.getErrors(), true);
+        }
+    }
+    
+    public any function shareWishlist( required struct data ) {
+        param name="arguments.data.orderTemplateID" default="";
+        param name="arguments.data.receiverEmailAddress" default="";
+
+        var orderTemplate = this.getOrderService().getOrderTemplateAndEnforceOwnerAccount(argumentCollection = arguments);
+        if( isNull(orderTemplate) ){
+            return;
+        }
+
+        orderTemplate = this.getOrderService().processOrderTemplate(orderTemplate, arguments.data, "shareWishlist");
+        
+        var processObject = orderTemplate.getProcessObject("shareWishlist");
+        if( processObject.hasErrors() ){
+            orderTemplate.addErrors( processObject.getErrors() );
+        }
+
+        this.addErrors(arguments.data, orderTemplate.getErrors());
+        this.getHibachiScope().addActionResult( "public:orderTemplate.shareWishlist", orderTemplate.hasErrors() );
+    }
+    
+	public void function addOrderTemplateItem(required any data) {
+        param name="data.orderTemplateID" default="";
+        param name="data.skuID" default="";
+        param name="data.quantity" default=1;
+        
+        var orderTemplate = getOrderService().getOrderTemplateAndEnforceOwnerAccount(argumentCollection = arguments);
+		if( isNull(orderTemplate) ) {
+			return;
+		}
+	    
+ 		orderTemplate = getOrderService().processOrderTemplate(orderTemplate, arguments.data, 'addOrderTemplateItem'); 
+ 		orderTemplate = getOrderService().saveOrderTemplate(orderTemplate);
+        getHibachiScope().addActionResult( "public:order.addOrderTemplateItem", orderTemplate.hasErrors() );
+            
+        if(orderTemplate.hasErrors()) {
+            ArrayAppend(arguments.data.messages, orderTemplate.getErrors(), true);
+        }else if(!orderTemplate.hasErrors() && !getHibachiScope().getORMHasErrors()) {
+            getHibachiScope().flushORMSession(); 
+        }
+        
+    }
+    
+    
+    public void function editOrderTemplateItem(required any data) {
+        param name="data.orderTemplateItemID" default="";
+        param name="data.quantity" default=1;
+        
+        var orderTemplateItem = getOrderService().getOrderTemplateItemForAccount( argumentCollection=arguments );
+        if( isNull(orderTemplateItem) ) {
+			return;
+		}
+		
+		orderTemplateItem.setQuantity(arguments.data.quantity); 
+        var orderTemplateItem = getOrderService().saveOrderTemplateItem( orderTemplateItem, arguments.data );
+        orderTemplateItem.getOrderTemplate().updateCalculatedProperties();
+
+        getHibachiScope().addActionResult( "public:order.editOrderTemplateItem", orderTemplateItem.hasErrors() );
+            
+        if(orderTemplateItem.hasErrors()) {
+            ArrayAppend(arguments.data.messages, orderTemplateItem.getErrors(), true);
+        }
+    }
+
+
+	public void function removeOrderTemplateItem(required any data) {
+        param name="data.orderTemplateItemID" default="";
+        
+        var orderTemplateItem = getOrderService().getOrderTemplateItemForAccount( argumentCollection=arguments );
+        if( isNull(orderTemplateItem) ) {
+			return;
+		}
+	    
+ 		orderTemplate = getOrderService().processOrderTemplate(orderTemplateItem.getOrderTemplate(), arguments.data, 'removeOrderTemplateItem'); 
+        orderTemplate.updateCalculatedProperties();
+        getHibachiScope().addActionResult( "public:order.removeOrderTemplateItem", orderTemplate.hasErrors() );
+            
+        if(orderTemplate.hasErrors()) {
+            ArrayAppend(arguments.data.messages, orderTemplate.getErrors(), true);
+        }
+    }
+
+	
+	public void function deleteOrderTemplateItem(required any data) {
+        param name="data.orderTemplateItemID" default="";
+        
+        var orderTemplateItem = getOrderService().getOrderTemplateItem( arguments.data.orderTemplateItemID );
+        
+        if(!isNull(orderTemplateItem) && orderTemplateItem.getOrderTemplate().getAccount().getAccountID() == getHibachiScope().getAccount().getAccountID() ) {
+            var deleteOk = getOrderService().deleteOrderTemplateItem( orderTemplateItem );
+            getHibachiScope().addActionResult( "public:order.deleteOrderTemplateItem", !deleteOK );
+            return;
+        }
+        
+        getHibachiScope().addActionResult( "public:order.deleteOrderTemplateItem", true );  
+    }
+    
+    public void function editOrderTemplate(required any data){
+        param name="data.orderTemplateID" default="";
+        param name="data.orderTemplateName" default="";
+        
+        var orderTemplate = getOrderService().getOrderTemplateAndEnforceOwnerAccount(argumentCollection = arguments);
+		if( isNull(orderTemplate) ) {
+			return;
+		}
+	    
+	    if(len(arguments.data.orderTemplateName)) {
+ 		    orderTemplate.setOrderTemplateName(arguments.data.orderTemplateName);
+	    }
+	    
+	    orderTemplate = getOrderService().saveOrderTemplate(orderTemplate);
+        getHibachiScope().addActionResult( "public:orderTemplate.edit", orderTemplate.hasErrors() );
+
+        if(!orderTemplate.hasErrors() && !getHibachiScope().getORMHasErrors()) {
+            
+            getHibachiScope().flushORMSession(); 
+            //flushing to make new data availble
+    		setOrderTemplateAjaxResponse(argumentCollection = arguments);
+        
+        } else {
+            ArrayAppend(arguments.data.messages, orderTemplate.getErrors(), true);
+        }
+    }
+    
+    public void function deleteOrderTemplate(required any data){
+        param name="data.orderTemplateID" default="";
+
+        var orderTemplate = getOrderService().getOrderTemplate( arguments.data.orderTemplateID );
+        
+        if(!isNull(orderTemplate) && orderTemplate.getAccount().getAccountID() == getHibachiScope().getAccount().getAccountID() ) {
+            var deleteOK = getOrderService().deleteOrderTemplate(orderTemplate);
+            getHibachiScope().addActionResult( "public:order.deleteOrderTemplate", !deleteOK);
+            if(!deleteOK){
+                ArrayAppend(arguments.data.messages, orderTemplate.getErrors(), true);
+            }
+            return;
+        }
+        
+        getHibachiScope().addActionResult( "public:order.deleteOrderTemplate", true );  
+        
+    }
+    
+    public void function addOrderTemplatePromotionCode(required any data) {
+        param name="arguments.data.promotionCode" default="";
+        param name="arguments.data.orderTemplateID" default="";
+     	param name="arguments.data.returnAppliedPromotionCodes" default="true";
+
+        var orderTemplate = this.getOrderService().getOrderTemplateAndEnforceOwnerAccount(argumentCollection = arguments);
+        if( isNull(orderTemplate) ){
+            return;
+        }
+        
+        orderTemplate = this.getOrderService().processOrderTemplate( orderTemplate, arguments.data, 'addPromotionCode');
+        var processObject = orderTemplate.getProcessObject("addPromotionCode");
+        if( processObject.hasErrors() ){
+            orderTemplate.addErrors( processObject.getErrors() );
+        }
+        
+        this.getHibachiScope().addActionResult( "public:orderTemplate.addOrderTemplatePromotionCode", orderTemplate.hasErrors() );
+        this.addErrors(arguments.data, orderTemplate.getErrors() );
+        
+        if( !orderTemplate.hasErrors() ){
+            orderTemplate.clearProcessObject("addPromotionCode");
+            if(arguments.data.returnAppliedPromotionCodes){
+                this.getHibachiScope().flushORMSession(); 
+                this.getAppliedOrderTemplatePromotionCodes(arguments.data);
+            }
+            this.getOrderTemplateDetails(arguments.data);
+        }
+    }
+    
+    public void function removeOrderTemplatePromotionCode(required any data) {
+        param name="arguments.data.promotionCodeID" default="";
+        param name="arguments.data.orderTemplateID" default="";
+     	param name="arguments.data.returnAppliedPromotionCodes" default="true";
+
+        var orderTemplate = this.getOrderService().getOrderTemplateAndEnforceOwnerAccount(argumentCollection = arguments);
+        if( isNull(orderTemplate) ){
+            return;
+        }
+        
+        orderTemplate = this.getOrderService().processOrderTemplate( orderTemplate, arguments.data, 'removePromotionCode');
+
+        var processObject = orderTemplate.getProcessObject("removePromotionCode");
+        if( processObject.hasErrors() ){
+            orderTemplate.addErrors( processObject.getErrors() );
+        }
+        
+        this.getHibachiScope().addActionResult( "public:orderTemplate.removeOrderTemplatePromotionCode", orderTemplate.hasErrors() );
+        this.addErrors(arguments.data, orderTemplate.getErrors() );
+        
+        if( !orderTemplate.hasErrors() ){
+            orderTemplate.clearProcessObject("removePromotionCode");
+            if( arguments.data.returnAppliedPromotionCodes ){
+                this.getHibachiScope().flushORMSession(); 
+                this.getAppliedOrderTemplatePromotionCodes(arguments.data);
+            }
+            this.getOrderTemplateDetails(arguments.data);
+        } 
+    }
+    
+    public void function getAppliedOrderTemplatePromotionCodes(required any data){
+        param name="arguments.data.orderTemplateID" default="";
+
+		arguments.data['ajaxResponse']['appliedOrderTemplatePromotionCodes'] = [];
+        if( len(arguments.data.orderTemplateID) ){
+            arguments.data['ajaxResponse']['appliedOrderTemplatePromotionCodes'] 
+                = this.getDAO('orderDAO').getAppliedOrderTemplatePromotionCodes( arguments.data.orderTemplateID );
+        } 
+    }
+    
+    public any function deleteOrderTemplatePromoItems(required any data ){
+        param name="data.orderTemplateID" default="";
+
+        var orderTemplate = this.getOrderService().getOrderTemplateAndEnforceOwnerAccount(argumentCollection = arguments);
+
+    	if(!isNull(orderTemplate)){
+    	    this.getDAO('orderDAO').removeTemporaryOrderTemplateItems(arguments.data.orderTemplateID);
+            this.getHibachiScope().addActionResult( "public:orderTemplate.deleteOrderTemplatePromoItems", false );  
+    	}
+    }
+    
+    public any function getOrderTemplatePromotionProducts( required any data ) {
+        param name="arguments.data.orderTemplateID" default="";
+        param name="arguments.data.pageRecordsShow" default=10;
+        param name="arguments.data.currentPage" default=1;
+
+        var orderTemplate = this.getOrderService().getOrderTemplateAndEnforceOwnerAccount( argumentCollection = arguments );
+        if( isNull(orderTemplate) ){
+            return;
+        }
+
+        if( !structKeyExists(arguments.data, 'orderTemplatePromotionSkuCollectionConfig') ){
+            var promotionsCollectionConfig =  orderTemplate.getPromotionalFreeRewardSkuCollectionConfig();
+            promotionsCollectionConfig['pageRecordsShow'] = arguments.data.pageRecordsShow;
+            promotionsCollectionConfig['currentPage'] = arguments.data.currentPage;
+            arguments.data.orderTemplatePromotionSkuCollectionConfig = promotionsCollectionConfig;
+        }
+
+        var promotionsCollectionList = this.getSkuService().getSkuCollectionList();
+        promotionsCollectionList.setCollectionConfigStruct( arguments.data.orderTemplatePromotionSkuCollectionConfig );
+        promotionsCollectionList.setPageRecordsShow( arguments.data.pageRecordsShow );
+        promotionsCollectionList.setDisplayProperties('
+            product.defaultSku.skuID|skuID,
+            product.urlTitle|urlTitle,
+            product.productName|productName
+        ');
+
+        var records = promotionsCollectionList.getPageRecords();
+
+        var imageService = this.getService('ImageService');
+        records = arrayMap(records, function(product){
+            product.skuImagePath = imageService.getResizedImageByProfileName(product.skuID, 'medium');
+            return product;
+        }) 
+
+        arguments.data['ajaxResponse']['orderTemplatePromotionProducts'] = records; 
+    }
+
+   
+    
+    
+    
+    ///    ############### .  getXXXOptions();  .  ###############   
+    
+    /**
+     *  data.optionsList = "frequencyTermOptions,siteOrderTemplateShippingMethodOptions,cancellationReasonTypeOptions....."; 
+    */ 
+    public void function getOptions(required any data){
+        param name="data.optionsList" default="" pattern="^[\w,]+$"; //option-name-list
+        
+        for(var optionName in arguments.data.optionsList) {
+            if(right(optionName,7) == 'Options'){
+                this.invokeMethod("get#optionName#", {'data' = arguments.data});
+            }
+        }
+    }
+    
+    public void function getFrequencyTermOptions(required any data) {
+		arguments.data['ajaxResponse']['frequencyTermOptions'] = getOrderService().getOrderTemplateFrequencyTermOptions();
+    }
+    
+    public void function getFrequencyDateOptions(required any data) {
+		arguments.data['ajaxResponse']['frequencyDateOptions'] = getOrderService().getOrderTemplateFrequencyDateOptions();
+    }
+    
+    public void function getSiteOrderTemplateShippingMethodOptions(required any data) {
+        var orderTemplate = getOrderService().getOrderTemplate(arguments.data.orderTemplateID);
+        if(isNull(orderTemplate)){
+            return arguments.data['ajaxResponse']['siteOrderTemplateShippingMethodOptions'] = {};   
+        }
+        
+		arguments.data['ajaxResponse']['siteOrderTemplateShippingMethodOptions'] = orderTemplate.getShippingMethodOptions();
+    }
+    
+    public void function getCancellationReasonTypeOptions(required any data) {
+        var tmpOrderTemplate = getOrderService().newOrderTemplate();
+		arguments.data['ajaxResponse']['cancellationReasonTypeOptions'] = tmpOrderTemplate.getOrderTemplateCancellationReasonTypeOptions();
+    }
+    
+    public void function getScheduleDateChangeReasonTypeOptions(required any data) {
+        var tmpOrderTemplate = getOrderService().newOrderTemplate();
+		arguments.data['ajaxResponse']['scheduleDateChangeReasonTypeOptions'] = tmpOrderTemplate.getOrderTemplateScheduleDateChangeReasonTypeOptions();
+    }
+    
+    public void function getExpirationMonthOptions(required any data) {
+       	var tmpAccountPaymentMethod = getAccountService().newAccountPaymentMethod();
+		arguments.data['ajaxResponse']['expirationMonthOptions'] = tmpAccountPaymentMethod.getExpirationMonthOptions();
+    }
+    
+     public void function getExpirationYearOptions(required any data) {
+       	var tmpAccountPaymentMethod = getAccountService().newAccountPaymentMethod();
+		arguments.data['ajaxResponse']['expirationYearOptions'] = tmpAccountPaymentMethod.getExpirationYearOptions();
+    }
+    
+    public void function getQualifiedMerchandiseRewardsForOrder(required struct data){
+        param name="arguments.data.orderID";
+        
+        var order = getOrderService().getOrder(arguments.data.orderID);
+        
+        if( !isNull(order) &&
+            ( isNull(order.getAccount()) || order.getAccount().getAccountID() == getHibachiScope().getAccount().getAccountID() ) 
+        ){
+            var rewardArgs = {
+                order:order,
+                apiFlag:true,
+                rewardTypeList:'merchandise'
+            };
+            var rewards = getService('PromotionService').getQualifiedPromotionRewardsForOrder(argumentCollection=rewardArgs);
+            
+            arguments.data['ajaxResponse']['rewards'] = rewards;
+        }
+    }
+    
+    public void function getQualifiedPromotionRewardSkusForOrder(required struct data){
+        param name="arguments.data.orderID";
+        /*
+            OrderID is required, data can also include promotionRewardID to return skus for a particular reward.
+            Other optional arguments: pageRecordsShow (default 25), formatRecords (default false)
+        */
+        var order = getOrderService().getOrder(arguments.data.orderID);
+        if( !isNull(order) &&
+            ( isNull(order.getAccount()) || order.getAccount().getAccountID() == getHibachiScope().getAccount().getAccountID() ) 
+        ){
+            arguments.data.order = order;
+            var rewardSkus = getService('PromotionService').getQualifiedPromotionRewardSkusForOrder(argumentCollection=arguments.data);
+            arguments.data['ajaxResponse']['rewardSkus'] = rewardSkus;
+        }
+    }
+    
+    
+    /**
+     * 
+     * /api/scope/getSlatwallContent
+     * 
+     */
+    public void function getSlatwallContent(required struct data){
+        param name="arguments.data.siteCode" default="";
+        param name="arguments.data.content" default={};
+        param name="arguments.data.formCode" default='';
+        param name="arguments.data.formPostfix" default="/";
+        getHibachiScope().setSite(getService('siteService').getSiteBySiteCode(arguments.data.siteCode))
+        
+        var stackedContent= {}
+        for(var content in arguments.data.content) {
+            StructAppend(stackedContent, getService('siteService').getStackedContentForPage({"#content#":arguments.data.content[content] }),"true")
+        }
+
+        if(!this.getHibachiScope().hibachiIsEmpty(arguments.data.formCode)){
+            stackedContent['form'] = {
+                "type": arguments.data.formCode,
+                "markup": getService('siteService').dspForm(arguments.data.formCode,arguments.data.formPostfix)
+            };
+        }
+
+        getHibachiScope().addActionResult("public:getSlatwallContent", false);
+
+        arguments.data['ajaxResponse']['content'] = stackedContent;
+
+    }
+
+    public void function getSlatwallForm(required struct data){
+        param name="arguments.data.siteCode" default="";
+        param name="arguments.data.formCode" default="contact-us";
+        param name="arguments.data.formPostfix" default="?submitted=true";
+
+        getHibachiScope().setSite(getService('siteService').getSiteBySiteCode(arguments.data.siteCode))
+
+        var markup =  getService('siteService').dspForm(arguments.data.formCode,arguments.data.formPostfix)
+        getHibachiScope().addActionResult("public:getSlatwallForm", false);
+
+        arguments.data['ajaxResponse']['content'] = {"form": {
+            "type": arguments.data.formCode,
+            "markup": markup
+        }};
+
+    }
+    
+    /***
+	 * Method to return combined list of category, producttype, brand, option
+	 * @param - pageRecordsShow
+	 * @param - allowProductAssignmentFlag
+	 * @param - activeFlag
+	 * @return - filterOptionsResponse - custom array of keys
+	 **/
+    public void function getProductFilterOptions(struct data={}) {
+	    param name="arguments.data.allowProductAssignmentFlag" default=true;
+	    param name="arguments.data.activeFlag" default=true;
+
+        // Category Collection List
+        var categoryCollectionList = getService("ContentService").getCategoryCollectionList();
+        categoryCollectionList.addFilter("allowProductAssignmentFlag", arguments.data.allowProductAssignmentFlag );
+        var categories = categoryCollectionList.getRecords(formatRecords=false);
+        
+        // Product Type Collection List
+        var productTypeCollectionList = getProductService().getProductTypeCollectionList();
+        productTypeCollectionList.addFilter("activeFlag", arguments.data.activeFlag );
+        var productTypes = productTypeCollectionList.getRecords(formatRecords=false);
+        
+        // Brand Collection List
+        var brandCollectionList = getProductService().getBrandCollectionList();
+        brandCollectionList.addFilter("activeFlag", arguments.data.activeFlag );
+        var brands = brandCollectionList.getRecords(formatRecords=false);
+        
+        // Option Collection List
+        var optionCollectionList = getProductService().getOptionCollectionList();
+        optionCollectionList.addFilter("activeFlag", arguments.data.activeFlag );
+        var options = optionCollectionList.getRecords(formatRecords=false);
+        
+        arguments.data.ajaxResponse['data'] = {
+           'category'   : categories, 
+           'productType': productTypes,
+           'brand'      : brands,
+           'option'     : options
+        };
+        getHibachiScope().addActionResult("public:scope.getProductFilterOptions",false);
+    }
+
+    
+    /** 
+     * @http-context getDiscountsByCartData
+     * @description This method exposes Slatwall promotion engine to be used standalone
+     * Promotion engine will evaluate discounts based on cart data passed in. Cart data
+     * will create a transient order to do the calculation and delete the order after response
+     * example data struct: 
+     * {
+     *  "skus":[{"skucode":"item1","quantity":"1"}, {"skucode":"item2","quantity":"1"}],
+     *  "promotionCode":"123",
+     *  "account":{"firstName": "", "lastName": "", "emailAddress": ""}
+     * }
+     */
+     public void function getDiscountsByCartData(required struct data) {
+         param name="arguments.data.skus" default=[];
+         arguments.data["updateOrderAmountFlag"] = false;
+
+         var cart = getOrderService().newOrder();
+         getHibachiScope().getSession().setOrder( cart );
+         
+         if(structKeyExists(arguments.data, "promotionCode")) {
+             addPromotionCode(arguments.data);
+         }
+         
+         for(var sku in arguments.data.skus) {
+             var cartData = {};
+             cartData["updateShippingMethodOptionsFlag"] = false;
+             cartData["updateOrderAmountFlag"] = false;
+             cartData["saveOrderFlag"] = false;
+         
+             if(structKeyExists(sku, "skucode")){
+                 param name="sku.quantity" default=1;
+                 cartData["skuCode"] = sku["skuCode"];
+                 cartData["quantity"] = sku["quantity"];
+                 addOrderItem( cartData );
+             }
+         }
+         
+         if(structKeyExists(arguments.data, "account")) {
+            var account = getAccountService().newAccount();
+            getAccountService().saveAccount( account, arguments.data.account );
+            if(!account.hasErrors()){
+                cart.setAccount( account );
+            } else {
+                cart.addErrors( account.getErrors() );
+                getHibachiScope().setORMHasErrors( true );
+            }
+         }
+         
+         // save order and update amounts
+         getOrderService().saveOrder( order=cart, updateOrderAmounts=true, updateShippingMethodOptions=false);
+         
+         var cartData = {"cartDataOptions": "order,orderitem"};
+         getCartData( arguments.data );
+         
+         getOrderService().deleteOrder( cart );
+    }
+     
+    /**
+	 * Generic Endpoint to get any entity
+	* */
+	public any function getEntity( required struct data ) {
+	    param name="arguments.data.entityID" default="";
+	    param name="arguments.data.entityName" default="";
+        param name="arguments.data.currentPage" default=1;
+        param name="arguments.data.pageRecordsShow" default=getHibachiScope().setting('GLOBALAPIPAGESHOWLIMIT');
+	    param name="arguments.data.propertyIdentifierList" default="";
+
+        if( !len(arguments.data.entityName) ){
+            getHibachiScope().addActionResult("public:scope.getEntity",true);
+            return;
+        }
+        
+        arguments.data.restRequestFlag = 1;
+        arguments.data.enforceAuthorization = true;
+        arguments.data.useAuthorizedPropertiesAsDefaultColumns = true;
+        
+        var overrideFunctionName = 'get'&arguments.data.entityName;
+        if( structKeyExists(this, overrideFunctionName) ){
+            return this.invokeMethod(overrideFunctionName, {data=arguments.data});
+        }
+        
+        //Use public Properties logic here to fetch default properties
+        if( len(arguments.data.entityID) ){
+            arguments.data.ajaxResponse['data'] = this.getHibachiCollectionService().getAPIResponseForBasicEntityWithID( arguments.data.entityName, arguments.data.entityID, arguments.data );
+        } else {
+    	    arguments.data.ajaxResponse['data'] = this.gethibachiCollectionService().getAPIResponseForEntityName( arguments.data.entityName, arguments.data );
+        }
+
+        this.getHibachiScope().addActionResult("public:scope.getEntity", false);
+	}
+	
+	/**
+	 * this function extends/overrides the generic `getEntity` and is not supposed to be called directly 
+	 * @path `/api/public/product/{entityID}`
+	 * 
+	 * if @includeAttributesMetadata is set to true, and the request is for an specific product [entityID is set], 
+	 * it will all attribute-sets related to the requested-product [ Global, product-tpyes(the hierarchy), brand and the requested product ];
+	 * 
+	 * @includeAttributesMetadata, defaults to `false`; is boolean flag to return the attribute-sets metadata for that product
+	 */
+	public any function getProduct(required struct data ){
+        param name="arguments.data.urlTitle" default='';
+	    param name="arguments.data.includeAttributesMetadata" default=false;
+        
+        // if there's some value for urlTitle, set the entityID
+        if( arguments.data.urlTitle.len() ){
+	        var product = this.getProductService().getProductByUrlTitle( arguments.data.urlTitle );
+	        if( !isNull(product) ){
+	            arguments.data.entityID = product.getProductID();
+	        }
+        }
+       
+	    // if there's no entityID, then we're assuming that this's a call to fetch multiple-products
+	    if( !len(arguments.data.entityID)  ){
+    	    var collectionData = this.gethibachiCollectionService().getAPIResponseForEntityName( arguments.data.entityName, arguments.data );
+            collectionData = this.getProductService().appendImagesToProducts(collectionData.pageRecords);
+            collectionData = this.getProductService().appendCategoriesAndOptionsToProducts(collectionData);
+            
+            arguments.data.ajaxResponse['data'] = collectionData; 
+            this.getHibachiScope().addActionResult("public:scope.getProduct", false);
+            return;
+        }
+        
+	    // if the API is requesting attribute-set metadata, we need to have `brandID` and `productTypeIDPath` in the collection-query result
+	    if( arguments.data.includeAttributesMetadata ){
+            if(!arguments.data.propertyIdentifierList.listFindNoCase('productType.productTypeIDPath') ){
+            	arguments.data.propertyIdentifierList = arguments.data.propertyIdentifierList.listAppend('productType.productTypeIDPath');
+            }
+            if(!arguments.data.propertyIdentifierList.listFindNoCase('brand.brandID') ){
+            	arguments.data.propertyIdentifierList = arguments.data.propertyIdentifierList.listAppend('brand.brandID');
+            }
+	     }
+        
+        var response = {};
+        
+        var product = this.getHibachiCollectionService().getAPIResponseForBasicEntityWithID( arguments.data.entityName, arguments.data.entityID, arguments.data );
+        product["breadcrumbs"] = getProductService().getProductTypeAncestorsbyPath(product['productType_productTypeIDPath']);
+        var updatedProductArray = [ product ];
+        updatedProductArray = this.getProductService().appendImagesToProducts(updatedProductArray);
+	    updatedProductArray = this.getProductService().appendCategoriesAndOptionsToProducts(updatedProductArray);
+
+	    response['product'] = updatedProductArray[1];
+        if(arguments.data.includeAttributesMetadata){
+            response['attributeSets'] = getAttributeSetMetadataForProduct(response.product.productID, response.product.productType_productTypeIDPath, response.product.brand_brandID );
+        }
+        
+        arguments.data.ajaxResponse['data'] = response;
+        this.getHibachiScope().addActionResult("public:scope.getProduct", false);
+	}
+	
+	
+	/**
+	 * this function extends/overrides the generic `getEntity` and is not supposed to be called directly 
+	 * @path `/api/public/brand/{entityID}`
+	 * 
+	 */
+	public any function getBrand(required struct data ){
+	    
+	    if( !len(arguments.data.entityID) ){
+    	    arguments.data.ajaxResponse['data'] = this.gethibachiCollectionService().getAPIResponseForEntityName( arguments.data.entityName, arguments.data );
+            arguments.data.ajaxResponse['data'].pageRecords = getService("brandService").appendSettingsAndOptions(arguments.data.ajaxResponse['data'].pageRecords);
+            this.getHibachiScope().addActionResult("public:scope.getBrand", true);
+            return;
+        }
+       
+        
+        var response = {};
+        response['brand'] = this.getHibachiCollectionService().getAPIResponseForBasicEntityWithID( arguments.data.entityName, arguments.data.entityID, arguments.data );
+        response['brand'] = getService("brandService").appendSettingsAndOptions([response['brand']]);
+	    response['brand'] = response['brand'][1]
+       
+        arguments.data.ajaxResponse['data'] = response;
+        this.getHibachiScope().addActionResult("public:scope.getProduct", true);
+	}
+	
+		/**
+	 * this function extends/overrides the generic `getEntity` and is not supposed to be called directly 
+	 * @path `/api/public/content/{entityID}`
+	 * 
+	 */
+	public any function getContent(required struct data ){
+	    
+	    if( !len(arguments.data.entityID) ){
+    	    arguments.data.ajaxResponse['data'] = this.gethibachiCollectionService().getAPIResponseForEntityName( arguments.data.entityName, arguments.data );
+    	    for( var record in arguments.data.ajaxResponse['data'].pageRecords) {
+                record = getService("ContentService").appendSettingsAndOptionsToContent(record);
+    	    }
+            this.getHibachiScope().addActionResult("public:scope.getContent", true);
+            return;
+        }
+       
+        
+        var response = {};
+        response['content'] = this.getHibachiCollectionService().getAPIResponseForBasicEntityWithID( arguments.data.entityName, arguments.data.entityID, arguments.data );
+	    response['content'] = getService("ContentService").appendSettingsAndOptionsToContent(response['content']);
+
+        arguments.data.ajaxResponse['data'] = response;
+        this.getHibachiScope().addActionResult("public:scope.getContent", true);
+	}
+	
+	
+	private array function getAttributeSetMetadataForProduct(required productID, required string productTypeIDPath, string brandID=''){
+	    
+	    var attributeSetCollectionList = this.getAttributeService().getAttributeSetCollectionList();
+	    
+	    attributeSetCollectionList.setDisplayProperties('attributeSetName, attributeSetCode, attributeSetDescription, globalFlag, sortOrder');
+	    attributeSetCollectionList.addDisplayProperties('attributes.attributeName, attributes.attributeCode, attributes.attributeDescription, attributes.sortOrder');
+	    
+        attributeSetCollectionList.setDistinct(true);
+	    attributeSetCollectionList.addFilter('activeFlag', 1);
+	    attributeSetCollectionList.addFilter('attributeSetObject', 'Product');
+	    attributeSetCollectionList.addFilter('attributes.activeFlag', 1);
+	    
+	    attributeSetCollectionList.addFilter(
+            value               =  1,
+            filterGroupAlias    = 'attribute_set_filters',
+            propertyIdentifier  = 'globalFlag',
+            comparisonOperator  = "="
+        );
+        
+        if( len(arguments.productTypeIDPath) ){
+            attributeSetCollectionList.addFilter( 
+                value               = arguments.productTypeIDPath, 
+                logicalOperator     = "OR",
+                filterGroupAlias    = 'attribute_set_filters',
+                propertyIdentifier  = 'productTypes.productTypeIDPath',
+                comparisonOperator  = "IN"
+            );
+        }
+        
+         if( len(arguments.brandID) ){
+            attributeSetCollectionList.addFilter( 
+                value               = arguments.brandID, 
+                logicalOperator     = "OR",
+                filterGroupAlias    = 'attribute_set_filters',
+                propertyIdentifier  = 'brands.brandID',
+                comparisonOperator  = "="
+            );
+        }
+        
+        attributeSetCollectionList.addFilter( 
+            value               = arguments.productID, 
+            logicalOperator     = "OR",
+            filterGroupAlias    = 'attribute_set_filters',
+            propertyIdentifier  = 'products.productID',
+            comparisonOperator  = "="
+        );
+        
+        var attributeSets =attributeSetCollectionList.getRecords();
+        var formattedAttributeSets = {};
+
+        for(var attributeSet in attributeSets){
+            if(!structKeyExists(formattedAttributeSets, attributeSet.attributeSetCode) ){
+                formattedAttributeSets[attributeSet.attributeSetCode] = {
+                    'sortOrder'                 : attributeSet.sortOrder,
+                    'globalFlag'                : attributeSet.globalFlag,
+                    'attributes'                : {},
+                    'attributeSetName'          : attributeSet.attributeSetName,
+                    'attributeSetCode'          : attributeSet.attributeSetCode,
+                    'attributeSetDescription'   : attributeSet.attributeSetDescription
+                }
+            }
+            
+            var formattedAttributeSet = formattedAttributeSets[attributeSet.attributeSetCode];
+            
+            formattedAttributeSet.attributes[ attributeSet.attributes_attributeCode ] = {
+                'sortOrder'              : attributeSet.attributes_sortOrder,
+                'attributeName'          : attributeSet.attributes_attributeName,
+                'attributeCode'          : attributeSet.attributes_attributeCode,
+                'attributeDescription'   : attributeSet.attributes_attributeDescription
+            }
+        }
+        
+        var attributeSets = [];
+        for(var attributeSetCode in formattedAttributeSets){
+            var formattedAttributeSet = formattedAttributeSets[attributeSetCode];
+            
+            var attributes = [];
+            for(var attributeCode in formattedAttributeSet.attributes ){
+                attributes.append( formattedAttributeSet.attributes[attributeCode] );
+            }
+            
+            formattedAttributeSet['attributes'] = attributes;
+            attributeSets.append(formattedAttributeSet);
+        }
+        
+        return attributeSets;
+	}
+    
+    public any function getPickupLocations() {
+		arguments.data.ajaxResponse['locations'] = this.getLocationService().getLocationParentOptions(false)
+    }
+    
+    public any function setPickupDate(required any data) {
+        param name="data.pickupDate" default="";
+		param name="data.orderFulfillmentID" default="";
+        if( getHibachiScope().getLoggedInFlag() ) {
+            var cart = getHibachiScope().cart();
+
+            if(!len(arguments.data.orderFulfillmentID)){
+    			var orderFulfillment = cart.getOrderFulfillments()[1];
+    		}else{
+    			var orderFulfillment = this.getOrderService().getOrderFulfillment(arguments.data.orderFulfillmentID);
+    		}
+		    orderFulfillment.setEstimatedShippingDate(arguments.data.pickupDate);
+		    orderFulfillment.setPickupDate(arguments.data.pickupDate);
+
+		    this.getOrderService().saveOrderFulfillment(orderFulfillment);
+		    
+
+    		if(orderFulfillment.hasErrors()){
+			 getHibachiScope().addActionResult( "public:cart.setPickupDate", true);
+               arguments.data.ajaxResponse['errors'] = orderFulfillment.getErrors();
+		    }else{
+		        getHibachiScope().addActionResult( "public:cart.setPickupDate", false);
+		    }
+    
+    		return cart;
+		}
+    } 
+
+    public any function getEligibleFulfillmentMethods() {
+        
+        if( getHibachiScope().getLoggedInFlag() ) {
+            var cart = getHibachiScope().cart();
+            var orderItems = cart.getOrderItems();
+
+
+            var sl = getService("fulfillmentService").getFulfillmentMethodSmartList();
+			sl.addFilter('activeFlag', 1);
+			sl.addSelect('fulfillmentMethodName', 'name');
+			sl.addSelect('fulfillmentMethodID', 'value');
+			sl.addSelect('fulfillmentMethodType', 'fulfillmentMethodType');
+			
+			var eligibleFulfillmentMethods = '';
+			for(var orderItem in orderItems){
+				var sku = orderItem.getSku();
+				if(!isNull(sku)) {
+					if(!len(eligibleFulfillmentMethods)){
+						eligibleFulfillmentMethods = sku.setting('skuEligibleFulfillmentMethods');
+					}else{
+						for(var fulfillmentMethod in eligibleFulfillmentMethods){
+							if(!listFind(sku.setting('skuEligibleFulfillmentMethods'), fulfillmentMethod)){
+								eligibleFulfillmentMethods = listDeleteAt(eligibleFulfillmentMethods, listFind(eligibleFulfillmentMethods,fulfillmentMethod));
+							}
+						}
+					}
+				}
+			}
+			
+			sl.addInFilter('fulfillmentMethodID', eligibleFulfillmentMethods);
+			arguments.data.ajaxResponse['eligibleFulfillmentMethods'] = sl.getRecords();
+        }
+    }
+    
+    public void function productAvailableSkuOptions( required struct data ) {
+		param name="arguments.data.productID" type="string" default="";
+		param name="arguments.data.selectedOptionIDList" type="string" default="";
+
+		var product = getProductService().getProduct( arguments.data.productID );
+
+		if(!isNull(product) && product.getActiveFlag() && product.getPublishedFlag()) {
+			arguments.data.ajaxResponse["availableSkuOptions"] = product.getAvailableSkuOptions( arguments.data.selectedOptionIDList );
+		}
+	}
+
+	public void function productSkuSelected(required struct data){
+		param name="arguments.data.productID" type="string" default="";
+		param name="arguments.data.selectedOptionIDList" type="string" default="";
+		var product = getProductService().getProduct( arguments.data.productID );
+		try{
+			var sku = product.getSkuBySelectedOptions(arguments.data.selectedOptionIDList);
+			arguments.data.ajaxResponse['skuID'] = sku.getSkuID();
+		}catch(any e){
+			arguments.data.ajaxResponse['skuID'] = '';
+		}
+	}
+	
+	public void function getSkuOptionDetails(required struct data){
+		param name="arguments.data.productID" type="string" default="";
+		param name="arguments.data.selectedOptionIDList" type="string" default="";
+		var product = getProductService().getProduct( arguments.data.productID );
+		try{
+			var skuOptionDetails = product.getSkuOptionDetails(arguments.data.selectedOptionIDList);
+			arguments.data.ajaxResponse['skuOptionDetails'] = skuOptionDetails;
+		}catch(any e){
+			arguments.data.ajaxResponse['skuOptionDetails'] = '';
+		}
+	}
+	
+	
+	
+     
+     public void function getProductSkus( required struct data ) {
+	    param name="arguments.data.productID";
+	    param name="arguments.data.currentPage" default=1;
+        param name="arguments.data.pageRecordsShow" default= getHibachiScope().setting('GLOBALAPIPAGESHOWLIMIT');
+        var optsList = [];
+        var defaultSelectedOptions = '';
+        var product = this.getProductService().getProduct( arguments.data.productID )
+        var optionGroupsArr = product.getOptionGroups()
+        var skuOptionDetails = product.getSkuOptionDetails()
+        var defaultSku = product.getDefaultSku()
+        if(!isNull(defaultSku)){
+            defaultSelectedOptions = defaultSku.getOptionsIDList()
+            for(var optionGroup in optionGroupsArr) {
+                var options = product.getOptionsByOptionGroup( optionGroup.getOptionGroupID() )
+                var group = []
+                for(var option in options) {
+                    ArrayAppend(group,{"optionID": option.getOptionID()
+                    ,"optionName": option.getOptionName()})
+                }
+                ArrayAppend(optsList, {
+                    "optionGroupName": optionGroup.getOptionGroupName(),
+                    "optionGroupID": optionGroup.getOptionGroupID(),
+                    "optionGroupCode": optionGroup.getOptionGroupCode(),
+                    "options": group })
+            }
+        }
+ 
+        
+      var skuCollectionList = this.getSkuService().getSkuCollectionList();
+	    skuCollectionList.setDisplayProperties( "skuID,skuCode,product.productName,product.productCode,product.productType.productTypeName,product.brand.brandName,listPrice,price,renewalPrice,calculatedSkuDefinition,activeFlag,publishedFlag,calculatedQATS");
+         skuCollectionList.addFilter('product.productID',trim(arguments.data.productID));
+		 skuCollectionList.setPageRecordsShow(arguments.data.pageRecordsShow);
+		var results = skuCollectionList.getRecords()
+    
+        getHibachiScope().addActionResult("public:getProductSkus");
+
+        arguments.data['ajaxResponse']['skus'] = results;
+        arguments.data['ajaxResponse']['options'] = optsList;
+        arguments.data['ajaxResponse']['defaultSelectedOptions'] = defaultSelectedOptions;
+     
+     }
+     
+    public void function getConfiguration( required struct data ) {
+        param name="arguments.data.siteCode" default="";
+        var siteLookup = getService('siteService').getSiteBySiteCode(arguments.data.siteCode);
+        getHibachiScope().setSite(siteLookup);
+        
+            var site = {};
+            site["siteID"] = siteLookup.getSiteID();
+            site["siteCode"] = siteLookup.getSiteCode();
+            site["siteName"] = siteLookup.getSiteName();
+            site["hibachiInstanceApplicationScopeKey"] = siteLookup.getHibachiInstanceApplicationScopeKey();
+            site["hibachiConfig"] = getHibachiScope().getHibachiConfig();
+            arguments.data['ajaxResponse']['config']['site'] = site;
+        
+
+
+        var router = []
+        ArrayAppend(router , {"URLKey": getHibachiScope().setting('globalURLKeyProduct'),"URLKeyType": 'Product' });
+        ArrayAppend(router , {"URLKey": getHibachiScope().setting('globalURLKeyProductType'),"URLKeyType": 'ProductType' });
+        ArrayAppend(router , {"URLKey": getHibachiScope().setting('globalURLKeyCategory'),"URLKeyType": 'Category' });
+        ArrayAppend(router , {"URLKey": getHibachiScope().setting('globalURLKeyBrand'),"URLKeyType": 'Brand' });
+        ArrayAppend(router , {"URLKey": getHibachiScope().setting('globalURLKeyAccount'),"URLKeyType": 'Account' });
+        ArrayAppend(router , {"URLKey": getHibachiScope().setting('globalURLKeyAddress'),"URLKeyType": 'Address' });
+        ArrayAppend(router , {"URLKey": getHibachiScope().setting('globalURLKeyAttribute'),"URLKeyType": 'Attribute' });
+        
+        arguments.data['ajaxResponse']['config']['formatting'] = {
+            "dateFormat": UCase(getHibachiScope().setting('globalDateFormat')),
+            "timeFormat": Replace(UCase(getHibachiScope().setting('globalTimeFormat')), 'TT', 'a', 'all')};
+
+        getHibachiScope().addActionResult("public:getConfiguration");
+
+        arguments.data['ajaxResponse']['config']['router'] = router;
+        return;
+    }
+     
+    public void function productDetailData( required struct data ) {
+		param name="arguments.data.productID" type="string" default="";
+		param name="arguments.data.selectedOptionIDList" type="string" default="";
+
+		var product = getProductService().getProduct( arguments.data.productID );
+
+		if(!isNull(product) && product.getActiveFlag() && product.getPublishedFlag()) {
+			arguments.data.ajaxResponse["availableSkuOptions"] = product.getAvailableSkuOptions( arguments.data.selectedOptionIDList );
+
+			try{
+				var sku = product.getSkuBySelectedOptions(arguments.data.selectedOptionIDList);
+				if(!isNull(sku) && sku.getActiveFlag() && sku.getPublishedFlag()) {
+					arguments.data.ajaxResponse['skuID'] = sku.getSkuID();
+				
+					var skuCollectionList = this.getSkuService().getSkuCollectionList();
+				    skuCollectionList.setDisplayProperties( "skuID,skuCode,product.productName,product.productCode,product.productType.productTypeName,product.brand.brandName,skuPrices.listPrice,skuPrices.price,skuPrices.renewalPrice,calculatedSkuDefinition,activeFlag,publishedFlag,calculatedQATS");
+		    	    skuCollectionList.addFilter('skuID',sku.getSkuID());
+					var results = skuCollectionList.getRecords()
+					if(!ArrayIsEmpty(results) ) {
+			        	arguments.data.ajaxResponse['sku'] = this.getSkuService().appendSettingsAndOptionsToSku(results);
+			    	}
+				}else{
+					arguments.data.ajaxResponse['skuID'] = '';
+					arguments.data.ajaxResponse['sku'] = {};
+				}
+			}catch(any e){
+				arguments.data.ajaxResponse['skuID'] = '';
+				arguments.data.ajaxResponse['sku'] = {};
+			}
+		}
+	}
     
     public any function createOrderTemplate( required struct data ) {
         param name="arguments.data.siteID" default="";
