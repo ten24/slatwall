@@ -5,7 +5,7 @@
 		<column name="collectionName" />
 		<column name="collectionCode" />
 		<column name="collectionObject" update="false" />
-		<column name="collectionConfig" decodeForHTML="true" />
+		<column name="collectionConfig" decodeForHTML="false" />
 		<column name="reportFlag" update="true" dataType="bit" />
 	</Columns>
 	<Records>
