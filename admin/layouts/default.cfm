@@ -250,18 +250,6 @@ Notes:
 									<hb:HibachiActionCaller action="admin:report.cancelledOrdersReport" type="list">
 								</hb:HibachiDividerHider>
 							</hb:HibachiActionCallerDropdown>
-							<hb:HibachiActionCallerDropdown title="#$.slatwall.rbKey('admin.default.telligence_nav')#" img="#request.slatwallScope.getBaseURL()#/assets/images/icon-telligence.svg" menuitemclass="border" type="nav">
-								<hb:HibachiDividerHider>
-									<hb:HibachiActionCaller action="admin:report" type="list">
-									<hb:HibachiActionCaller action="admin:entity.listcollection" type="list">
-									<cfif $.slatwall.authenticateAction(action='admin:entity.listworkflow')>
-										<hb:HibachiActionCaller queryString="ng##!/entity/Workflow" text="#$.slatwall.rbKey('admin.entity.listworkflow')#" type="list">
-									</cfif>
-									<hb:HibachiActionCaller action="admin:report.revenuerecognitionreport" type="list">
-									<hb:HibachiActionCaller action="admin:report.subscriptionOrdersReport" type="list">
-									<hb:HibachiActionCaller action="admin:report.cancelledOrdersReport" type="list">
-								</hb:HibachiDividerHider>
-							</hb:HibachiActionCallerDropdown>
 							<cfset local.integrationSubsystems = $.slatwall.getService('integrationService').getActiveFW1Subsystems() />
 							<cfif arrayLen(local.integrationSubsystems)>
 								<hb:HibachiActionCallerDropdown title="#$.slatwall.rbKey('admin.default.integrations_nav')#" img="#request.slatwallScope.getBaseURL()#/assets/images/icon-integrations.svg"  type="nav">
