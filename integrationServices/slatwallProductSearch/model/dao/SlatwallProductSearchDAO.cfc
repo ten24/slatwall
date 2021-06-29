@@ -424,6 +424,7 @@ component extends="Slatwall.model.dao.HibachiDAO" persistent="false" accessors="
                 ON pt.productTypeID = p.productTypeID 
                     AND ( pt.activeFlag = 1 OR pt.activeFlag IS NULL ) 
 
+
             LEFT JOIN swBrand br
                 ON br.brandID = p.brandID
                     AND ( br.activeFlag = 1 OR br.activeFlag IS NULL ) 

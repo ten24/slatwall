@@ -891,6 +891,7 @@ component  accessors="true" output="false"
         this.getHibachiScope().addActionResult("public:scope.getProductType", true);
 	}
     
+
      /**
      * Function get Product Options By Option Group
      * It adds productOptions as key in ajaxResponse
