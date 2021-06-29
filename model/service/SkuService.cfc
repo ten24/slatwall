@@ -205,7 +205,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							"optionName" : option.getOptionName(),
 							"optionGroupID": option.getOptionGroup().getOptionGroupID(),
 							"optionGroupName": option.getOptionGroup().getOptionGroupName(),
-						} )
+						} );
 					}
 				}
 	            sku['options'] = options;
