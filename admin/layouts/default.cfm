@@ -284,8 +284,8 @@ Notes:
 							<cfif arrayLen(local.integrationSubsystems)>
 								<hb:HibachiActionCallerDropdown title="#$.slatwall.rbKey('admin.default.integrations_nav')#" img="#request.slatwallScope.getBaseURL()#/assets/images/icon-integrations.svg"  type="nav">
 									<cfloop array="#local.integrationSubsystems#" index="local.intsys">
-										<hb:HibachiActionCaller action="#local.intsys['subsystem']#:main.default" text="#local.intsys['subsystem']#" type="list">
 										<cfset local.integration = $.slatwall.getService('integrationService').getIntegrationByIntegrationPackage(local.intsys['subsystem']) />
+										<hb:HibachiActionCaller action="#local.intsys['subsystem']#:main.default" text="#local.integration.getDisplayName()#" type="list">
 										<cfset local.integrationCFC = $.slatwall.getService('integrationService').getIntegrationCFC(local.integration) />
 										<cfif NOT isNull(local.integrationCFC) AND structKeyExists(local.integrationCFC,'getMenuItems')>
 											<cfloop array="#local.integrationCFC.getMenuItems()#" index="local.menuitem">

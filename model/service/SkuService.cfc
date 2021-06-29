@@ -218,7 +218,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	public array function getSkuPublicProperties(){
-		var publicProperties =  ["skuID","skuCode","skuName","calculatedSkuDefinition","price","skuDescription","skuDefinition","calculatedQATS","activeFlag","product.activeFlag","publishedFlag","listPrice","renewalPrice","product.productName","product.productCode","product.productType.productTypeName","product.brand.brandName"];
+		var publicProperties =  ["skuID","skuCode","skuName","calculatedSkuDefinition",'skuPrices.listPrice','skuPrices.price', "skuPrices.renewalPrice","skuDescription","calculatedQATS","activeFlag","product.activeFlag","publishedFlag","product.productName","product.productCode","product.productType.productTypeName","product.brand.brandName"];
 		var publicAttributes = this.getHibachiService().getPublicAttributesByEntityName('Sku');
 	    publicProperties.append(publicAttributes, true);
 		return publicProperties; 
