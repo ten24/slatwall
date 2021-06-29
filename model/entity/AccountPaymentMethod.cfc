@@ -397,6 +397,7 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 	}
 	
 
+
 	public any function getBillingAddress() {
 		if( !structKeyExists(variables, "billingAddress") ) {
 

@@ -162,10 +162,12 @@ Notes:
 									<hb:HibachiActionCaller action="admin:entity.listproducttype" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listbrand" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listsku" type="list">
+
 									<li class="divider"></li>
 									<hb:HibachiActionCaller action="admin:entity.listoptiongroup" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listsubscriptionterm" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listsubscriptionbenefit" type="list">
+
 								</hb:HibachiDividerHider>
 							</hb:HibachiActionCallerDropdown>
 							<hb:HibachiActionCallerDropdown title="#$.slatwall.rbKey('admin.default.orders_nav')#" img="#request.slatwallScope.getBaseURL()#/assets/images/icon-orders.svg"  type="nav">
@@ -195,6 +197,7 @@ Notes:
 									<hb:HibachiActionCaller action="admin:entity.listsubscriptionusage" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listpermissiongroup" type="list">
 									<li class="divider"></li>
+
 									<hb:HibachiActionCaller action="admin:entity.listledgeraccount" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listvendor" type="list">
 								</hb:HibachiDividerHider>
@@ -217,6 +220,34 @@ Notes:
 									<li class="divider"></li>
 									<hb:HibachiActionCaller action="admin:entity.listvendororder" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listvendororderitem" type="list">
+								</hb:HibachiDividerHider>
+							</hb:HibachiActionCallerDropdown>
+							<hb:HibachiActionCallerDropdown title="#$.slatwall.rbKey('admin.default.marketing_nav')#" img="#request.slatwallScope.getBaseURL()#/assets/images/icon-marketing.svg" menuitemclass="border" type="nav">
+								<hb:HibachiDividerHider>
+									<hb:HibachiActionCaller action="admin:entity.listpromotion" type="list">
+									<hb:HibachiActionCaller action="admin:entity.listpricegroup" type="list">
+									<cfif $.slatwall.authenticateAction(action='admin:entity.listcontent')>
+										<hb:HibachiActionCaller queryString="ng##!/entity/Content" text="#$.slatwall.rbKey('admin.entity.listcontent')#" type="list">
+									</cfif>
+									<hb:HibachiActionCaller action="admin:entity.listcategory" type="list">
+									<hb:HibachiActionCaller action="admin:entity.listform" type="list">
+									<hb:HibachiActionCaller action="admin:entity.listsite" type="list">
+									<hb:HibachiActionCaller action="admin:entity.listemailtemplate" type="list">
+									<hb:HibachiActionCaller action="admin:entity.listproductreview" type="list">
+									<hb:HibachiActionCaller action="admin:entity.listloyalty" type="list">
+									<hb:HibachiActionCaller action="admin:entity.listloyaltyterm" type="list">
+								</hb:HibachiDividerHider>
+							</hb:HibachiActionCallerDropdown>
+							<hb:HibachiActionCallerDropdown title="#$.slatwall.rbKey('admin.default.telligence_nav')#" img="#request.slatwallScope.getBaseURL()#/assets/images/icon-telligence.svg" menuitemclass="border" type="nav">
+								<hb:HibachiDividerHider>
+									<hb:HibachiActionCaller action="admin:report" type="list">
+									<hb:HibachiActionCaller action="admin:entity.listcollection" type="list">
+									<cfif $.slatwall.authenticateAction(action='admin:entity.listworkflow')>
+										<hb:HibachiActionCaller queryString="ng##!/entity/Workflow" text="#$.slatwall.rbKey('admin.entity.listworkflow')#" type="list">
+									</cfif>
+									<hb:HibachiActionCaller action="admin:report.revenuerecognitionreport" type="list">
+									<hb:HibachiActionCaller action="admin:report.subscriptionOrdersReport" type="list">
+									<hb:HibachiActionCaller action="admin:report.cancelledOrdersReport" type="list">
 								</hb:HibachiDividerHider>
 							</hb:HibachiActionCallerDropdown>
 							<hb:HibachiActionCallerDropdown title="#$.slatwall.rbKey('admin.default.marketing_nav')#" img="#request.slatwallScope.getBaseURL()#/assets/images/icon-marketing.svg" menuitemclass="border" type="nav">
@@ -285,6 +316,7 @@ Notes:
 										<hb:HibachiActionCaller action="admin:entity.listpaymentterm" type="list">
 										<hb:HibachiActionCaller action="admin:entity.listprinttemplate" type="list">
 										<hb:HibachiActionCaller action="admin:entity.listroundingrule" type="list">
+
 										<hb:HibachiActionCaller action="admin:entity.listtaxcategory" type="list">
 										<hb:HibachiActionCaller action="admin:entity.listterm" type="list">
 										<hb:HibachiActionCaller action="admin:entity.listtype" type="list">
