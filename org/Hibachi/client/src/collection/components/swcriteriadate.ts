@@ -678,6 +678,22 @@ class SWCriteriaDate{
 								&& scope.filterItem.value.length
 								){
 									var dateRangeArray = scope.filterItem.value.split("-");
+									
+                                    var dateOptions = {
+										weekday : "short",
+										day : "2-digit",
+										month : "short",
+										year : "numeric",
+										hour12 : "true", 
+										hour : "numeric",
+										minute : "2-digit"
+									};
+									
+                                    var rangeStart = new Date(parseInt(dateRangeArray[0]));
+                                    rangeStart = rangeStart.toLocaleString("en-US", dateOptions);
+									
+                                    var rangeEnd = new Date(parseInt(dateRangeArray[1]));
+                                    rangeEnd = rangeEnd.toLocaleString("en-US", dateOptions);
 
 									scope.selectedFilterProperty.criteriaRangeStart = parseInt(dateRangeArray[0]);
 									scope.selectedFilterProperty.criteriaRangeEnd = parseInt(dateRangeArray[1]);
