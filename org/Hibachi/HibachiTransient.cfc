@@ -265,7 +265,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
         required struct propertyMeta, 
         required struct manyToOneDataStruct, 
         string formUploadDottedPath="", 
-        string objectPopulateMode = this.getHibachiScope().getObjectPopulateMode(),
+        string objectPopulateMode = this.getHibachiScope().getObjectPopulateMode()
     ){
         
         var entityName = listLast( arguments.propertyMeta.cfc, '.' );
@@ -418,7 +418,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 				arguments.manyToManyIDList = listDeleteAt(arguments.manyToManyIDList, listIndex);
 			} else {
 				// append ID that needs to be removed from database
-				ArrayAppend(removeEntityRelationshipList, relatedEntity,"true")
+				ArrayAppend(removeEntityRelationshipList, relatedEntity,"true");
 			}
 
 		}

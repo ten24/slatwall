@@ -213,7 +213,7 @@ component extends="framework.one" {
 	this.ormenabled = true;
 	this.ormsettings = {};
 	this.ormsettings.cfclocation = [ "/#variables.framework.applicationKey#/model/entity" ];
-	this.ormSettings.dialect = "MySQL"
+	this.ormSettings.dialect = "MySQL";
 	this.ormSettings.dbcreate = "update";
 	this.ormSettings.flushAtRequestEnd = false;
 	this.ormsettings.eventhandling = true;
@@ -920,7 +920,7 @@ component extends="framework.one" {
 						    writeLog(file="#variables.framework.applicationKey#", text="General Log - ORMReload() started");
 						    ormReload();
     						writeLog(file="#variables.framework.applicationKey#", text="General Log - ORMReload() was successful");
-						} catch(e) {
+						} catch(any e) {
 					        writeLog(file="#variables.framework.applicationKey#", text="General Log - ORMReload() run into errros");
 					        getHibachiScope().logHibachiException( e );
 					        rethrow;

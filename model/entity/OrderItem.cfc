@@ -1158,18 +1158,18 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	
 	public any function getAllowableRefundPercent(){
         if(!structKeyExists(variables,'allowableRefundPercent')){
-	    	var map = getSku().setting('skuAllowableRefundPercentages')
+	    	var map = getSku().setting('skuAllowableRefundPercentages');
 	        var dateDiff = 0;
 	        if(!isNull(this.getOrder().getOrderCloseDateTime())){
 	            dateDiff = dateDiff('d',this.getOrder().getOrderCloseDateTime(),now());
 	        }
 	        
-            variables.allowableRefundPercent = 100
+            variables.allowableRefundPercent = 100;
             if(!isNull(map)){
 		        map = DeserializeJSON(map);
 		        for (var rule in map) {
 					if(rule.minDays <= dateDiff && rule.maxDays >= dateDiff){
-						variables.allowableRefundPercent = rule.refundPercent
+						variables.allowableRefundPercent = rule.refundPercent;
 					}
 				}
             }
